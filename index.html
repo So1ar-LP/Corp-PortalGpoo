@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дашборд Техподдержки | Зона отдыха</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        terminal: {
+                            bg: '#0a0a0a',
+                            green: '#00ff41',
+                            greenDim: '#008f11',
+                            red: '#ff003c',
+                            blue: '#00edff',
+                            yellow: '#ffeb3b',
+                            gray: '#1a1a1a'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"Share Tech Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #00ff41;
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Эффект старого монитора (CRT) */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 50;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .scanline {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 255, 65, 0.1);
+            position: absolute;
+            z-index: 49;
+            animation: scan 6s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: -10%; }
+            100% { top: 110%; }
+        }
+
+        /* Скроллбар в стиле терминала */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            border-left: 1px solid #008f11;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #008f11;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff41;
+        }
+
+        .btn-terminal {
+            background: transparent;
+            border: 1px solid #008f11;
+            color: #00ff41;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+        .btn-terminal:hover {
+            background: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 10px #00ff41;
+        }
+        .btn-terminal:active {
+            transform: scale(0.98);
+        }
+
+        /* Контейнеры для игр */
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: #0a0a0a;
+            border: 2px solid #008f11;
+            box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
+        #sys-modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="crt p-4 md:p-8 flex flex-col items-center">
+
+    <div class="scanline"></div>
+    
+    <header class="w-full max-w-6xl border-b-2 border-terminal-greenDim pb-4 mb-6 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
+        <div class="flex items-center gap-4">
+            <div class="text-4xl font-bold text-terminal-green tracking-widest drop-shadow-[0_0_8px_rgba(0,255,65,0.8)]">
+                > SUPP_OS_v2.4
+            </div>
+            <div class="text-xs border border-terminal-greenDim p-1">AUTHORIZED PERSONNEL ONLY</div>
+        </div>
+        
+        <div class="flex gap-6 text-sm md:text-base">
+            <div class="flex flex-col items-end">
+                <span class="text-terminal-greenDim">СТАТУС СЕРВЕРОВ:</span>
+                <span class="text-terminal-red blink font-bold">ОПЯТЬ ЛЕЖАТ</span>
+            </div>
+            <div class="flex flex-col items-end">
+                <span class="text-terminal-greenDim">ДНЕЙ БЕЗ ПАДЕНИЙ:</span>
+                <span class="text-terminal-green font-bold text-xl">0</span>
+            </div>
+            <div class="flex flex-col items-end">
+                <span class="text-terminal-greenDim">ТИКЕТОВ В ОЧЕРЕДИ:</span>
+                <span class="text-terminal-yellow font-bold">9,999+</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-6xl flex flex-col lg:flex-row gap-6 flex-grow relative z-10">
+        
+        <!-- Левая панель: Инструменты админа (Шутки) -->
+        <aside class="w-full lg:w-1/4 flex flex-col gap-4">
+            <div class="border border-terminal-greenDim p-4 bg-terminal-gray/50">
+                <h2 class="text-xl mb-4 border-b border-terminal-greenDim pb-2">> QUICK_FIX.exe</h2>
+                <div class="flex flex-col gap-3">
+                    <button onclick="showSysMessage('Команда отправлена. Роутер перезагружен. Клиент говорит, что интернет все равно не работает. 🤷‍♂️')" class="btn-terminal py-2 px-4 text-sm">
+                        [ Перезагрузить роутер ]
+                    </button>
+                    <button onclick="showSysMessage('Кэш очищен. Куки удалены. Пользователь забыл пароль. 🤦‍♂️')" class="btn-terminal py-2 px-4 text-sm">
+                        [ Посоветовать почистить кэш ]
+                    </button>
+                    <button onclick="showSysMessage('Тикет #404 закрыт с резолюцией: Само починилось.')" class="btn-terminal py-2 px-4 text-sm">
+                        [ Закрыть тикет "Само починится" ]
+                    </button>
+                    <button onclick="showSysMessage('Ping: 999ms. Tracert уходит в черную дыру. Пора пить кофе. ☕')" class="btn-terminal py-2 px-4 text-sm">
+                        [ Запустить ping 8.8.8.8 -t ]
+                    </button>
+                    <button onclick="showSysMessage('Перевод на 2-ю линию успешен. Теперь это их проблема. 😎')" class="btn-terminal py-2 px-4 text-sm text-terminal-yellow border-terminal-yellow hover:bg-terminal-yellow hover:text-black hover:shadow-[0_0_10px_#ffeb3b]">
+                        [ Эскалация на 2 линию ]
+                    </button>
+                </div>
+            </div>
+
+            <div class="border border-terminal-greenDim p-4 bg-terminal-gray/50 flex-grow">
+                <h2 class="text-xl mb-2 border-b border-terminal-greenDim pb-2">> СИСТЕМНЫЙ ЖУРНАЛ</h2>
+                <div id="sys-log" class="text-xs text-terminal-greenDim h-48 overflow-y-auto flex flex-col gap-1">
+                    <span>[SYS] Инициализация среды... OK</span>
+                    <span>[SYS] Загрузка модулей отдыха... OK</span>
+                    <span>[USER] Клиент жалуется на мышку...</span>
+                    <span>[SYS] Рекомендовано перевернуть мышку.</span>
+                </div>
+            </div>
+        </aside>
+
+        <section class="w-full lg:w-3/4 border-2 border-terminal-green p-1 bg-black relative flex flex-col min-h-[500px]">
+            <!-- Заголовок окна -->
+            <div class="bg-terminal-green text-black px-2 py-1 font-bold flex justify-between">
+                <span>C:\GAMES\REST_MODULE.EXE</span>
+                <span>[_][O][X]</span>
+            </div>
+
+            <!-- Игровое меню (выбор) -->
+            <div id="game-menu" class="flex-grow flex flex-col items-center justify-center p-8 text-center relative z-20 h-full">
+                <h1 class="text-4xl mb-8 blink drop-shadow-[0_0_5px_rgba(0,255,65,0.8)]">> ВЫБЕРИТЕ ПРОЦЕСС ДЛЯ ЗАВЕРШЕНИЯ:</h1>
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <button onclick="initSnake()" class="btn-terminal px-8 py-6 text-2xl flex flex-col items-center gap-2 hover:scale-105">
+                        <span class="text-4xl">🐍</span>
+                        SNAKE.sh
+                    </button>
+                    <button onclick="initTetris()" class="btn-terminal px-8 py-6 text-2xl flex flex-col items-center gap-2 hover:scale-105">
+                        <span class="text-4xl">🧱</span>
+                        TETRIS.bat
+                    </button>
+                </div>
+                <div class="mt-12 text-terminal-greenDim max-w-lg">
+                    <p>ИНСТРУКЦИЯ:</p>
+                    <p>Используйте стрелки на клавиатуре для управления.</p>
+                    <p>Если звонит телефон — игнорируйте (шутка, берите трубку!).</p>
+                </div>
+            </div>
+
+            <!-- Контейнер для Змейки -->
+            <div id="snake-container" class="hidden flex-grow flex-col items-center justify-center p-4">
+                <div class="w-full flex justify-between mb-2 max-w-[400px]">
+                    <span class="text-terminal-blue">SCORE: <span id="snake-score">0</span></span>
+                    <button onclick="backToMenu()" class="text-terminal-red hover:underline text-sm">[ ЗАВЕРШИТЬ ПРОЦЕСС ]</button>
+                </div>
+                <canvas id="snake-canvas" width="400" height="400"></canvas>
+                
+                <!-- Экран GameOver для Змейки -->
+                <div id="snake-gameover" class="hidden absolute inset-0 bg-black/90 flex-col items-center justify-center z-30">
+                    <h2 class="text-4xl text-terminal-red mb-4 blink">FATAL ERROR: SNAKE CRASHED</h2>
+                    <p class="mb-6 text-xl">Счет: <span id="snake-final-score">0</span></p>
+                    <div class="flex gap-4">
+                        <button onclick="startSnakeGame()" class="btn-terminal py-2 px-6">RESTART_SERVICE</button>
+                        <button onclick="backToMenu()" class="btn-terminal py-2 px-6 border-terminal-greenDim text-terminal-greenDim">EXIT</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tetris-container" class="hidden flex-grow flex-col items-center justify-center p-4">
+                <div class="w-full flex justify-between mb-2 max-w-[300px]">
+                    <span class="text-terminal-yellow">SCORE: <span id="tetris-score">0</span></span>
+                    <button onclick="backToMenu()" class="text-terminal-red hover:underline text-sm">[ ЗАВЕРШИТЬ ПРОЦЕСС ]</button>
+                </div>
+                <canvas id="tetris-canvas" width="300" height="600"></canvas>
+                
+                <!-- Экран GameOver для Тетриса -->
+                <div id="tetris-gameover" class="hidden absolute inset-0 bg-black/90 flex-col items-center justify-center z-30">
+                    <h2 class="text-4xl text-terminal-red mb-4 blink">KERNEL PANIC: STACK OVERFLOW</h2>
+                    <p class="mb-6 text-xl">Линий очищено: <span id="tetris-final-score">0</span></p>
+                    <div class="flex gap-4">
+                        <button onclick="startTetrisGame()" class="btn-terminal py-2 px-6">REBOOT_SYSTEM</button>
+                        <button onclick="backToMenu()" class="btn-terminal py-2 px-6 border-terminal-greenDim text-terminal-greenDim">EXIT</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <div id="sys-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-terminal-bg border-2 border-terminal-green p-1 max-w-md w-full mx-4 shadow-[0_0_30px_rgba(0,255,65,0.3)] transform scale-95 transition-transform duration-300" id="sys-modal-content">
+            <div class="bg-terminal-green text-black px-2 py-1 font-bold mb-4">
+                > MESSAGE.vbs
+            </div>
+            <div class="p-4 text-center">
+                <p id="sys-modal-text" class="text-lg mb-6 leading-relaxed"></p>
+                <button onclick="closeSysMessage()" class="btn-terminal py-2 px-8">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные для управления анимациями
+        let snakeAnimReq;
+        let tetrisAnimReq;
+        let currentActiveGame = null;
+
+        // Элементы UI
+        const menuView = document.getElementById('game-menu');
+        const snakeView = document.getElementById('snake-container');
+        const tetrisView = document.getElementById('tetris-container');
+        const sysLog = document.getElementById('sys-log');
+
+        // Функция логирования в "Системный журнал"
+        function addLog(msg) {
+            const time = new Date().toLocaleTimeString('ru-RU', { hour12: false });
+            const span = document.createElement('span');
+            span.textContent = `[${time}] ${msg}`;
+            sysLog.appendChild(span);
+            sysLog.scrollTop = sysLog.scrollHeight;
+        }
+
+        // Кастомный Alert (Модальное окно)
+        function showSysMessage(text) {
+            document.getElementById('sys-modal-text').textContent = text;
+            const modal = document.getElementById('sys-modal');
+            const content = document.getElementById('sys-modal-content');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+            addLog(`> Выполнено действие админа`);
+        }
+
+        function closeSysMessage() {
+            const modal = document.getElementById('sys-modal');
+            const content = document.getElementById('sys-modal-content');
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+        }
+
+        // Навигация
+        function backToMenu() {
+            // Остановка игр
+            if (currentActiveGame === 'snake') {
+                cancelAnimationFrame(snakeAnimReq);
+            } else if (currentActiveGame === 'tetris') {
+                cancelAnimationFrame(tetrisAnimReq);
+            }
+            currentActiveGame = null;
+
+            // Скрытие экранов
+            snakeView.classList.add('hidden');
+            tetrisView.classList.add('hidden');
+            document.getElementById('snake-gameover').classList.add('hidden');
+            document.getElementById('tetris-gameover').classList.add('hidden');
+            
+            // Показ меню
+            menuView.classList.remove('hidden');
+            addLog('[SYS] Возврат в главное меню.');
+        }
+
+        // Настройки Змейки
+        const snakeCanvas = document.getElementById('snake-canvas');
+        const snakeCtx = snakeCanvas.getContext('2d');
+        const snakeGridSize = 20;
+        let snakeCount = 0;
+        let snakeSpeed = 6; // Чем меньше, тем быстрее (кадры пропуска)
+        
+        let snake = {
+            x: 160,
+            y: 160,
+            dx: snakeGridSize,
+            dy: 0,
+            cells: [],
+            maxCells: 4
+        };
+        let apple = { x: 320, y: 320 };
+        let snakeScore = 0;
+        let isSnakeGameOver = false;
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        function initSnake() {
+            menuView.classList.add('hidden');
+            snakeView.classList.remove('hidden');
+            snakeView.classList.add('flex');
+            addLog('[SYS] Запуск SNAKE.sh...');
+            currentActiveGame = 'snake';
+            startSnakeGame();
+        }
+
+        function startSnakeGame() {
+            document.getElementById('snake-gameover').classList.add('hidden');
+            document.getElementById('snake-gameover').classList.remove('flex');
+            
+            snake.x = 160;
+            snake.y = 160;
+            snake.cells = [];
+            snake.maxCells = 4;
+            snake.dx = snakeGridSize;
+            snake.dy = 0;
+            snakeScore = 0;
+            document.getElementById('snake-score').textContent = snakeScore;
+            isSnakeGameOver = false;
+            
+            placeApple();
+            
+            if (snakeAnimReq) cancelAnimationFrame(snakeAnimReq);
+            snakeAnimReq = requestAnimationFrame(snakeLoop);
+        }
+
+        function placeApple() {
+            apple.x = getRandomInt(0, 20) * snakeGridSize;
+            apple.y = getRandomInt(0, 20) * snakeGridSize;
+        }
+
+        function snakeLoop() {
+            if (currentActiveGame !== 'snake' || isSnakeGameOver) return;
+            snakeAnimReq = requestAnimationFrame(snakeLoop);
+
+            // Управление скоростью
+            if (++snakeCount < snakeSpeed) {
+                return;
+            }
+            snakeCount = 0;
+
+            snakeCtx.clearRect(0,0, snakeCanvas.width, snakeCanvas.height);
+
+            // Движение
+            snake.x += snake.dx;
+            snake.y += snake.dy;
+
+            // Столкновение со стенами (Game Over)
+            if (snake.x < 0 || snake.x >= snakeCanvas.width || snake.y < 0 || snake.y >= snakeCanvas.height) {
+                endSnakeGame();
+                return;
+            }
+
+            snake.cells.unshift({x: snake.x, y: snake.y});
+            if (snake.cells.length > snake.maxCells) {
+                snake.cells.pop();
+            }
+
+            // Отрисовка еды
+            snakeCtx.fillStyle = '#ff003c'; // Красный, как ошибка
+            snakeCtx.fillRect(apple.x, apple.y, snakeGridSize-1, snakeGridSize-1);
+
+            // Отрисовка змейки
+            snakeCtx.fillStyle = '#00ff41'; // Терминальный зеленый
+            
+            for(let i=0; i<snake.cells.length; i++) {
+                let cell = snake.cells[i];
+                snakeCtx.fillRect(cell.x, cell.y, snakeGridSize-1, snakeGridSize-1);
+
+                // Столкновение с самой собой
+                for(let j=i+1; j<snake.cells.length; j++) {
+                    if (cell.x === snake.cells[j].x && cell.y === snake.cells[j].y) {
+                        endSnakeGame();
+                        return;
+                    }
+                }
+
+                // Поедание яблока
+                if (cell.x === apple.x && cell.y === apple.y) {
+                    snake.maxCells++;
+                    snakeScore += 10;
+                    document.getElementById('snake-score').textContent = snakeScore;
+                    placeApple();
+                    // Немного ускоряем по мере роста
+                    if (snakeScore % 50 === 0 && snakeSpeed > 2) snakeSpeed--;
+                }
+            }
+        }
+
+        function endSnakeGame() {
+            isSnakeGameOver = true;
+            document.getElementById('snake-gameover').classList.remove('hidden');
+            document.getElementById('snake-gameover').classList.add('flex');
+            document.getElementById('snake-final-score').textContent = snakeScore;
+            addLog(`[ERR] SNAKE.sh упал. Счёт: ${snakeScore}`);
+        }
+
+        // Настройки Тетриса
+        const tetrisCanvas = document.getElementById('tetris-canvas');
+        const tetrisCtx = tetrisCanvas.getContext('2d');
+        const tRows = 20;
+        const tCols = 10;
+        const tBlockSize = 30; // 300x600 canvas
+        
+        let tetrisBoard = [];
+        let tetrisScore = 0;
+        let tetrisGameOver = false;
+        let tetrisCount = 0;
+        let tetrisSpeed = 35; // Кадры до падения блока
+        
+        let currentPiece = null;
+
+        // Фигуры тетриса и их цвета
+        const tetrominoes = [
+            { shape: [[1,1,1,1]], color: '#00edff' }, // I (cyan)
+            { shape: [[1,0,0],[1,1,1]], color: '#0051ff' }, // J (blue)
+            { shape: [[0,0,1],[1,1,1]], color: '#ff7300' }, // L (orange)
+            { shape: [[1,1],[1,1]], color: '#ffeb3b' }, // O (yellow)
+            { shape: [[0,1,1],[1,1,0]], color: '#00ff41' }, // S (green)
+            { shape: [[0,1,0],[1,1,1]], color: '#b000ff' }, // T (purple)
+            { shape: [[1,1,0],[0,1,1]], color: '#ff003c' }  // Z (red)
+        ];
+
+        function initTetris() {
+            menuView.classList.add('hidden');
+            tetrisView.classList.remove('hidden');
+            tetrisView.classList.add('flex');
+            addLog('[SYS] Запуск TETRIS.bat...');
+            currentActiveGame = 'tetris';
+            startTetrisGame();
+        }
+
+        function createTetrisBoard() {
+            tetrisBoard = [];
+            for (let r = 0; r < tRows; r++) {
+                tetrisBoard[r] = [];
+                for (let c = 0; c < tCols; c++) {
+                    tetrisBoard[r][c] = 0; // 0 означает пусто
+                }
+            }
+        }
+
+        function getNewPiece() {
+            const rand = Math.floor(Math.random() * tetrominoes.length);
+            const template = tetrominoes[rand];
+            
+            currentPiece = {
+                shape: template.shape,
+                color: template.color,
+                r: 0,
+                c: Math.floor(tCols/2) - Math.floor(template.shape[0].length/2)
+            };
+
+            // Проверка на Game Over сразу при спавне
+            if (!isValidMove(currentPiece.r, currentPiece.c, currentPiece.shape)) {
+                endTetrisGame();
+            }
+        }
+
+        function startTetrisGame() {
+            document.getElementById('tetris-gameover').classList.add('hidden');
+            document.getElementById('tetris-gameover').classList.remove('flex');
+            
+            createTetrisBoard();
+            tetrisScore = 0;
+            document.getElementById('tetris-score').textContent = tetrisScore;
+            tetrisGameOver = false;
+            tetrisSpeed = 35;
+            
+            getNewPiece();
+            
+            if (tetrisAnimReq) cancelAnimationFrame(tetrisAnimReq);
+            tetrisAnimReq = requestAnimationFrame(tetrisLoop);
+        }
+
+        function isValidMove(newR, newC, newShape) {
+            for (let r = 0; r < newShape.length; r++) {
+                for (let c = 0; c < newShape[r].length; c++) {
+                    if (newShape[r][c]) {
+                        let boardR = newR + r;
+                        let boardC = newC + c;
+                        
+                        // Проверка границ и столкновений с другими блоками
+                        if (boardR < 0 || boardR >= tRows || boardC < 0 || boardC >= tCols || tetrisBoard[boardR][boardC]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        function rotatePiece(piece) {
+            // Транспонирование и реверс строк для поворота на 90 градусов по часовой
+            const newShape = piece.shape[0].map((val, index) => piece.shape.map(row => row[index]).reverse());
+            if (isValidMove(piece.r, piece.c, newShape)) {
+                piece.shape = newShape;
+            }
+        }
+
+        function lockPiece() {
+            for (let r = 0; r < currentPiece.shape.length; r++) {
+                for (let c = 0; c < currentPiece.shape[r].length; c++) {
+                    if (currentPiece.shape[r][c]) {
+                        tetrisBoard[currentPiece.r + r][currentPiece.c + c] = currentPiece.color;
+                    }
+                }
+            }
+            clearLines();
+            getNewPiece();
+        }
+
+        function clearLines() {
+            let linesCleared = 0;
+            for (let r = tRows - 1; r >= 0; r--) {
+                let isFull = true;
+                for (let c = 0; c < tCols; c++) {
+                    if (tetrisBoard[r][c] === 0) {
+                        isFull = false;
+                        break;
+                    }
+                }
+                
+                if (isFull) {
+                    linesCleared++;
+                    // Удаляем строку и добавляем пустую сверху
+                    tetrisBoard.splice(r, 1);
+                    tetrisBoard.unshift(new Array(tCols).fill(0));
+                    r++; // Проверяем ту же строку снова (так как элементы сдвинулись)
+                }
+            }
+            
+            if (linesCleared > 0) {
+                tetrisScore += linesCleared * 100;
+                document.getElementById('tetris-score').textContent = tetrisScore;
+                if (tetrisScore % 500 === 0 && tetrisSpeed > 10) {
+                    tetrisSpeed -= 5; // Усложнение
+                }
+            }
+        }
+
+        function drawTetris() {
+            // Очистка
+            tetrisCtx.fillStyle = '#0a0a0a';
+            tetrisCtx.fillRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
+            
+            // Рисуем сетку (опционально, для эффекта дашборда)
+            tetrisCtx.strokeStyle = '#1a1a1a';
+            for(let r=0; r<tRows; r++) {
+                for(let c=0; c<tCols; c++) {
+                    tetrisCtx.strokeRect(c*tBlockSize, r*tBlockSize, tBlockSize, tBlockSize);
+                }
+            }
+
+            // Рисуем поле
+            for (let r = 0; r < tRows; r++) {
+                for (let c = 0; c < tCols; c++) {
+                    if (tetrisBoard[r][c]) {
+                        drawBlock(c, r, tetrisBoard[r][c]);
+                    }
+                }
+            }
+
+            // Рисуем текущую фигуру
+            if (currentPiece) {
+                for (let r = 0; r < currentPiece.shape.length; r++) {
+                    for (let c = 0; c < currentPiece.shape[r].length; c++) {
+                        if (currentPiece.shape[r][c]) {
+                            drawBlock(currentPiece.c + c, currentPiece.r + r, currentPiece.color);
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawBlock(c, r, color) {
+            tetrisCtx.fillStyle = color;
+            tetrisCtx.fillRect(c * tBlockSize, r * tBlockSize, tBlockSize - 1, tBlockSize - 1);
+            // Блик
+            tetrisCtx.fillStyle = 'rgba(255,255,255,0.3)';
+            tetrisCtx.fillRect(c * tBlockSize, r * tBlockSize, tBlockSize - 1, 4);
+        }
+
+        function tetrisLoop() {
+            if (currentActiveGame !== 'tetris' || tetrisGameOver) return;
+            tetrisAnimReq = requestAnimationFrame(tetrisLoop);
+
+            if (++tetrisCount > tetrisSpeed) {
+                // Движение вниз
+                if (isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) {
+                    currentPiece.r++;
+                } else {
+                    lockPiece();
+                }
+                tetrisCount = 0;
+            }
+
+            drawTetris();
+        }
+
+        function endTetrisGame() {
+            tetrisGameOver = true;
+            document.getElementById('tetris-gameover').classList.remove('hidden');
+            document.getElementById('tetris-gameover').classList.add('flex');
+            document.getElementById('tetris-final-score').textContent = tetrisScore / 100; // Линии
+            addLog(`[ERR] TETRIS.bat вызвал панику ядра. Линий: ${tetrisScore/100}`);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            // Запрещаем скролл стрелками при активной игре
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key) && currentActiveGame) {
+                e.preventDefault();
+            }
+
+            // Управление Змейкой
+            if (currentActiveGame === 'snake' && !isSnakeGameOver) {
+                if (e.key === 'ArrowLeft' && snake.dx === 0) {
+                    snake.dx = -snakeGridSize;
+                    snake.dy = 0;
+                }
+                else if (e.key === 'ArrowUp' && snake.dy === 0) {
+                    snake.dy = -snakeGridSize;
+                    snake.dx = 0;
+                }
+                else if (e.key === 'ArrowRight' && snake.dx === 0) {
+                    snake.dx = snakeGridSize;
+                    snake.dy = 0;
+                }
+                else if (e.key === 'ArrowDown' && snake.dy === 0) {
+                    snake.dy = snakeGridSize;
+                    snake.dx = 0;
+                }
+            }
+            
+            // Управление Тетрисом
+            if (currentActiveGame === 'tetris' && !tetrisGameOver && currentPiece) {
+                if (e.key === 'ArrowLeft') {
+                    if (isValidMove(currentPiece.r, currentPiece.c - 1, currentPiece.shape)) {
+                        currentPiece.c--;
+                    }
+                }
+                else if (e.key === 'ArrowRight') {
+                    if (isValidMove(currentPiece.r, currentPiece.c + 1, currentPiece.shape)) {
+                        currentPiece.c++;
+                    }
+                }
+                else if (e.key === 'ArrowUp') {
+                    rotatePiece(currentPiece);
+                }
+                else if (e.key === 'ArrowDown') {
+                    if (isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) {
+                        currentPiece.r++;
+                        tetrisCount = 0; // Сброс таймера падения
+                    }
+                }
+                else if (e.key === ' ') {
+                    // Hard Drop (Пробел)
+                    while (isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) {
+                        currentPiece.r++;
+                    }
+                    lockPiece();
+                    tetrisCount = 0;
+                }
+            }
+        });
+
+        // Добавляем стартовый лог
+        window.onload = () => {
+            setTimeout(() => addLog('[SYS] Ожидание ввода команд...'), 1000);
+        };
+    </script>
+</body>
+</html>
