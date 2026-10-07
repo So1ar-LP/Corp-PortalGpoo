@@ -121,7 +121,8 @@
         .ms-cell {
             width: 35px;
             height: 35px;
-            background-color: #0a0a0a;
+            background-color: #00330d; /* Темно-зеленый для контраста */
+            border: 1px solid #00ff41; /* Яркая рамка */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -131,10 +132,12 @@
             transition: background-color 0.1s;
         }
         .ms-cell:hover:not(.revealed) {
-            background-color: #1a1a1a;
+            background-color: #00ff41; /* Подсветка при наведении */
+            color: black;
         }
         .ms-cell.revealed {
-            background-color: #050505;
+            background-color: #050505; /* Черный фон для разминированных */
+            border: 1px solid #1a1a1a;
             box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
         }
     </style>
@@ -198,7 +201,7 @@
                 <p class="text-terminal-yellow mb-2 font-bold">> GLOBAL_CONTROLS:</p>
                 <ul class="text-sm text-left list-none grid grid-cols-1 md:grid-cols-2 gap-2">
                     <li><span class="text-terminal-blue">[Стрелки]</span> - Навигация (Змейка/Тетрис)</li>
-                    <li><span class="text-terminal-blue">[ P ]</span> - Пауза / Резьюм (Змейка/Тетрис)</li>
+                    <li><span class="text-terminal-blue">[ P ] / Кнопка "PAUSE"</span> - Пауза / Резьюм (Змейка/Тетрис)</li>
                     <li><span class="text-terminal-blue">[ Пробел ]</span> - Hard Drop (Тетрис)</li>
                     <li><span class="text-terminal-blue">[ ЛКМ / ПКМ ]</span> - Открыть / Флаг (Сапер)</li>
                 </ul>
@@ -209,7 +212,10 @@
             <div class="w-full flex justify-between items-center mb-4 max-w-[500px]">
                 <span class="text-xl text-terminal-blue">SCORE: <span id="snake-score" class="font-bold text-2xl">0</span></span>
                 <span id="snake-pause-text" class="text-xl text-terminal-yellow blink hidden">== PAUSED ==</span>
-                <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors">[ TERMINATE ]</button>
+                <div class="flex gap-2">
+                    <button onclick="togglePause()" class="text-terminal-yellow hover:text-white border border-terminal-yellow px-2 py-1 text-sm transition-colors">[ PAUSE ]</button>
+                    <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors">[ TERMINATE ]</button>
+                </div>
             </div>
             <canvas id="snake-canvas" width="500" height="500"></canvas>
         </div>
@@ -226,7 +232,10 @@
                 </div>
                 
                 <span id="tetris-pause-text" class="text-xl text-terminal-yellow blink hidden mb-4">== PAUSED ==</span>
-                <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors mb-4">[ TERMINATE ]</button>
+                <div class="flex flex-col gap-2 mb-4">
+                    <button onclick="togglePause()" class="text-terminal-yellow hover:text-white border border-terminal-yellow px-2 py-1 text-sm transition-colors w-full text-right">[ PAUSE ]</button>
+                    <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors w-full text-right">[ TERMINATE ]</button>
+                </div>
             </div>
             <canvas id="tetris-canvas" width="300" height="600"></canvas>
         </div>
@@ -358,7 +367,7 @@
         const snakeCtx = snakeCanvas.getContext('2d');
         const sGrid = 25; // Block size
         let snakeCount = 0;
-        let snakeSpeed = 15; // Медленный старт (чем больше, тем медленнее: кадры пропуска)
+        let snakeSpeed = 30; // ЕЩЕ БОЛЕЕ Медленный старт (чем больше, тем медленнее: кадры пропуска)
         let snake = { x: 10 * sGrid, y: 10 * sGrid, dx: sGrid, dy: 0, cells: [], maxCells: 4 };
         let apple = { x: 15 * sGrid, y: 15 * sGrid };
         let snakeScore = 0;
@@ -376,7 +385,7 @@
             document.getElementById('snake-pause-text').classList.add('hidden');
             snake = { x: 10 * sGrid, y: 10 * sGrid, dx: sGrid, dy: 0, cells: [], maxCells: 4 };
             snakeScore = 0;
-            snakeSpeed = 15; // Возврат к медленному старту
+            snakeSpeed = 30; // Очень-очень ленивая змея
             document.getElementById('snake-score').textContent = snakeScore;
             spawnApple();
             
@@ -802,10 +811,6 @@
         function checkMsWin() {
             if (cellsRevealed === (msRows * msCols) - totalMines) {
                 msGameOver = true;
-                // Win visually, but for the sake of the joke, let's just show an error anyway? 
-                // Wait, if they WIN we shouldn't show the error.
-                // Request didn't specify win condition text, only "При проигрыше".
-                // I will add a special WIN text just in case.
                 triggerGameOver(`>_ ТИП УВЕДОМЛЕНИЯ: TASK COMPLETED<br>>_ ИТОГО: САПЕР ПРОЙДЕН! Но всё равно...`);
             }
         }
