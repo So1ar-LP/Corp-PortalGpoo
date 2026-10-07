@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Дашборд Техподдержки | Инструменты и Отдых</title>
+    <title>Дашборд Техподдержки | RELAX_OS</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
                 extend: {
                     colors: {
                         terminal: {
-                            bg: '#0a0a0a',
+                            bg: '#050505',
                             green: '#00ff41',
                             greenDim: '#008f11',
                             red: '#ff003c',
@@ -42,9 +42,9 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            user-select: none; /* Предотвращаем случайное выделение текста при игре */
         }
 
-        /* Эффект старого монитора (CRT) */
         .crt::before {
             content: " ";
             display: block;
@@ -65,7 +65,7 @@
             background: rgba(0, 255, 65, 0.1);
             position: absolute;
             z-index: 49;
-            animation: scan 6s linear infinite;
+            animation: scan 8s linear infinite;
             pointer-events: none;
         }
 
@@ -74,22 +74,6 @@
             100% { top: 110%; }
         }
 
-        /* Скроллбар в стиле терминала */
-        ::-webkit-scrollbar {
-            width: 12px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0a;
-            border-left: 1px solid #008f11;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #008f11;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00ff41;
-        }
-
-        /* Элементы формы и кнопки */
         .btn-terminal {
             background: transparent;
             border: 1px solid #008f11;
@@ -97,296 +81,250 @@
             transition: all 0.2s;
             text-transform: uppercase;
             cursor: pointer;
+            box-shadow: inset 0 0 5px rgba(0, 255, 65, 0.1);
         }
         .btn-terminal:hover {
             background: #00ff41;
-            color: #0a0a0a;
-            box-shadow: 0 0 10px #00ff41;
+            color: #050505;
+            box-shadow: 0 0 15px #00ff41;
         }
         .btn-terminal:active {
             transform: scale(0.98);
         }
 
-        .input-terminal {
-            background: #000;
-            border: 1px solid #008f11;
-            color: #00ff41;
-            padding: 0.5rem;
-            width: 100%;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-terminal:focus {
-            border-color: #00ff41;
-            box-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
-        }
-        .input-terminal::placeholder {
-            color: #008f11;
-        }
-
-        /* Контейнеры для игр */
         canvas {
             display: block;
-            margin: 0 auto;
             background-color: #0a0a0a;
             border: 2px solid #008f11;
-            box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.2);
+            box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.15);
         }
 
         .blink {
-            animation: blinker 1s linear infinite;
+            animation: blinker 1.5s linear infinite;
+        }
+        .blink-fast {
+            animation: blinker 0.5s linear infinite;
         }
         @keyframes blinker {
             50% { opacity: 0; }
         }
+
+        /* Утилиты для сапера */
+        #minesweeper-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 2px;
+            background-color: #008f11;
+            border: 2px solid #008f11;
+            padding: 2px;
+        }
+        .ms-cell {
+            width: 35px;
+            height: 35px;
+            background-color: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.1s;
+        }
+        .ms-cell:hover:not(.revealed) {
+            background-color: #1a1a1a;
+        }
+        .ms-cell.revealed {
+            background-color: #050505;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
+        }
     </style>
 </head>
-<body class="crt p-4 md:p-8 flex flex-col items-center">
+<body class="crt p-4 md:p-8 flex flex-col items-center justify-center">
 
     <div class="scanline"></div>
     
-    <header class="w-full max-w-7xl border-b-2 border-terminal-greenDim pb-4 mb-6 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
+    <header class="w-full max-w-5xl border-b-2 border-terminal-greenDim pb-4 mb-8 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
         <div class="flex items-center gap-4">
-            <div class="text-4xl font-bold text-terminal-green tracking-widest drop-shadow-[0_0_8px_rgba(0,255,65,0.8)]">
-                > SUPP_OS_v3.0
+            <div class="text-4xl font-bold text-terminal-green tracking-widest drop-shadow-[0_0_10px_rgba(0,255,65,0.8)]">
+                > RELAX_OS_v4.0
             </div>
-            <div class="text-xs border border-terminal-greenDim p-1">ENGINEERING TOOLS</div>
+            <div class="text-xs border border-terminal-greenDim p-1 blink">AUTH: GRANTED</div>
         </div>
         
         <div class="flex gap-6 text-sm md:text-base">
             <div class="flex flex-col items-end">
-                <span class="text-terminal-greenDim">NET_STATUS:</span>
-                <span class="text-terminal-green font-bold">STABLE</span>
+                <span class="text-terminal-greenDim">SLA_STATUS:</span>
+                <span class="text-terminal-green font-bold">100%</span>
             </div>
             <div class="flex flex-col items-end">
-                <span class="text-terminal-greenDim">SYS_UPTIME:</span>
-                <span class="text-terminal-blue font-bold" id="uptime-display">99.9%</span>
-            </div>
-            <div class="flex flex-col items-end">
-                <span class="text-terminal-greenDim">LOCAL_TIME:</span>
+                <span class="text-terminal-greenDim">SYS_TIME:</span>
                 <span class="text-terminal-yellow font-bold" id="clock-display">00:00:00</span>
             </div>
         </div>
     </header>
 
-    <main class="w-full max-w-7xl flex flex-col lg:flex-row gap-6 flex-grow relative z-10">
+    <main class="w-full max-w-5xl flex flex-col flex-grow relative z-10 border-2 border-terminal-green bg-black min-h-[650px] shadow-[0_0_30px_rgba(0,255,65,0.15)]">
         
-        <aside class="w-full lg:w-1/3 flex flex-col gap-4">
+        <!-- Window Header -->
+        <div class="bg-terminal-green text-black px-4 py-1 font-bold flex justify-between items-center">
+            <span>C:\SYSTEM\PROTOCOLS\REST.EXE</span>
+            <span class="tracking-widest">[_][O][X]</span>
+        </div>
+
+        <div id="game-menu" class="flex-grow flex flex-col items-center justify-center p-8 text-center h-full">
+            <h1 class="text-3xl mb-12 drop-shadow-[0_0_5px_rgba(0,255,65,0.8)]">> SELECT PROTOCOL:</h1>
             
-            <!-- Notepad -->
-            <div class="border border-terminal-greenDim p-4 bg-terminal-gray/50">
-                <h2 class="text-lg mb-2 border-b border-terminal-greenDim pb-1">> SCRATCHPAD.txt</h2>
-                <textarea class="input-terminal h-32 resize-none text-sm" placeholder="Временные заметки, номера тикетов..."></textarea>
-            </div>
-
-            <!-- UNIX Timestamp Converter -->
-            <div class="border border-terminal-greenDim p-4 bg-terminal-gray/50">
-                <h2 class="text-lg mb-2 border-b border-terminal-greenDim pb-1">> UNIX_CONV.sh</h2>
-                <div class="flex gap-2 mb-2">
-                    <input type="text" id="unix-input" class="input-terminal text-sm" placeholder="Timestamp (e.g. 1696665600)">
-                    <button onclick="convertUnix()" class="btn-terminal px-3 text-sm">Convert</button>
-                </div>
-                <div class="text-sm min-h-[1.5rem] text-terminal-blue" id="unix-output"></div>
-            </div>
-
-            <!-- Base64 Encoder/Decoder -->
-            <div class="border border-terminal-greenDim p-4 bg-terminal-gray/50">
-                <h2 class="text-lg mb-2 border-b border-terminal-greenDim pb-1">> BASE64_TOOL.bin</h2>
-                <textarea id="b64-input" class="input-terminal h-20 resize-none text-sm mb-2" placeholder="Вставьте текст или хэш..."></textarea>
-                <div class="flex gap-2 mb-2">
-                    <button onclick="encodeB64()" class="btn-terminal flex-1 py-1 text-sm">Encode</button>
-                    <button onclick="decodeB64()" class="btn-terminal flex-1 py-1 text-sm border-terminal-yellow text-terminal-yellow hover:bg-terminal-yellow hover:text-black">Decode</button>
-                </div>
-                <textarea id="b64-output" class="input-terminal h-20 resize-none text-sm text-terminal-blue" placeholder="Результат..." readonly></textarea>
-            </div>
-
-            <!-- System Log -->
-            <div class="border border-terminal-greenDim p-4 bg-terminal-gray/50 flex-grow">
-                <h2 class="text-lg mb-2 border-b border-terminal-greenDim pb-1">> SYS_LOG</h2>
-                <div id="sys-log" class="text-xs text-terminal-greenDim h-32 overflow-y-auto flex flex-col gap-1 font-mono">
-                    <span>[SYS] Environment initialized... OK</span>
-                    <span>[SYS] Engineering tools loaded... OK</span>
-                </div>
-            </div>
-        </aside>
-
-        <section class="w-full lg:w-2/3 border-2 border-terminal-green p-1 bg-black relative flex flex-col min-h-[600px]">
-            <!-- Window Header -->
-            <div class="bg-terminal-green text-black px-2 py-1 font-bold flex justify-between">
-                <span>C:\MODULES\RELAXATION_PROTOCOL.EXE</span>
-                <span>[_][O][X]</span>
-            </div>
-
-            <!-- Game Menu -->
-            <div id="game-menu" class="flex-grow flex flex-col items-center justify-center p-8 text-center relative z-20 h-full">
-                <h1 class="text-3xl mb-8 blink drop-shadow-[0_0_5px_rgba(0,255,65,0.8)]">> SELECT PROTOCOL:</h1>
-                <div class="flex flex-col sm:flex-row gap-6">
-                    <button onclick="initSnake()" class="btn-terminal px-8 py-6 text-2xl flex flex-col items-center gap-2 hover:scale-105">
-                        <span class="text-4xl">🐍</span>
-                        SNAKE.sh
-                    </button>
-                    <button onclick="initTetris()" class="btn-terminal px-8 py-6 text-2xl flex flex-col items-center gap-2 hover:scale-105">
-                        <span class="text-4xl">🧱</span>
-                        TETRIS.bat
-                    </button>
-                </div>
-                <div class="mt-12 text-terminal-greenDim max-w-lg border border-terminal-greenDim p-4">
-                    <p class="text-terminal-yellow mb-2">> CONTROLS:</p>
-                    <ul class="text-sm text-left list-disc list-inside">
-                        <li>Используйте <strong>Стрелки</strong> для управления.</li>
-                        <li>Нажмите <strong>[ P ]</strong> для паузы/возобновления.</li>
-                        <li>В Тетрисе <strong>[ Пробел ]</strong> для мгновенного сброса.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Snake Container -->
-            <div id="snake-container" class="hidden flex-grow flex-col items-center justify-center p-4">
-                <div class="w-full flex justify-between items-center mb-2 max-w-[400px]">
-                    <span class="text-terminal-blue">SCORE: <span id="snake-score" class="font-bold">0</span></span>
-                    <span id="snake-pause-text" class="text-terminal-yellow blink hidden">PAUSED</span>
-                    <button onclick="backToMenu()" class="text-terminal-red hover:underline text-sm">[ TERMINATE ]</button>
-                </div>
-                <canvas id="snake-canvas" width="400" height="400"></canvas>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
+                <!-- Snake Button -->
+                <button onclick="initSnake()" class="btn-terminal p-8 text-2xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
+                    <span class="text-6xl mb-2">🐍</span>
+                    <span>SNAKE.sh</span>
+                </button>
                 
-                <!-- Snake Game Over -->
-                <div id="snake-gameover" class="hidden absolute inset-0 bg-black/90 flex-col items-center justify-center z-30">
-                    <h2 class="text-4xl text-terminal-red mb-4 blink">PROCESS CRASHED</h2>
-                    <p class="mb-6 text-xl">Score: <span id="snake-final-score">0</span></p>
-                    <div class="flex gap-4">
-                        <button onclick="startSnakeGame()" class="btn-terminal py-2 px-6">RESTART</button>
-                        <button onclick="backToMenu()" class="btn-terminal py-2 px-6 border-terminal-greenDim text-terminal-greenDim">MENU</button>
+                <!-- Tetris Button -->
+                <button onclick="initTetris()" class="btn-terminal p-8 text-2xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
+                    <span class="text-6xl mb-2">🧱</span>
+                    <span>TETRIS.bat</span>
+                </button>
+
+                <!-- Minesweeper Button -->
+                <button onclick="initMinesweeper()" class="btn-terminal p-8 text-2xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
+                    <span class="text-6xl mb-2">💣</span>
+                    <span>MINESWEEPER.exe</span>
+                </button>
+            </div>
+
+            <div class="mt-16 text-terminal-greenDim max-w-2xl border border-terminal-greenDim p-4 bg-terminal-bg">
+                <p class="text-terminal-yellow mb-2 font-bold">> GLOBAL_CONTROLS:</p>
+                <ul class="text-sm text-left list-none grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <li><span class="text-terminal-blue">[Стрелки]</span> - Навигация (Змейка/Тетрис)</li>
+                    <li><span class="text-terminal-blue">[ P ]</span> - Пауза / Резьюм (Змейка/Тетрис)</li>
+                    <li><span class="text-terminal-blue">[ Пробел ]</span> - Hard Drop (Тетрис)</li>
+                    <li><span class="text-terminal-blue">[ ЛКМ / ПКМ ]</span> - Открыть / Флаг (Сапер)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="snake-container" class="hidden flex-grow flex-col items-center justify-center p-4">
+            <div class="w-full flex justify-between items-center mb-4 max-w-[500px]">
+                <span class="text-xl text-terminal-blue">SCORE: <span id="snake-score" class="font-bold text-2xl">0</span></span>
+                <span id="snake-pause-text" class="text-xl text-terminal-yellow blink hidden">== PAUSED ==</span>
+                <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors">[ TERMINATE ]</button>
+            </div>
+            <canvas id="snake-canvas" width="500" height="500"></canvas>
+        </div>
+
+        <div id="tetris-container" class="hidden flex-grow flex-col items-center justify-center p-4">
+            <div class="w-full flex justify-between items-end mb-4 max-w-[450px]">
+                <div class="flex flex-col gap-2">
+                    <span class="text-xl text-terminal-yellow">LINES: <span id="tetris-score" class="font-bold text-2xl">0</span></span>
+                    <!-- Next Piece Preview -->
+                    <div class="border border-terminal-greenDim p-2 bg-[#0a0a0a]">
+                        <div class="text-xs text-terminal-greenDim mb-1">NEXT_BLOCK:</div>
+                        <canvas id="tetris-next-canvas" width="100" height="100"></canvas>
                     </div>
                 </div>
-            </div>
-
-            <!-- Tetris Container -->
-            <div id="tetris-container" class="hidden flex-grow flex-col items-center justify-center p-4">
-                <div class="w-full flex justify-between items-center mb-2 max-w-[300px]">
-                    <span class="text-terminal-yellow">LINES: <span id="tetris-score" class="font-bold">0</span></span>
-                    <span id="tetris-pause-text" class="text-terminal-yellow blink hidden">PAUSED</span>
-                    <button onclick="backToMenu()" class="text-terminal-red hover:underline text-sm">[ TERMINATE ]</button>
-                </div>
-                <canvas id="tetris-canvas" width="300" height="600"></canvas>
                 
-                <!-- Tetris Game Over -->
-                <div id="tetris-gameover" class="hidden absolute inset-0 bg-black/90 flex-col items-center justify-center z-30">
-                    <h2 class="text-4xl text-terminal-red mb-4 blink">STACK OVERFLOW</h2>
-                    <p class="mb-6 text-xl">Lines Cleared: <span id="tetris-final-score">0</span></p>
-                    <div class="flex gap-4">
-                        <button onclick="startTetrisGame()" class="btn-terminal py-2 px-6">RESTART</button>
-                        <button onclick="backToMenu()" class="btn-terminal py-2 px-6 border-terminal-greenDim text-terminal-greenDim">MENU</button>
-                    </div>
-                </div>
+                <span id="tetris-pause-text" class="text-xl text-terminal-yellow blink hidden mb-4">== PAUSED ==</span>
+                <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors mb-4">[ TERMINATE ]</button>
             </div>
-        </section>
+            <canvas id="tetris-canvas" width="300" height="600"></canvas>
+        </div>
+
+        <div id="minesweeper-container" class="hidden flex-grow flex-col items-center justify-center p-4">
+            <div class="w-full flex justify-between items-center mb-6 max-w-[400px]">
+                <span class="text-xl text-terminal-red">MINES: <span id="ms-mine-count" class="font-bold text-2xl">10</span></span>
+                <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors">[ TERMINATE ]</button>
+            </div>
+            
+            <!-- Grid container for JS generation -->
+            <div id="minesweeper-grid" oncontextmenu="return false;"></div>
+        </div>
+
+        <div id="global-gameover" class="hidden absolute inset-0 bg-black/95 flex-col items-center justify-center z-50 p-4 text-center border-4 border-terminal-red">
+            <!-- ЭТО ТО САМОЕ СООБЩЕНИЕ -->
+            <h2 class="text-5xl md:text-7xl font-bold text-terminal-red mb-8 blink-fast drop-shadow-[0_0_15px_rgba(255,0,60,1)] uppercase">
+                Заявка по ЭЦП<br>вне очереди!
+            </h2>
+            
+            <p id="gameover-stats" class="mb-12 text-2xl text-terminal-blue font-mono"></p>
+            
+            <div class="flex flex-col sm:flex-row gap-6">
+                <button onclick="restartCurrentGame()" class="btn-terminal border-terminal-red text-terminal-red hover:bg-terminal-red hover:text-black py-4 px-10 text-xl font-bold">>> REBOOT_PROTOCOL</button>
+                <button onclick="backToMenu()" class="btn-terminal py-4 px-10 text-xl text-terminal-greenDim border-terminal-greenDim hover:bg-terminal-greenDim hover:text-black">>> EXIT_TO_SYSTEM</button>
+            </div>
+        </div>
+
     </main>
 
     <script>
-        // UI Elements
+        // Clock Update
+        const clockDisplay = document.getElementById('clock-display');
+        setInterval(() => {
+            clockDisplay.textContent = new Date().toLocaleTimeString('ru-RU');
+        }, 1000);
+
+        // Views
         const menuView = document.getElementById('game-menu');
         const snakeView = document.getElementById('snake-container');
         const tetrisView = document.getElementById('tetris-container');
-        const sysLog = document.getElementById('sys-log');
-        const clockDisplay = document.getElementById('clock-display');
+        const msView = document.getElementById('minesweeper-container');
+        const gameOverView = document.getElementById('global-gameover');
+        const statsText = document.getElementById('gameover-stats');
 
-        // Clock Update
-        setInterval(() => {
-            const now = new Date();
-            clockDisplay.textContent = now.toLocaleTimeString('ru-RU');
-        }, 1000);
-
-        // Logger
-        function addLog(msg) {
-            const time = new Date().toLocaleTimeString('ru-RU', { hour12: false });
-            const span = document.createElement('span');
-            span.textContent = `[${time}] ${msg}`;
-            sysLog.appendChild(span);
-            sysLog.scrollTop = sysLog.scrollHeight;
-        }
-
-        // --- TOOLS LOGIC ---
-
-        function convertUnix() {
-            const input = document.getElementById('unix-input').value.trim();
-            const output = document.getElementById('unix-output');
-            if (!input) return;
-            
-            // Allow milliseconds or seconds length
-            let timestamp = parseInt(input, 10);
-            if (isNaN(timestamp)) {
-                output.textContent = "ERR: Invalid Number";
-                output.className = "text-sm min-h-[1.5rem] text-terminal-red";
-                return;
-            }
-            if (input.length <= 10) timestamp *= 1000; 
-
-            const date = new Date(timestamp);
-            if (isNaN(date.getTime())) {
-                output.textContent = "ERR: Invalid Date";
-                output.className = "text-sm min-h-[1.5rem] text-terminal-red";
-            } else {
-                output.textContent = "> " + date.toLocaleString('ru-RU') + " (Local)";
-                output.className = "text-sm min-h-[1.5rem] text-terminal-green";
-                addLog('UNIX_CONV: Conversion successful.');
-            }
-        }
-
-        function encodeB64() {
-            const input = document.getElementById('b64-input').value;
-            const output = document.getElementById('b64-output');
-            try {
-                output.value = btoa(unescape(encodeURIComponent(input)));
-                output.classList.remove('text-terminal-red');
-                output.classList.add('text-terminal-blue');
-                addLog('BASE64: String encoded.');
-            } catch (e) {
-                output.value = "ERR: " + e.message;
-                output.classList.remove('text-terminal-blue');
-                output.classList.add('text-terminal-red');
-            }
-        }
-
-        function decodeB64() {
-            const input = document.getElementById('b64-input').value.trim();
-            const output = document.getElementById('b64-output');
-            try {
-                output.value = decodeURIComponent(escape(atob(input)));
-                output.classList.remove('text-terminal-red');
-                output.classList.add('text-terminal-blue');
-                addLog('BASE64: String decoded.');
-            } catch (e) {
-                output.value = "ERR: Invalid Base64 string.";
-                output.classList.remove('text-terminal-blue');
-                output.classList.add('text-terminal-red');
-            }
-        }
-
-        // --- GAMES SHARED LOGIC ---
-        
         let currentActiveGame = null;
         let isGamePaused = false;
+        
+        // Animation Frames
         let snakeAnimReq;
         let tetrisAnimReq;
 
         function backToMenu() {
+            // Cleanup current game
             if (currentActiveGame === 'snake') cancelAnimationFrame(snakeAnimReq);
-            else if (currentActiveGame === 'tetris') cancelAnimationFrame(tetrisAnimReq);
+            if (currentActiveGame === 'tetris') cancelAnimationFrame(tetrisAnimReq);
             
             currentActiveGame = null;
             isGamePaused = false;
 
+            // Hide everything
             snakeView.classList.add('hidden');
+            snakeView.classList.remove('flex');
             tetrisView.classList.add('hidden');
-            document.getElementById('snake-gameover').classList.add('hidden');
-            document.getElementById('tetris-gameover').classList.add('hidden');
+            tetrisView.classList.remove('flex');
+            msView.classList.add('hidden');
+            msView.classList.remove('flex');
+            gameOverView.classList.add('hidden');
+            gameOverView.classList.remove('flex');
             
+            // Show menu
             menuView.classList.remove('hidden');
-            addLog('[SYS] Returned to MAIN MENU.');
+            menuView.classList.add('flex');
+        }
+
+        function triggerGameOver(statsMessage) {
+            isGamePaused = true;
+            statsText.innerHTML = statsMessage;
+            gameOverView.classList.remove('hidden');
+            gameOverView.classList.add('flex');
+        }
+
+        function restartCurrentGame() {
+            gameOverView.classList.add('hidden');
+            gameOverView.classList.remove('flex');
+            isGamePaused = false;
+
+            if (currentActiveGame === 'snake') startSnakeGame();
+            else if (currentActiveGame === 'tetris') startTetrisGame();
+            else if (currentActiveGame === 'minesweeper') startMinesweeper();
         }
 
         function togglePause() {
-            if (!currentActiveGame) return;
+            if (!currentActiveGame || currentActiveGame === 'minesweeper') return; // MS is turn-based, no pause needed
+            
+            // Если игра уже окончена, пауза не работает
+            if (!gameOverView.classList.contains('hidden')) return;
+
             isGamePaused = !isGamePaused;
             
             if (currentActiveGame === 'snake') {
@@ -394,158 +332,202 @@
             } else if (currentActiveGame === 'tetris') {
                 document.getElementById('tetris-pause-text').classList.toggle('hidden', !isGamePaused);
             }
-            
-            addLog(`[SYS] Protocol ${isGamePaused ? 'PAUSED' : 'RESUMED'}.`);
         }
+
+        // Global Keydown Handler
+        document.addEventListener('keydown', function(e) {
+            // Pause toggle
+            if (e.key.toLowerCase() === 'p') {
+                togglePause();
+                return;
+            }
+
+            // Prevent scroll on arrows/space if in game
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key) && currentActiveGame) {
+                e.preventDefault();
+            }
+
+            if (isGamePaused) return;
+
+            // Route inputs to active game
+            if (currentActiveGame === 'snake') handleSnakeInput(e);
+            else if (currentActiveGame === 'tetris') handleTetrisInput(e);
+        });
 
         const snakeCanvas = document.getElementById('snake-canvas');
         const snakeCtx = snakeCanvas.getContext('2d');
-        const snakeGridSize = 20;
+        const sGrid = 25; // Block size
         let snakeCount = 0;
-        let snakeSpeed = 20; // Very slow start (higher = slower)
-        
-        let snake = { x: 160, y: 160, dx: snakeGridSize, dy: 0, cells: [], maxCells: 4 };
-        let apple = { x: 320, y: 320 };
+        let snakeSpeed = 15; // Медленный старт (чем больше, тем медленнее: кадры пропуска)
+        let snake = { x: 10 * sGrid, y: 10 * sGrid, dx: sGrid, dy: 0, cells: [], maxCells: 4 };
+        let apple = { x: 15 * sGrid, y: 15 * sGrid };
         let snakeScore = 0;
-        let isSnakeGameOver = false;
-
-        function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
 
         function initSnake() {
             menuView.classList.add('hidden');
+            menuView.classList.remove('flex');
             snakeView.classList.remove('hidden');
             snakeView.classList.add('flex');
-            addLog('[SYS] Executing SNAKE.sh (Slow Mode)...');
             currentActiveGame = 'snake';
             startSnakeGame();
         }
 
         function startSnakeGame() {
-            document.getElementById('snake-gameover').classList.add('hidden');
-            document.getElementById('snake-gameover').classList.remove('flex');
             document.getElementById('snake-pause-text').classList.add('hidden');
-            
-            snake = { x: 160, y: 160, dx: snakeGridSize, dy: 0, cells: [], maxCells: 4 };
+            snake = { x: 10 * sGrid, y: 10 * sGrid, dx: sGrid, dy: 0, cells: [], maxCells: 4 };
             snakeScore = 0;
-            snakeSpeed = 20; // Reset to very slow
-            isSnakeGameOver = false;
-            isGamePaused = false;
+            snakeSpeed = 15; // Возврат к медленному старту
             document.getElementById('snake-score').textContent = snakeScore;
-            
-            apple.x = getRandomInt(0, 20) * snakeGridSize;
-            apple.y = getRandomInt(0, 20) * snakeGridSize;
+            spawnApple();
             
             if (snakeAnimReq) cancelAnimationFrame(snakeAnimReq);
             snakeAnimReq = requestAnimationFrame(snakeLoop);
         }
 
+        function spawnApple() {
+            apple.x = Math.floor(Math.random() * (snakeCanvas.width / sGrid)) * sGrid;
+            apple.y = Math.floor(Math.random() * (snakeCanvas.height / sGrid)) * sGrid;
+        }
+
         function snakeLoop() {
             snakeAnimReq = requestAnimationFrame(snakeLoop);
-            if (currentActiveGame !== 'snake' || isSnakeGameOver || isGamePaused) return;
+            if (currentActiveGame !== 'snake' || isGamePaused) return;
 
             if (++snakeCount < snakeSpeed) return;
             snakeCount = 0;
 
-            snakeCtx.clearRect(0,0, snakeCanvas.width, snakeCanvas.height);
+            snakeCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
 
+            // Move
             snake.x += snake.dx;
             snake.y += snake.dy;
 
-            // Walls (Wrap around instead of game over for chill mode, or keep walls. Let's keep walls for classic feel)
+            // Death by Wall
             if (snake.x < 0 || snake.x >= snakeCanvas.width || snake.y < 0 || snake.y >= snakeCanvas.height) {
-                endSnakeGame();
+                triggerGameOver(`>_ ТИП ОШИБКИ: SEGFAULT (Стена)<br>>_ ИТОГО СЪЕДЕНО: ${snakeScore}`);
                 return;
             }
 
             snake.cells.unshift({x: snake.x, y: snake.y});
             if (snake.cells.length > snake.maxCells) snake.cells.pop();
 
+            // Draw Apple
             snakeCtx.fillStyle = '#ff003c'; 
-            snakeCtx.fillRect(apple.x, apple.y, snakeGridSize-1, snakeGridSize-1);
+            snakeCtx.fillRect(apple.x, apple.y, sGrid - 1, sGrid - 1);
 
+            // Draw Snake
             snakeCtx.fillStyle = '#00ff41'; 
-            for(let i=0; i<snake.cells.length; i++) {
+            for (let i = 0; i < snake.cells.length; i++) {
                 let cell = snake.cells[i];
-                snakeCtx.fillRect(cell.x, cell.y, snakeGridSize-1, snakeGridSize-1);
+                snakeCtx.fillRect(cell.x, cell.y, sGrid - 1, sGrid - 1);
 
-                for(let j=i+1; j<snake.cells.length; j++) {
+                // Death by Self
+                for (let j = i + 1; j < snake.cells.length; j++) {
                     if (cell.x === snake.cells[j].x && cell.y === snake.cells[j].y) {
-                        endSnakeGame();
+                        triggerGameOver(`>_ ТИП ОШИБКИ: RECURSION LOOP (Хвост)<br>>_ ИТОГО СЪЕДЕНО: ${snakeScore}`);
                         return;
                     }
                 }
 
+                // Eat Apple
                 if (cell.x === apple.x && cell.y === apple.y) {
                     snake.maxCells++;
                     snakeScore += 10;
                     document.getElementById('snake-score').textContent = snakeScore;
-                    apple.x = getRandomInt(0, 20) * snakeGridSize;
-                    apple.y = getRandomInt(0, 20) * snakeGridSize;
-                    
-                    if (snakeScore % 50 === 0 && snakeSpeed > 5) snakeSpeed--; // Slow progression
+                    spawnApple();
+                    // Легкое ускорение
+                    if (snakeScore % 50 === 0 && snakeSpeed > 5) snakeSpeed--;
                 }
             }
         }
 
-        function endSnakeGame() {
-            isSnakeGameOver = true;
-            document.getElementById('snake-gameover').classList.remove('hidden');
-            document.getElementById('snake-gameover').classList.add('flex');
-            document.getElementById('snake-final-score').textContent = snakeScore;
-            addLog(`[ERR] SNAKE.sh crashed. Score: ${snakeScore}`);
+        function handleSnakeInput(e) {
+            if (e.key === 'ArrowLeft' && snake.dx === 0) { snake.dx = -sGrid; snake.dy = 0; }
+            else if (e.key === 'ArrowUp' && snake.dy === 0) { snake.dy = -sGrid; snake.dx = 0; }
+            else if (e.key === 'ArrowRight' && snake.dx === 0) { snake.dx = sGrid; snake.dy = 0; }
+            else if (e.key === 'ArrowDown' && snake.dy === 0) { snake.dy = sGrid; snake.dx = 0; }
         }
 
         const tetrisCanvas = document.getElementById('tetris-canvas');
         const tetrisCtx = tetrisCanvas.getContext('2d');
-        const tRows = 20, tCols = 10, tBlockSize = 30;
+        const nextCanvas = document.getElementById('tetris-next-canvas');
+        const nextCtx = nextCanvas.getContext('2d');
         
+        const tRows = 20, tCols = 10, tGrid = 30;
         let tetrisBoard = [];
         let tetrisScore = 0;
-        let tetrisGameOver = false;
         let tetrisCount = 0;
-        let tetrisSpeed = 60; // Very slow start
+        let tetrisSpeed = 45; // Очень медленно для старта
         let currentPiece = null;
+        let nextPiece = null;
 
         const tetrominoes = [
-            { shape: [[1,1,1,1]], color: '#00edff' }, 
-            { shape: [[1,0,0],[1,1,1]], color: '#0051ff' }, 
-            { shape: [[0,0,1],[1,1,1]], color: '#ff7300' }, 
-            { shape: [[1,1],[1,1]], color: '#ffeb3b' }, 
-            { shape: [[0,1,1],[1,1,0]], color: '#00ff41' }, 
-            { shape: [[0,1,0],[1,1,1]], color: '#b000ff' }, 
-            { shape: [[1,1,0],[0,1,1]], color: '#ff003c' }  
+            { shape: [[1,1,1,1]], color: '#00edff' }, // I
+            { shape: [[1,0,0],[1,1,1]], color: '#0051ff' }, // J
+            { shape: [[0,0,1],[1,1,1]], color: '#ff7300' }, // L
+            { shape: [[1,1],[1,1]], color: '#ffeb3b' }, // O
+            { shape: [[0,1,1],[1,1,0]], color: '#00ff41' }, // S
+            { shape: [[0,1,0],[1,1,1]], color: '#b000ff' }, // T
+            { shape: [[1,1,0],[0,1,1]], color: '#ff003c' }  // Z
         ];
 
         function initTetris() {
             menuView.classList.add('hidden');
+            menuView.classList.remove('flex');
             tetrisView.classList.remove('hidden');
             tetrisView.classList.add('flex');
-            addLog('[SYS] Executing TETRIS.bat (Slow Mode)...');
             currentActiveGame = 'tetris';
             startTetrisGame();
         }
 
-        function getNewPiece() {
+        function getRandomPiece() {
             const t = tetrominoes[Math.floor(Math.random() * tetrominoes.length)];
-            currentPiece = { shape: t.shape, color: t.color, r: 0, c: Math.floor(tCols/2) - Math.floor(t.shape[0].length/2) };
-            if (!isValidMove(currentPiece.r, currentPiece.c, currentPiece.shape)) endTetrisGame();
+            return { shape: t.shape, color: t.color, r: 0, c: Math.floor(tCols/2) - Math.floor(t.shape[0].length/2) };
         }
 
         function startTetrisGame() {
-            document.getElementById('tetris-gameover').classList.add('hidden');
-            document.getElementById('tetris-gameover').classList.remove('flex');
             document.getElementById('tetris-pause-text').classList.add('hidden');
-            
             tetrisBoard = Array.from({length: tRows}, () => Array(tCols).fill(0));
             tetrisScore = 0;
-            tetrisSpeed = 60; // Reset to very slow
-            tetrisGameOver = false;
-            isGamePaused = false;
+            tetrisSpeed = 45; 
             document.getElementById('tetris-score').textContent = tetrisScore;
             
-            getNewPiece();
+            nextPiece = getRandomPiece();
+            spawnNextPiece();
+            
             if (tetrisAnimReq) cancelAnimationFrame(tetrisAnimReq);
             tetrisAnimReq = requestAnimationFrame(tetrisLoop);
+        }
+
+        function spawnNextPiece() {
+            currentPiece = nextPiece;
+            nextPiece = getRandomPiece();
+            drawNextPreview();
+
+            if (!isValidMove(currentPiece.r, currentPiece.c, currentPiece.shape)) {
+                triggerGameOver(`>_ ТИП ОШИБКИ: STACK OVERFLOW<br>>_ СОБРАНО ЛИНИЙ: ${tetrisScore}`);
+            }
+        }
+
+        function drawNextPreview() {
+            nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+            if (!nextPiece) return;
+
+            // Centers the piece in the 100x100 box
+            const bSize = 20; 
+            const offsetX = (nextCanvas.width - nextPiece.shape[0].length * bSize) / 2;
+            const offsetY = (nextCanvas.height - nextPiece.shape.length * bSize) / 2;
+
+            for (let r = 0; r < nextPiece.shape.length; r++) {
+                for (let c = 0; c < nextPiece.shape[r].length; c++) {
+                    if (nextPiece.shape[r][c]) {
+                        nextCtx.fillStyle = nextPiece.color;
+                        nextCtx.fillRect(offsetX + c * bSize, offsetY + r * bSize, bSize - 1, bSize - 1);
+                        nextCtx.fillStyle = 'rgba(255,255,255,0.2)';
+                        nextCtx.fillRect(offsetX + c * bSize, offsetY + r * bSize, bSize - 1, 2);
+                    }
+                }
+            }
         }
 
         function isValidMove(newR, newC, newShape) {
@@ -572,7 +554,7 @@
                 }
             }
             clearLines();
-            getNewPiece();
+            spawnNextPiece();
         }
 
         function clearLines() {
@@ -588,7 +570,7 @@
             if (linesCleared > 0) {
                 tetrisScore += linesCleared;
                 document.getElementById('tetris-score').textContent = tetrisScore;
-                if (tetrisScore % 5 === 0 && tetrisSpeed > 15) tetrisSpeed -= 5;
+                if (tetrisScore % 5 === 0 && tetrisSpeed > 10) tetrisSpeed -= 2;
             }
         }
 
@@ -596,36 +578,40 @@
             tetrisCtx.fillStyle = '#0a0a0a';
             tetrisCtx.fillRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
             
-            tetrisCtx.strokeStyle = '#1a1a1a';
+            // Grid lines
+            tetrisCtx.strokeStyle = 'rgba(0, 255, 65, 0.05)';
+            tetrisCtx.lineWidth = 1;
             for(let r=0; r<tRows; r++) {
-                for(let c=0; c<tCols; c++) tetrisCtx.strokeRect(c*tBlockSize, r*tBlockSize, tBlockSize, tBlockSize);
+                for(let c=0; c<tCols; c++) tetrisCtx.strokeRect(c*tGrid, r*tGrid, tGrid, tGrid);
             }
 
+            // Draw Board
             for (let r = 0; r < tRows; r++) {
                 for (let c = 0; c < tCols; c++) {
-                    if (tetrisBoard[r][c]) drawBlock(c, r, tetrisBoard[r][c]);
+                    if (tetrisBoard[r][c]) drawTBlock(c, r, tetrisBoard[r][c]);
                 }
             }
 
+            // Draw Piece
             if (currentPiece) {
                 for (let r = 0; r < currentPiece.shape.length; r++) {
                     for (let c = 0; c < currentPiece.shape[r].length; c++) {
-                        if (currentPiece.shape[r][c]) drawBlock(currentPiece.c + c, currentPiece.r + r, currentPiece.color);
+                        if (currentPiece.shape[r][c]) drawTBlock(currentPiece.c + c, currentPiece.r + r, currentPiece.color);
                     }
                 }
             }
         }
 
-        function drawBlock(c, r, color) {
+        function drawTBlock(c, r, color) {
             tetrisCtx.fillStyle = color;
-            tetrisCtx.fillRect(c * tBlockSize, r * tBlockSize, tBlockSize - 1, tBlockSize - 1);
+            tetrisCtx.fillRect(c * tGrid, r * tGrid, tGrid - 1, tGrid - 1);
             tetrisCtx.fillStyle = 'rgba(255,255,255,0.2)';
-            tetrisCtx.fillRect(c * tBlockSize, r * tBlockSize, tBlockSize - 1, 3);
+            tetrisCtx.fillRect(c * tGrid, r * tGrid, tGrid - 1, 3);
         }
 
         function tetrisLoop() {
             tetrisAnimReq = requestAnimationFrame(tetrisLoop);
-            if (currentActiveGame !== 'tetris' || tetrisGameOver || isGamePaused) return;
+            if (currentActiveGame !== 'tetris' || isGamePaused) return;
 
             if (++tetrisCount > tetrisSpeed) {
                 if (isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) currentPiece.r++;
@@ -635,52 +621,195 @@
             drawTetris();
         }
 
-        function endTetrisGame() {
-            tetrisGameOver = true;
-            document.getElementById('tetris-gameover').classList.remove('hidden');
-            document.getElementById('tetris-gameover').classList.add('flex');
-            document.getElementById('tetris-final-score').textContent = tetrisScore;
-            addLog(`[ERR] TETRIS.bat stack overflow. Lines: ${tetrisScore}`);
+        function handleTetrisInput(e) {
+            if (!currentPiece) return;
+            if (e.key === 'ArrowLeft' && isValidMove(currentPiece.r, currentPiece.c - 1, currentPiece.shape)) currentPiece.c--;
+            else if (e.key === 'ArrowRight' && isValidMove(currentPiece.r, currentPiece.c + 1, currentPiece.shape)) currentPiece.c++;
+            else if (e.key === 'ArrowUp') rotatePiece(currentPiece);
+            else if (e.key === 'ArrowDown' && isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) {
+                currentPiece.r++;
+                tetrisCount = 0; // Сброс таймера падения для плавности
+            }
+            else if (e.key === ' ') {
+                // Hard drop
+                while (isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) currentPiece.r++;
+                lockPiece();
+                tetrisCount = 0;
+            }
         }
 
-        document.addEventListener('keydown', function(e) {
-            // Prevent scrolling
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key) && currentActiveGame) {
-                e.preventDefault();
+        const msGridEl = document.getElementById('minesweeper-grid');
+        const msRows = 10;
+        const msCols = 10;
+        const totalMines = 10;
+        let msBoard = [];
+        let minesLeft = totalMines;
+        let cellsRevealed = 0;
+        let msGameOver = false;
+
+        function initMinesweeper() {
+            menuView.classList.add('hidden');
+            menuView.classList.remove('flex');
+            msView.classList.remove('hidden');
+            msView.classList.add('flex');
+            currentActiveGame = 'minesweeper';
+            startMinesweeper();
+        }
+
+        function startMinesweeper() {
+            msGridEl.innerHTML = '';
+            msBoard = [];
+            minesLeft = totalMines;
+            cellsRevealed = 0;
+            msGameOver = false;
+            document.getElementById('ms-mine-count').textContent = minesLeft;
+
+            // Generate Empty Board
+            for (let r = 0; r < msRows; r++) {
+                let row = [];
+                for (let c = 0; c < msCols; c++) {
+                    const cellEl = document.createElement('div');
+                    cellEl.classList.add('ms-cell');
+                    cellEl.dataset.r = r;
+                    cellEl.dataset.c = c;
+                    
+                    cellEl.addEventListener('click', (e) => handleMsClick(r, c));
+                    cellEl.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        handleMsRightClick(r, c);
+                    });
+
+                    msGridEl.appendChild(cellEl);
+
+                    row.push({
+                        r: r, c: c,
+                        isMine: false,
+                        isRevealed: false,
+                        isFlagged: false,
+                        neighborMines: 0,
+                        el: cellEl
+                    });
+                }
+                msBoard.push(row);
             }
 
-            // Pause toggle
-            if (e.key.toLowerCase() === 'p' && currentActiveGame) {
-                togglePause();
+            // Place Mines Randomly
+            let minesPlaced = 0;
+            while (minesPlaced < totalMines) {
+                let r = Math.floor(Math.random() * msRows);
+                let c = Math.floor(Math.random() * msCols);
+                if (!msBoard[r][c].isMine) {
+                    msBoard[r][c].isMine = true;
+                    minesPlaced++;
+                }
+            }
+
+            // Calc Neighbors
+            for (let r = 0; r < msRows; r++) {
+                for (let c = 0; c < msCols; c++) {
+                    if (!msBoard[r][c].isMine) {
+                        let count = 0;
+                        for (let dr = -1; dr <= 1; dr++) {
+                            for (let dc = -1; dc <= 1; dc++) {
+                                let nr = r + dr, nc = c + dc;
+                                if (nr >= 0 && nr < msRows && nc >= 0 && nc < msCols && msBoard[nr][nc].isMine) {
+                                    count++;
+                                }
+                            }
+                        }
+                        msBoard[r][c].neighborMines = count;
+                    }
+                }
+            }
+        }
+
+        function handleMsRightClick(r, c) {
+            if (msGameOver || isGamePaused) return;
+            let cell = msBoard[r][c];
+            if (cell.isRevealed) return;
+
+            cell.isFlagged = !cell.isFlagged;
+            if (cell.isFlagged) {
+                cell.el.textContent = '[F]';
+                cell.el.classList.add('text-terminal-red');
+                minesLeft--;
+            } else {
+                cell.el.textContent = '';
+                cell.el.classList.remove('text-terminal-red');
+                minesLeft++;
+            }
+            document.getElementById('ms-mine-count').textContent = minesLeft;
+        }
+
+        function handleMsClick(r, c) {
+            if (msGameOver || isGamePaused) return;
+            let cell = msBoard[r][c];
+            if (cell.isRevealed || cell.isFlagged) return;
+
+            if (cell.isMine) {
+                // Взрыв
+                cell.el.style.backgroundColor = '#ff003c';
+                cell.el.textContent = '*';
+                cell.el.classList.add('text-black');
+                revealAllMines();
+                triggerGameOver(`>_ ТИП ОШИБКИ: CRITICAL EXCEPTION (Мина)<br>>_ ПРОГРЕСС: ${cellsRevealed} ОЧИЩЕНО`);
                 return;
             }
 
-            if (isGamePaused) return;
+            revealCell(r, c);
+            checkMsWin();
+        }
 
-            // Snake Controls
-            if (currentActiveGame === 'snake' && !isSnakeGameOver) {
-                if (e.key === 'ArrowLeft' && snake.dx === 0) { snake.dx = -snakeGridSize; snake.dy = 0; }
-                else if (e.key === 'ArrowUp' && snake.dy === 0) { snake.dy = -snakeGridSize; snake.dx = 0; }
-                else if (e.key === 'ArrowRight' && snake.dx === 0) { snake.dx = snakeGridSize; snake.dy = 0; }
-                else if (e.key === 'ArrowDown' && snake.dy === 0) { snake.dy = snakeGridSize; snake.dx = 0; }
-            }
-            
-            // Tetris Controls
-            if (currentActiveGame === 'tetris' && !tetrisGameOver && currentPiece) {
-                if (e.key === 'ArrowLeft' && isValidMove(currentPiece.r, currentPiece.c - 1, currentPiece.shape)) currentPiece.c--;
-                else if (e.key === 'ArrowRight' && isValidMove(currentPiece.r, currentPiece.c + 1, currentPiece.shape)) currentPiece.c++;
-                else if (e.key === 'ArrowUp') rotatePiece(currentPiece);
-                else if (e.key === 'ArrowDown' && isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) {
-                    currentPiece.r++;
-                    tetrisCount = 0;
+        function revealCell(r, c) {
+            let cell = msBoard[r][c];
+            if (cell.isRevealed || cell.isFlagged) return;
+
+            cell.isRevealed = true;
+            cell.el.classList.add('revealed');
+            cellsRevealed++;
+
+            if (cell.neighborMines > 0) {
+                cell.el.textContent = cell.neighborMines;
+                // Colors based on number
+                const colors = ['#00edff', '#00ff41', '#ffeb3b', '#ff7300', '#ff003c', '#b000ff', '#ffffff', '#888888'];
+                cell.el.style.color = colors[cell.neighborMines - 1];
+            } else {
+                // Flood fill for 0
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        let nr = r + dr, nc = c + dc;
+                        if (nr >= 0 && nr < msRows && nc >= 0 && nc < msCols) {
+                            revealCell(nr, nc);
+                        }
+                    }
                 }
-                else if (e.key === ' ') {
-                    while (isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) currentPiece.r++;
-                    lockPiece();
-                    tetrisCount = 0;
+            }
+        }
+
+        function revealAllMines() {
+            msGameOver = true;
+            for (let r = 0; r < msRows; r++) {
+                for (let c = 0; c < msCols; c++) {
+                    if (msBoard[r][c].isMine) {
+                        msBoard[r][c].el.textContent = '*';
+                        msBoard[r][c].el.classList.add('text-terminal-red');
+                        msBoard[r][c].el.classList.add('revealed');
+                    }
                 }
             }
-        });
+        }
+
+        function checkMsWin() {
+            if (cellsRevealed === (msRows * msCols) - totalMines) {
+                msGameOver = true;
+                // Win visually, but for the sake of the joke, let's just show an error anyway? 
+                // Wait, if they WIN we shouldn't show the error.
+                // Request didn't specify win condition text, only "При проигрыше".
+                // I will add a special WIN text just in case.
+                triggerGameOver(`>_ ТИП УВЕДОМЛЕНИЯ: TASK COMPLETED<br>>_ ИТОГО: САПЕР ПРОЙДЕН! Но всё равно...`);
+            }
+        }
+
     </script>
 </body>
 </html>
