@@ -20,6 +20,7 @@
                             red: '#ff003c',
                             blue: '#00edff',
                             yellow: '#ffeb3b',
+                            orange: '#ff7300',
                             gray: '#1a1a1a'
                         }
                     },
@@ -109,7 +110,6 @@
             50% { opacity: 0; }
         }
 
-        /* Утилиты для сапера */
         #minesweeper-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -149,7 +149,7 @@
     <header class="w-full max-w-5xl border-b-2 border-terminal-greenDim pb-4 mb-8 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
         <div class="flex items-center gap-4">
             <div class="text-4xl font-bold text-terminal-green tracking-widest drop-shadow-[0_0_10px_rgba(0,255,65,0.8)]">
-                > RELAX_OS_v4.0
+                > RELAX_OS_v4.1
             </div>
             <div class="text-xs border border-terminal-greenDim p-1 blink">AUTH: GRANTED</div>
         </div>
@@ -177,33 +177,40 @@
         <div id="game-menu" class="flex-grow flex flex-col items-center justify-center p-8 text-center h-full">
             <h1 class="text-3xl mb-12 drop-shadow-[0_0_5px_rgba(0,255,65,0.8)]">> SELECT PROTOCOL:</h1>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl">
                 <!-- Snake Button -->
-                <button onclick="initSnake()" class="btn-terminal p-8 text-2xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
-                    <span class="text-6xl mb-2">🐍</span>
+                <button onclick="initSnake()" class="btn-terminal p-6 text-xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
+                    <span class="text-5xl mb-2">🐍</span>
                     <span>SNAKE.sh</span>
                 </button>
                 
                 <!-- Tetris Button -->
-                <button onclick="initTetris()" class="btn-terminal p-8 text-2xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
-                    <span class="text-6xl mb-2">🧱</span>
+                <button onclick="initTetris()" class="btn-terminal p-6 text-xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
+                    <span class="text-5xl mb-2">🧱</span>
                     <span>TETRIS.bat</span>
                 </button>
 
                 <!-- Minesweeper Button -->
-                <button onclick="initMinesweeper()" class="btn-terminal p-8 text-2xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
-                    <span class="text-6xl mb-2">💣</span>
+                <button onclick="initMinesweeper()" class="btn-terminal p-6 text-xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
+                    <span class="text-5xl mb-2">💣</span>
                     <span>MINESWEEPER.exe</span>
+                </button>
+
+                <!-- Bricks Breaker Button -->
+                <button onclick="initBricks()" class="btn-terminal p-6 text-xl flex flex-col items-center justify-center gap-4 hover:-translate-y-2">
+                    <span class="text-5xl mb-2">💥</span>
+                    <span>BRICKS.dll</span>
                 </button>
             </div>
 
-            <div class="mt-16 text-terminal-greenDim max-w-2xl border border-terminal-greenDim p-4 bg-terminal-bg">
+            <div class="mt-16 text-terminal-greenDim max-w-3xl border border-terminal-greenDim p-4 bg-terminal-bg">
                 <p class="text-terminal-yellow mb-2 font-bold">> GLOBAL_CONTROLS:</p>
                 <ul class="text-sm text-left list-none grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <li><span class="text-terminal-blue">[Стрелки]</span> - Навигация (Змейка/Тетрис)</li>
-                    <li><span class="text-terminal-blue">[ P ] / Кнопка "PAUSE"</span> - Пауза / Резьюм (Змейка/Тетрис)</li>
+                    <li><span class="text-terminal-blue">[Стрелки]</span> - Навигация (Змейка, Тетрис, Bricks)</li>
+                    <li><span class="text-terminal-blue">[ P ] / Кнопка "PAUSE"</span> - Пауза (Змейка, Тетрис, Bricks)</li>
                     <li><span class="text-terminal-blue">[ Пробел ]</span> - Hard Drop (Тетрис)</li>
-                    <li><span class="text-terminal-blue">[ ЛКМ / ПКМ ]</span> - Открыть / Флаг (Сапер)</li>
+                    <li><span class="text-terminal-blue">[ ЛКМ ]</span> - Открыть ячейку (Сапер)</li>
+                    <li><span class="text-terminal-blue">[ ПКМ ]</span> - Установить/снять 🚩 флажок (Сапер)</li>
                 </ul>
             </div>
         </div>
@@ -245,13 +252,24 @@
                 <span class="text-xl text-terminal-red">MINES: <span id="ms-mine-count" class="font-bold text-2xl">10</span></span>
                 <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors">[ TERMINATE ]</button>
             </div>
-            
             <!-- Grid container for JS generation -->
             <div id="minesweeper-grid" oncontextmenu="return false;"></div>
         </div>
 
+        <div id="bricks-container" class="hidden flex-grow flex-col items-center justify-center p-4">
+            <div class="w-full flex justify-between items-center mb-4 max-w-[400px]">
+                <span class="text-xl text-terminal-blue">SCORE: <span id="bricks-score" class="font-bold text-2xl">0</span></span>
+                <span id="bricks-pause-text" class="text-xl text-terminal-yellow blink hidden">== PAUSED ==</span>
+                <div class="flex gap-2">
+                    <button onclick="togglePause()" class="text-terminal-yellow hover:text-white border border-terminal-yellow px-2 py-1 text-sm transition-colors">[ PAUSE ]</button>
+                    <button onclick="backToMenu()" class="text-terminal-red hover:text-white border border-terminal-red px-2 py-1 text-sm transition-colors">[ TERMINATE ]</button>
+                </div>
+            </div>
+            <canvas id="bricks-canvas" width="400" height="500"></canvas>
+        </div>
+
         <div id="global-gameover" class="hidden absolute inset-0 bg-black/95 flex-col items-center justify-center z-50 p-4 text-center border-4 border-terminal-red">
-            <!-- ЭТО ТО САМОЕ СООБЩЕНИЕ -->
+            <!-- ТРЕБОВАНИЕ: ТОЧНЫЙ ТЕКСТ -->
             <h2 class="text-5xl md:text-7xl font-bold text-terminal-red mb-8 blink-fast drop-shadow-[0_0_15px_rgba(255,0,60,1)] uppercase">
                 Заявка по ЭЦП<br>вне очереди!
             </h2>
@@ -278,6 +296,7 @@
         const snakeView = document.getElementById('snake-container');
         const tetrisView = document.getElementById('tetris-container');
         const msView = document.getElementById('minesweeper-container');
+        const bricksView = document.getElementById('bricks-container');
         const gameOverView = document.getElementById('global-gameover');
         const statsText = document.getElementById('gameover-stats');
 
@@ -287,11 +306,13 @@
         // Animation Frames
         let snakeAnimReq;
         let tetrisAnimReq;
+        let bricksAnimReq;
 
         function backToMenu() {
             // Cleanup current game
             if (currentActiveGame === 'snake') cancelAnimationFrame(snakeAnimReq);
             if (currentActiveGame === 'tetris') cancelAnimationFrame(tetrisAnimReq);
+            if (currentActiveGame === 'bricks') cancelAnimationFrame(bricksAnimReq);
             
             currentActiveGame = null;
             isGamePaused = false;
@@ -303,6 +324,8 @@
             tetrisView.classList.remove('flex');
             msView.classList.add('hidden');
             msView.classList.remove('flex');
+            bricksView.classList.add('hidden');
+            bricksView.classList.remove('flex');
             gameOverView.classList.add('hidden');
             gameOverView.classList.remove('flex');
             
@@ -326,10 +349,11 @@
             if (currentActiveGame === 'snake') startSnakeGame();
             else if (currentActiveGame === 'tetris') startTetrisGame();
             else if (currentActiveGame === 'minesweeper') startMinesweeper();
+            else if (currentActiveGame === 'bricks') startBricksGame();
         }
 
         function togglePause() {
-            if (!currentActiveGame || currentActiveGame === 'minesweeper') return; // MS is turn-based, no pause needed
+            if (!currentActiveGame || currentActiveGame === 'minesweeper') return; // MS is turn-based
             
             // Если игра уже окончена, пауза не работает
             if (!gameOverView.classList.contains('hidden')) return;
@@ -340,10 +364,11 @@
                 document.getElementById('snake-pause-text').classList.toggle('hidden', !isGamePaused);
             } else if (currentActiveGame === 'tetris') {
                 document.getElementById('tetris-pause-text').classList.toggle('hidden', !isGamePaused);
+            } else if (currentActiveGame === 'bricks') {
+                document.getElementById('bricks-pause-text').classList.toggle('hidden', !isGamePaused);
             }
         }
 
-        // Global Keydown Handler
         document.addEventListener('keydown', function(e) {
             // Pause toggle
             if (e.key.toLowerCase() === 'p') {
@@ -361,13 +386,20 @@
             // Route inputs to active game
             if (currentActiveGame === 'snake') handleSnakeInput(e);
             else if (currentActiveGame === 'tetris') handleTetrisInput(e);
+            else if (currentActiveGame === 'bricks') handleBricksInput(e, true);
+        });
+
+        document.addEventListener('keyup', function(e) {
+            if (currentActiveGame === 'bricks' && !isGamePaused) {
+                handleBricksInput(e, false);
+            }
         });
 
         const snakeCanvas = document.getElementById('snake-canvas');
         const snakeCtx = snakeCanvas.getContext('2d');
         const sGrid = 25; // Block size
         let snakeCount = 0;
-        let snakeSpeed = 30; // ЕЩЕ БОЛЕЕ Медленный старт (чем больше, тем медленнее: кадры пропуска)
+        let snakeSpeed = 30; // Очень Медленный старт
         let snake = { x: 10 * sGrid, y: 10 * sGrid, dx: sGrid, dy: 0, cells: [], maxCells: 4 };
         let apple = { x: 15 * sGrid, y: 15 * sGrid };
         let snakeScore = 0;
@@ -385,7 +417,7 @@
             document.getElementById('snake-pause-text').classList.add('hidden');
             snake = { x: 10 * sGrid, y: 10 * sGrid, dx: sGrid, dy: 0, cells: [], maxCells: 4 };
             snakeScore = 0;
-            snakeSpeed = 30; // Очень-очень ленивая змея
+            snakeSpeed = 30; // Очень ленивая змея
             document.getElementById('snake-score').textContent = snakeScore;
             spawnApple();
             
@@ -413,7 +445,7 @@
 
             // Death by Wall
             if (snake.x < 0 || snake.x >= snakeCanvas.width || snake.y < 0 || snake.y >= snakeCanvas.height) {
-                triggerGameOver(`>_ ТИП ОШИБКИ: SEGFAULT (Стена)<br>>_ ИТОГО СЪЕДЕНО: ${snakeScore}`);
+                triggerGameOver(`>_ ИТОГО СЪЕДЕНО: ${snakeScore}`);
                 return;
             }
 
@@ -433,7 +465,7 @@
                 // Death by Self
                 for (let j = i + 1; j < snake.cells.length; j++) {
                     if (cell.x === snake.cells[j].x && cell.y === snake.cells[j].y) {
-                        triggerGameOver(`>_ ТИП ОШИБКИ: RECURSION LOOP (Хвост)<br>>_ ИТОГО СЪЕДЕНО: ${snakeScore}`);
+                        triggerGameOver(`>_ ИТОГО СЪЕДЕНО: ${snakeScore}`);
                         return;
                     }
                 }
@@ -444,8 +476,6 @@
                     snakeScore += 10;
                     document.getElementById('snake-score').textContent = snakeScore;
                     spawnApple();
-                    // Легкое ускорение
-                    if (snakeScore % 50 === 0 && snakeSpeed > 5) snakeSpeed--;
                 }
             }
         }
@@ -514,7 +544,7 @@
             drawNextPreview();
 
             if (!isValidMove(currentPiece.r, currentPiece.c, currentPiece.shape)) {
-                triggerGameOver(`>_ ТИП ОШИБКИ: STACK OVERFLOW<br>>_ СОБРАНО ЛИНИЙ: ${tetrisScore}`);
+                triggerGameOver(`>_ СОБРАНО ЛИНИЙ: ${tetrisScore}`);
             }
         }
 
@@ -637,10 +667,9 @@
             else if (e.key === 'ArrowUp') rotatePiece(currentPiece);
             else if (e.key === 'ArrowDown' && isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) {
                 currentPiece.r++;
-                tetrisCount = 0; // Сброс таймера падения для плавности
+                tetrisCount = 0;
             }
             else if (e.key === ' ') {
-                // Hard drop
                 while (isValidMove(currentPiece.r + 1, currentPiece.c, currentPiece.shape)) currentPiece.r++;
                 lockPiece();
                 tetrisCount = 0;
@@ -673,7 +702,6 @@
             msGameOver = false;
             document.getElementById('ms-mine-count').textContent = minesLeft;
 
-            // Generate Empty Board
             for (let r = 0; r < msRows; r++) {
                 let row = [];
                 for (let c = 0; c < msCols; c++) {
@@ -682,7 +710,9 @@
                     cellEl.dataset.r = r;
                     cellEl.dataset.c = c;
                     
+                    // Left click
                     cellEl.addEventListener('click', (e) => handleMsClick(r, c));
+                    // Right click (Flag)
                     cellEl.addEventListener('contextmenu', (e) => {
                         e.preventDefault();
                         handleMsRightClick(r, c);
@@ -702,7 +732,7 @@
                 msBoard.push(row);
             }
 
-            // Place Mines Randomly
+            // Place Mines
             let minesPlaced = 0;
             while (minesPlaced < totalMines) {
                 let r = Math.floor(Math.random() * msRows);
@@ -735,16 +765,15 @@
         function handleMsRightClick(r, c) {
             if (msGameOver || isGamePaused) return;
             let cell = msBoard[r][c];
-            if (cell.isRevealed) return;
+            if (cell.isRevealed) return; // Нельзя ставить флаг на открытую
 
             cell.isFlagged = !cell.isFlagged;
             if (cell.isFlagged) {
-                cell.el.textContent = '[F]';
-                cell.el.classList.add('text-terminal-red');
+                // Визуально яркий красный флажок
+                cell.el.innerHTML = '<span class="text-terminal-red drop-shadow-[0_0_5px_rgba(255,0,60,1)] text-xl">🚩</span>';
                 minesLeft--;
             } else {
-                cell.el.textContent = '';
-                cell.el.classList.remove('text-terminal-red');
+                cell.el.innerHTML = '';
                 minesLeft++;
             }
             document.getElementById('ms-mine-count').textContent = minesLeft;
@@ -753,15 +782,14 @@
         function handleMsClick(r, c) {
             if (msGameOver || isGamePaused) return;
             let cell = msBoard[r][c];
+            // Блокируем клик, если стоит флаг или ячейка уже открыта
             if (cell.isRevealed || cell.isFlagged) return;
 
             if (cell.isMine) {
-                // Взрыв
                 cell.el.style.backgroundColor = '#ff003c';
-                cell.el.textContent = '*';
-                cell.el.classList.add('text-black');
+                cell.el.innerHTML = '<span class="text-black text-2xl font-bold">*</span>';
                 revealAllMines();
-                triggerGameOver(`>_ ТИП ОШИБКИ: CRITICAL EXCEPTION (Мина)<br>>_ ПРОГРЕСС: ${cellsRevealed} ОЧИЩЕНО`);
+                triggerGameOver(`>_ ПРОГРЕСС: ${cellsRevealed} ОЧИЩЕНО`);
                 return;
             }
 
@@ -779,11 +807,9 @@
 
             if (cell.neighborMines > 0) {
                 cell.el.textContent = cell.neighborMines;
-                // Colors based on number
                 const colors = ['#00edff', '#00ff41', '#ffeb3b', '#ff7300', '#ff003c', '#b000ff', '#ffffff', '#888888'];
                 cell.el.style.color = colors[cell.neighborMines - 1];
             } else {
-                // Flood fill for 0
                 for (let dr = -1; dr <= 1; dr++) {
                     for (let dc = -1; dc <= 1; dc++) {
                         let nr = r + dr, nc = c + dc;
@@ -800,9 +826,10 @@
             for (let r = 0; r < msRows; r++) {
                 for (let c = 0; c < msCols; c++) {
                     if (msBoard[r][c].isMine) {
-                        msBoard[r][c].el.textContent = '*';
-                        msBoard[r][c].el.classList.add('text-terminal-red');
-                        msBoard[r][c].el.classList.add('revealed');
+                        if (!msBoard[r][c].isFlagged) {
+                            msBoard[r][c].el.innerHTML = '<span class="text-terminal-red text-2xl font-bold">*</span>';
+                            msBoard[r][c].el.classList.add('revealed');
+                        }
                     }
                 }
             }
@@ -811,8 +838,190 @@
         function checkMsWin() {
             if (cellsRevealed === (msRows * msCols) - totalMines) {
                 msGameOver = true;
-                triggerGameOver(`>_ ТИП УВЕДОМЛЕНИЯ: TASK COMPLETED<br>>_ ИТОГО: САПЕР ПРОЙДЕН! Но всё равно...`);
+                triggerGameOver(`>_ САПЕР ПРОЙДЕН! Но всё равно...`);
             }
+        }
+
+        const bricksCanvas = document.getElementById('bricks-canvas');
+        const bricksCtx = bricksCanvas.getContext('2d');
+        
+        let bbScore = 0;
+        let bbLevel = 1;
+        let bbPaddle = { x: 160, y: 480, w: 80, h: 10, speed: 6, movingLeft: false, movingRight: false };
+        let bbBall = { x: 200, y: 470, radius: 6, dx: 3, dy: -3 };
+        let bbBricks = [];
+        
+        const bbConfig = { rows: 6, cols: 7, brickW: 46, brickH: 25, pad: 8, offTop: 40, offLeft: 15 };
+
+        function initBricks() {
+            menuView.classList.add('hidden');
+            menuView.classList.remove('flex');
+            bricksView.classList.remove('hidden');
+            bricksView.classList.add('flex');
+            currentActiveGame = 'bricks';
+            bbLevel = 1;
+            bbScore = 0;
+            startBricksGame();
+        }
+
+        function generateBricks() {
+            bbBricks = [];
+            for(let r=0; r<bbConfig.rows; r++) {
+                for(let c=0; c<bbConfig.cols; c++) {
+                    // Здоровье блока зависит от уровня и небольшого рандома
+                    let health = Math.floor(Math.random() * 3) + bbLevel; 
+                    bbBricks.push({ 
+                        x: bbConfig.offLeft + c*(bbConfig.brickW+bbConfig.pad), 
+                        y: bbConfig.offTop + r*(bbConfig.brickH+bbConfig.pad), 
+                        w: bbConfig.brickW, 
+                        h: bbConfig.brickH, 
+                        health: health 
+                    });
+                }
+            }
+        }
+
+        function startBricksGame() {
+            document.getElementById('bricks-pause-text').classList.add('hidden');
+            bbPaddle = { x: 160, y: 480, w: 80, h: 10, speed: 5, movingLeft: false, movingRight: false };
+            bbBall = { x: 200, y: 465, radius: 6, dx: 3 + (bbLevel*0.5), dy: -3 - (bbLevel*0.5) };
+            
+            document.getElementById('bricks-score').textContent = bbScore;
+            
+            if(bbBricks.length === 0) generateBricks();
+            
+            if (bricksAnimReq) cancelAnimationFrame(bricksAnimReq);
+            bricksAnimReq = requestAnimationFrame(bricksLoop);
+        }
+
+        function getBrickColor(health) {
+            if(health === 1) return '#00ff41'; // Terminal green
+            if(health === 2) return '#00edff'; // Blue
+            if(health === 3) return '#ffeb3b'; // Yellow
+            if(health === 4) return '#ff7300'; // Orange
+            return '#ff003c'; // Red for 5+
+        }
+
+        function drawBricksGame() {
+            bricksCtx.fillStyle = '#0a0a0a';
+            bricksCtx.fillRect(0, 0, bricksCanvas.width, bricksCanvas.height);
+
+            // Draw Paddle
+            bricksCtx.fillStyle = '#00ff41';
+            bricksCtx.fillRect(bbPaddle.x, bbPaddle.y, bbPaddle.w, bbPaddle.h);
+            bricksCtx.shadowBlur = 10;
+            bricksCtx.shadowColor = '#00ff41';
+
+            // Draw Ball
+            bricksCtx.beginPath();
+            bricksCtx.arc(bbBall.x, bbBall.y, bbBall.radius, 0, Math.PI*2);
+            bricksCtx.fillStyle = '#ffffff';
+            bricksCtx.fill();
+            bricksCtx.closePath();
+            bricksCtx.shadowBlur = 0; // Reset shadow
+
+            // Draw Bricks
+            bricksCtx.font = "14px 'Share Tech Mono'";
+            bricksCtx.textAlign = "center";
+            bricksCtx.textBaseline = "middle";
+
+            for(let i=0; i<bbBricks.length; i++) {
+                let b = bbBricks[i];
+                let color = getBrickColor(b.health);
+                
+                // Block background
+                bricksCtx.fillStyle = color;
+                bricksCtx.globalAlpha = 0.2;
+                bricksCtx.fillRect(b.x, b.y, b.w, b.h);
+                
+                // Block border
+                bricksCtx.globalAlpha = 1.0;
+                bricksCtx.strokeStyle = color;
+                bricksCtx.lineWidth = 2;
+                bricksCtx.strokeRect(b.x, b.y, b.w, b.h);
+
+                // Health number
+                bricksCtx.fillStyle = color;
+                bricksCtx.fillText(b.health, b.x + b.w/2, b.y + b.h/2);
+            }
+        }
+
+        function bricksLoop() {
+            bricksAnimReq = requestAnimationFrame(bricksLoop);
+            if (currentActiveGame !== 'bricks' || isGamePaused) return;
+
+            // Move Paddle
+            if (bbPaddle.movingLeft && bbPaddle.x > 0) bbPaddle.x -= bbPaddle.speed;
+            if (bbPaddle.movingRight && bbPaddle.x < bricksCanvas.width - bbPaddle.w) bbPaddle.x += bbPaddle.speed;
+
+            // Move Ball
+            bbBall.x += bbBall.dx;
+            bbBall.y += bbBall.dy;
+
+            // Wall Collision (Left/Right)
+            if(bbBall.x + bbBall.dx > bricksCanvas.width - bbBall.radius || bbBall.x + bbBall.dx < bbBall.radius) {
+                bbBall.dx = -bbBall.dx;
+            }
+            // Wall Collision (Top)
+            if(bbBall.y + bbBall.dy < bbBall.radius) {
+                bbBall.dy = -bbBall.dy;
+            }
+            
+            // Wall Collision (Bottom) - Game Over
+            if(bbBall.y + bbBall.dy > bricksCanvas.height - bbBall.radius) {
+                triggerGameOver(`>_ ТИП ОШИБКИ: PAYLOAD DROPPED<br>>_ ИТОГО ОЧКОВ: ${bbScore}`);
+                return;
+            }
+
+            // Paddle Collision
+            if(bbBall.y + bbBall.radius >= bbPaddle.y && 
+               bbBall.x >= bbPaddle.x && 
+               bbBall.x <= bbPaddle.x + bbPaddle.w) {
+                // Изменяем угол в зависимости от места удара о ракетку
+                let hitPoint = bbBall.x - (bbPaddle.x + bbPaddle.w/2);
+                bbBall.dx = hitPoint * 0.15;
+                bbBall.dy = -bbBall.dy;
+                bbBall.y = bbPaddle.y - bbBall.radius; // Защита от залипания
+            }
+
+            // Brick Collision
+            for(let i=0; i<bbBricks.length; i++) {
+                let b = bbBricks[i];
+                // Simple AABB vs Circle logic
+                if(bbBall.x + bbBall.radius > b.x && 
+                   bbBall.x - bbBall.radius < b.x + b.w && 
+                   bbBall.y + bbBall.radius > b.y && 
+                   bbBall.y - bbBall.radius < b.y + b.h) {
+                    
+                    // Уменьшаем здоровье
+                    b.health--;
+                    bbScore += 10;
+                    document.getElementById('bricks-score').textContent = bbScore;
+
+                    // Удаляем если 0
+                    if(b.health <= 0) {
+                        bbBricks.splice(i, 1);
+                        i--;
+                    }
+                    
+                    bbBall.dy = -bbBall.dy;
+                    break; // Только один блок за кадр
+                }
+            }
+
+            // Next Level Check
+            if(bbBricks.length === 0) {
+                bbLevel++;
+                startBricksGame(); // Перезапуск уровня
+                return;
+            }
+
+            drawBricksGame();
+        }
+
+        function handleBricksInput(e, isKeyDown) {
+            if(e.key === 'ArrowLeft') bbPaddle.movingLeft = isKeyDown;
+            if(e.key === 'ArrowRight') bbPaddle.movingRight = isKeyDown;
         }
 
     </script>
