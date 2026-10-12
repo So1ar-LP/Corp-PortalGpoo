@@ -36,11 +36,9 @@
             height: 100px;
             background: linear-gradient(0deg, rgba(0,255,0,0) 0%, rgba(0,255,0,0.1) 50%, rgba(0,255,0,0) 100%);
             position: absolute;
-            top: -100px;
-            left: 0;
+            top: -100px; left: 0;
             animation: scanline 6s linear infinite;
-            z-index: 3;
-            pointer-events: none;
+            z-index: 3; pointer-events: none;
         }
 
         @keyframes scanline {
@@ -48,116 +46,93 @@
             100% { top: 100vh; }
         }
 
-        .screen {
-            position: relative;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            z-index: 1;
-            width: 100%;
+        /* АНИМАЦИЯ: Эффект печатной машинки */
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid #0f0;
+            white-space: nowrap;
+            margin: 0 auto;
+            animation: typing 1.5s steps(30, end), blink-caret .75s step-end infinite;
         }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #0f0; } }
 
-        .panel {
-            border: 2px solid #0f0;
-            background: rgba(0, 20, 0, 0.8);
-            box-shadow: inset 0 0 15px #0f0;
+        /* АНИМАЦИЯ: Glitch-эффект */
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
         }
-        
-        button {
-            color: #0f0;
-            background: transparent;
-            border: 1px solid #0f0;
-            padding: 8px 20px;
-            font-family: 'VT323', monospace;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        button:hover {
+        .glitch-hover:hover {
+            animation: glitch-anim 0.2s linear infinite;
             background: #0f0;
             color: #000;
         }
+        .game-over-huge-text {
+            color: #f00;
+            text-shadow: 0 0 20px #f00, 2px 2px 0px #00f, -2px -2px 0px #0f0;
+            font-size: 5rem; text-align: center; border: 4px solid #f00;
+            padding: 40px; background: rgba(255,0,0,0.1); text-transform: uppercase;
+            animation: glitch-anim 0.15s linear infinite;
+        }
+
+        /* АНИМАЦИЯ: Всплывающие очки */
+        .floating-score {
+            position: absolute; color: #0f0; font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px #0f0;
+            pointer-events: none; animation: floatUp 1s ease-out forwards; z-index: 10;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(1.5); }
+        }
+
+        .screen { position: relative; height: 100%; display: flex; flex-direction: column; z-index: 1; width: 100%; }
+        .panel { border: 2px solid #0f0; background: rgba(0, 20, 0, 0.8); box-shadow: inset 0 0 15px #0f0; }
+        
+        button {
+            color: #0f0; background: transparent; border: 1px solid #0f0;
+            padding: 8px 20px; font-family: 'VT323', monospace; font-size: 1.5rem;
+            cursor: pointer; transition: all 0.2s;
+        }
+        button:hover { background: #0f0; color: #000; }
 
         input {
-            background: transparent;
-            border: 1px solid #0f0;
-            color: #0f0;
-            font-family: 'VT323', monospace;
-            font-size: 1.5rem;
-            padding: 10px;
-            outline: none;
-            width: 100%;
-            margin-bottom: 15px;
+            background: transparent; border: 1px solid #0f0; color: #0f0;
+            font-family: 'VT323', monospace; font-size: 1.5rem;
+            padding: 10px; outline: none; width: 100%; margin-bottom: 15px;
         }
         input::placeholder { color: #070; }
 
-        .game-canvas {
-            border: 2px solid #0f0;
-            image-rendering: pixelated;
-            background-color: #000;
-        }
+        .game-canvas { border: 2px solid #0f0; image-rendering: pixelated; background-color: #000; }
 
-        .minesweeper-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 2px;
-            background: #0f0;
-            border: 2px solid #0f0;
-            width: fit-content;
-            margin: 0 auto;
-        }
-        .ms-cell {
-            width: 40px; height: 40px;
-            background: #002200;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; cursor: pointer; font-weight: bold;
-            user-select: none; box-shadow: inset 0 0 5px #0f0;
-        }
+        /* Игры */
+        .minesweeper-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; background: #0f0; border: 2px solid #0f0; width: fit-content; margin: 0 auto; }
+        .ms-cell { width: 40px; height: 40px; background: #002200; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; font-weight: bold; user-select: none; box-shadow: inset 0 0 5px #0f0; }
         .ms-cell:hover { background: #004400; }
         .ms-cell.revealed { background: #000; box-shadow: none; cursor: default; }
 
-        .tetris-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(20, 1fr);
-            gap: 1px;
-            background: #0f0;
-            border: 2px solid #0f0;
-            width: 300px; height: 600px;
-            margin: 0 auto;
-        }
+        .tetris-grid { display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(20, 1fr); gap: 1px; background: #0f0; border: 2px solid #0f0; width: 300px; height: 600px; margin: 0 auto; }
         .tetris-cell { background: #002200; }
-        .tetris-cell.filled { background: #0f0; box-shadow: 0 0 5px #0f0; }
-        .next-piece-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);
-            gap: 1px; background: #0f0; width: 120px; height: 120px; margin: 0 auto;
-        }
+        .next-piece-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 1px; background: #0f0; width: 120px; height: 120px; margin: 0 auto; }
+        
+        /* Цвета фигур Тетриса */
+        .t-c-0 { background: #FF3366 !important; box-shadow: inset 0 0 10px #FF3366 !important; } /* Розовый */
+        .t-c-1 { background: #33CCFF !important; box-shadow: inset 0 0 10px #33CCFF !important; } /* Голубой */
+        .t-c-2 { background: #9933FF !important; box-shadow: inset 0 0 10px #9933FF !important; } /* Фиолетовый */
+        .t-c-3 { background: #FFFF33 !important; box-shadow: inset 0 0 10px #FFFF33 !important; } /* Желтый */
+        .t-c-4 { background: #33FF33 !important; box-shadow: inset 0 0 10px #33FF33 !important; } /* Зеленый */
 
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
-        /* ПОЛНОЭКРАННЫЙ GAME OVER */
         #game-over-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(10, 0, 0, 0.95);
-            z-index: 100;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(10, 0, 0, 0.95); z-index: 100; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
             box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.5);
-        }
-        .game-over-huge-text {
-            color: #f00;
-            text-shadow: 0 0 20px #f00;
-            font-size: 5rem;
-            text-align: center;
-            border: 4px solid #f00;
-            padding: 40px;
-            background: rgba(255,0,0,0.1);
-            text-transform: uppercase;
         }
 
         .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 1.3rem; }
@@ -174,13 +149,13 @@
     <!-- ЭКРАН ВХОДА -->
     <div id="auth-screen" class="screen active items-center justify-center p-4">
         <div class="panel p-10 max-w-lg w-full text-center">
-            <h1 class="text-6xl mb-4">SUPPORT.OS</h1>
-            <p class="mb-8 text-xl">v2.1 / SECURE LOGIN</p>
+            <h1 class="text-6xl mb-4 typewriter w-fit">SUPPORT.OS</h1>
+            <p class="mb-8 text-xl text-green-700">v3.0 / SECURE LOGIN</p>
             <form id="auth-form" onsubmit="handleAuth(event)">
                 <input type="text" id="username" placeholder="Логин инженера" required>
                 <input type="password" id="password" placeholder="Пароль доступа" required minlength="6">
                 <div class="flex gap-4 mt-6 justify-center">
-                    <button type="submit" id="btn-login" class="w-full">АВТОРИЗАЦИЯ</button>
+                    <button type="submit" id="btn-login" class="w-full glitch-hover">АВТОРИЗАЦИЯ</button>
                 </div>
                 <p id="auth-error" class="text-red-500 mt-6 text-xl blink"></p>
             </form>
@@ -199,10 +174,10 @@
             <div class="panel flex-1 p-8 flex flex-col items-center justify-center relative">
                 <h2 class="text-6xl mb-16 border-b-2 border-green-500 pb-4">RELAXATION_PROTOCOL</h2>
                 <div class="grid grid-cols-2 gap-8 w-full max-w-4xl">
-                    <button onclick="startGame('snake')" class="text-4xl py-8 hover:bg-green-500 hover:text-black transition-colors">> SNAKE.sh</button>
-                    <button onclick="startGame('tetris')" class="text-4xl py-8 hover:bg-green-500 hover:text-black transition-colors">> TETRIS.bat</button>
-                    <button onclick="startGame('minesweeper')" class="text-4xl py-8 hover:bg-green-500 hover:text-black transition-colors">> MINESWEEPER.exe</button>
-                    <button onclick="startGame('bricks')" class="text-4xl py-8 hover:bg-green-500 hover:text-black transition-colors">> BRICKS.exe</button>
+                    <button onclick="startGame('snake')" class="text-4xl py-8 glitch-hover transition-colors">> SNAKE.sh</button>
+                    <button onclick="startGame('tetris')" class="text-4xl py-8 glitch-hover transition-colors">> TETRIS.bat</button>
+                    <button onclick="startGame('minesweeper')" class="text-4xl py-8 glitch-hover transition-colors">> MINESWEEPER.exe</button>
+                    <button onclick="startGame('bricks')" class="text-4xl py-8 glitch-hover transition-colors">> BRICKS.exe</button>
                 </div>
             </div>
 
@@ -244,8 +219,11 @@
                 </div>
             </div>
             
-            <div class="flex gap-8 items-start">
+            <div class="flex gap-8 items-start relative">
                 <div id="game-container" class="relative"></div>
+                <!-- Контейнер для всплывающих очков -->
+                <div id="floating-scores-layer" class="absolute top-0 left-0 w-full h-full pointer-events-none"></div>
+
                 <div id="tetris-sidebar" style="display: none;" class="panel p-4 text-center">
                     <div class="mb-4 text-2xl">NEXT PIECE:</div>
                     <div id="next-piece-container" class="next-piece-grid"></div>
@@ -257,11 +235,11 @@
 
     <!-- ПОЛНОЭКРАННЫЙ ОВЕРЛЕЙ ПРОИГРЫША -->
     <div id="game-over-overlay">
-        <div class="game-over-huge-text blink">ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ</div>
+        <div class="game-over-huge-text">ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ</div>
         <div class="mt-8 text-4xl text-green-500">FINAL SCORE: <span id="final-score-display" class="text-white">0</span></div>
         <div class="flex gap-6 mt-12">
-            <button onclick="restartCurrentGame()" class="text-3xl border-red-500 text-red-500 hover:bg-red-500 hover:text-black py-4 px-8">[ REBOOT SYSTEM ]</button>
-            <button onclick="exitGame()" class="text-3xl py-4 px-8">[ EXIT TO MENU ]</button>
+            <button onclick="restartCurrentGame()" class="text-3xl border-red-500 text-red-500 hover:bg-red-500 hover:text-black py-4 px-8 glitch-hover">[ REBOOT SYSTEM ]</button>
+            <button onclick="exitGame()" class="text-3xl py-4 px-8 glitch-hover">[ EXIT TO MENU ]</button>
         </div>
     </div>
 
@@ -289,19 +267,11 @@
             if (user) {
                 const displayName = user.email.split('@')[0];
                 document.getElementById('user-display-name').innerText = `[${displayName}]`;
-                
-                // Проверка на админа
-                if (displayName === 'adminms') {
-                    document.getElementById('admin-reset-btn').classList.remove('hidden');
-                } else {
-                    document.getElementById('admin-reset-btn').classList.add('hidden');
-                }
-
+                if (displayName === 'adminms') document.getElementById('admin-reset-btn').classList.remove('hidden');
+                else document.getElementById('admin-reset-btn').classList.add('hidden');
                 switchScreen('dashboard-screen');
                 loadLeaderboard('snake');
-            } else {
-                switchScreen('auth-screen');
-            }
+            } else switchScreen('auth-screen');
         });
     </script>
 
@@ -316,41 +286,25 @@
             const usernameInput = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorEl = document.getElementById('auth-error');
-            
             if(!usernameInput) { errorEl.innerText = "ОШИБКА: ЛОГИН ПУСТ"; return; }
             const fakeEmail = `${usernameInput.toLowerCase()}@support.corp`;
-            
             errorEl.innerText = "ПОДКЛЮЧЕНИЕ...";
             try {
                 await window.firebaseAPI.signInWithEmailAndPassword(window.auth, fakeEmail, password);
                 errorEl.innerText = "";
-            } catch (error) {
-                errorEl.innerText = "ОШИБКА ДОСТУПА. ПРОВЕРЬТЕ ДАННЫЕ.";
-            }
+            } catch (error) { errorEl.innerText = "ОШИБКА ДОСТУПА. ПРОВЕРЬТЕ ДАННЫЕ."; }
         }
 
         async function logout() { await window.firebaseAPI.signOut(window.auth); }
 
-        // ИСПРАВЛЕНИЕ ДУБЛИКАТОВ: Использование doc/setDoc вместо addDoc
         async function saveScore(gameName, score) {
             if (!window.auth.currentUser || score <= 0) return;
             try {
                 const username = window.auth.currentUser.email.split('@')[0];
-                // Создаем ссылку на конкретный документ пользователя (имя документа = логин)
                 const docRef = window.firebaseAPI.doc(window.db, "leaderboards", gameName, "scores", username);
-                
                 const docSnap = await window.firebaseAPI.getDoc(docRef);
-                if (docSnap.exists()) {
-                    const currentRecord = docSnap.data().score;
-                    if (currentRecord >= score) return; // Если старый рекорд больше или равен новому, ничего не делаем
-                }
-                
-                // Если рекорда не было или новый больше, записываем
-                await window.firebaseAPI.setDoc(docRef, {
-                    username: username,
-                    score: score,
-                    timestamp: window.firebaseAPI.serverTimestamp()
-                });
+                if (docSnap.exists() && docSnap.data().score >= score) return; 
+                await window.firebaseAPI.setDoc(docRef, { username: username, score: score, timestamp: window.firebaseAPI.serverTimestamp() });
                 loadLeaderboard(gameName); 
             } catch (e) { console.error("Error saving score", e); }
         }
@@ -366,14 +320,9 @@
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = '<tr><td colspan="3" class="text-center blink">LOADING...</td></tr>';
             try {
-                const q = window.firebaseAPI.query(
-                    window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"),
-                    window.firebaseAPI.orderBy("score", "desc"),
-                    window.firebaseAPI.limit(10)
-                );
+                const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), window.firebaseAPI.orderBy("score", "desc"), window.firebaseAPI.limit(10));
                 const querySnapshot = await window.firebaseAPI.getDocs(q);
-                tbody.innerHTML = '';
-                let rank = 1;
+                tbody.innerHTML = ''; let rank = 1;
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     tbody.innerHTML += `<tr><td>#${rank}</td><td>${data.username}</td><td>${data.score}</td></tr>`;
@@ -383,91 +332,69 @@
             } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500">ERROR LOADING DB</td></tr>'; }
         }
 
-        // АДМИНСКАЯ ФУНКЦИЯ ОЧИСТКИ ТАБЛИЦЫ
         async function resetLeaderboard() {
             if(!confirm(`Вы уверены, что хотите удалить ВСЕ рекорды в игре ${currentLbGame.toUpperCase()}?`)) return;
             try {
                 const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", currentLbGame, "scores"));
                 const querySnapshot = await window.firebaseAPI.getDocs(q);
-                querySnapshot.forEach(async (documentSnapshot) => {
-                    await window.firebaseAPI.deleteDoc(documentSnapshot.ref);
-                });
-                alert('База очищена.');
-                setTimeout(() => loadLeaderboard(currentLbGame), 500);
-            } catch (e) {
-                alert('Ошибка при очистке: ' + e.message);
-            }
+                querySnapshot.forEach(async (documentSnapshot) => await window.firebaseAPI.deleteDoc(documentSnapshot.ref));
+                alert('База очищена.'); setTimeout(() => loadLeaderboard(currentLbGame), 500);
+            } catch (e) { alert('Ошибка при очистке: ' + e.message); }
         }
 
-        let currentGame = null;
-        let gameLoop = null;
-        let score = 0;
-        let isPaused = false;
-        let isGameOver = false;
+        // Анимация всплывающих очков
+        function spawnFloatingScore(x, y, text) {
+            const layer = document.getElementById('floating-scores-layer');
+            const el = document.createElement('div');
+            el.className = 'floating-score';
+            el.innerText = text;
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            layer.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        let currentGame = null; let gameLoop = null; let score = 0; let isPaused = false; let isGameOver = false;
 
         function startGame(game) {
-            currentGame = game;
-            isPaused = false;
-            isGameOver = false;
-            score = 0;
-            document.getElementById('score').innerText = score;
-            document.getElementById('game-title').innerText = game.toUpperCase();
-            document.getElementById('game-over-overlay').style.display = 'none';
-            document.getElementById('pause-msg').style.display = 'none';
+            currentGame = game; isPaused = false; isGameOver = false; score = 0;
+            document.getElementById('score').innerText = score; document.getElementById('game-title').innerText = game.toUpperCase();
+            document.getElementById('game-over-overlay').style.display = 'none'; document.getElementById('pause-msg').style.display = 'none';
             document.getElementById('tetris-sidebar').style.display = game === 'tetris' ? 'block' : 'none';
+            document.getElementById('floating-scores-layer').innerHTML = ''; // Очистка старых анимаций
             
-            const container = document.getElementById('game-container');
-            container.innerHTML = '';
-            switchScreen('game-screen');
-
-            if(game === 'snake') initSnake(container);
-            if(game === 'tetris') initTetris(container);
-            if(game === 'minesweeper') initMinesweeper(container);
-            if(game === 'bricks') initBricks(container);
+            const container = document.getElementById('game-container'); container.innerHTML = ''; switchScreen('game-screen');
+            if(game === 'snake') initSnake(container); if(game === 'tetris') initTetris(container);
+            if(game === 'minesweeper') initMinesweeper(container); if(game === 'bricks') initBricks(container);
         }
 
         function togglePause() {
             if (isGameOver) return;
-            isPaused = !isPaused;
-            document.getElementById('pause-msg').style.display = isPaused ? 'block' : 'none';
+            isPaused = !isPaused; document.getElementById('pause-msg').style.display = isPaused ? 'block' : 'none';
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause();
-        });
+        document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause(); });
 
-        // ПОЛНОЭКРАННЫЙ GAME OVER
         function gameOver() {
-            isGameOver = true;
-            document.getElementById('final-score-display').innerText = score;
+            isGameOver = true; document.getElementById('final-score-display').innerText = score;
             document.getElementById('game-over-overlay').style.display = 'flex';
             if(gameLoop) { cancelAnimationFrame(gameLoop); clearTimeout(gameLoop); clearInterval(gameLoop); }
             saveScore(currentGame, score);
         }
 
-        function restartCurrentGame() { 
-            document.getElementById('game-over-overlay').style.display = 'none';
-            startGame(currentGame); 
-        }
+        function restartCurrentGame() { document.getElementById('game-over-overlay').style.display = 'none'; startGame(currentGame); }
         function exitGame() {
             document.getElementById('game-over-overlay').style.display = 'none';
             if(gameLoop) { cancelAnimationFrame(gameLoop); clearTimeout(gameLoop); clearInterval(gameLoop); }
             switchScreen('dashboard-screen');
         }
 
-        // --- УВЕЛИЧЕННАЯ ЗМЕЙКА ---
+        // --- ЗМЕЙКА ---
         function initSnake(container) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 500; canvas.height = 500; 
-            canvas.className = 'game-canvas';
-            container.appendChild(canvas);
-            const ctx = canvas.getContext('2d');
-            const grid = 25; 
-            let count = 0;
-            let snake = { x: 200, y: 200, dx: grid, dy: 0, cells: [], maxCells: 4 };
-            let apple = { x: 375, y: 375 };
+            const canvas = document.createElement('canvas'); canvas.width = 500; canvas.height = 500; canvas.className = 'game-canvas'; container.appendChild(canvas);
+            const ctx = canvas.getContext('2d'); const grid = 25; let count = 0;
+            let snake = { x: 200, y: 200, dx: grid, dy: 0, cells: [], maxCells: 4 }; let apple = { x: 375, y: 375 };
             const speedDelay = 30; 
-
             function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
 
             document.addEventListener('keydown', function snakeController(e) {
@@ -479,57 +406,37 @@
             });
 
             function loop() {
-                if(currentGame !== 'snake') return;
-                gameLoop = requestAnimationFrame(loop);
+                if(currentGame !== 'snake') return; gameLoop = requestAnimationFrame(loop);
                 if (isPaused || isGameOver) return;
-                if (++count < speedDelay) return;
-                count = 0;
+                if (++count < speedDelay) return; count = 0;
                 ctx.clearRect(0,0,canvas.width,canvas.height);
-                
-                snake.x += snake.dx;
-                snake.y += snake.dy;
+                snake.x += snake.dx; snake.y += snake.dy;
                 if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) { gameOver(); return; }
-                
                 snake.cells.unshift({x: snake.x, y: snake.y});
                 if (snake.cells.length > snake.maxCells) snake.cells.pop();
                 
-                ctx.fillStyle = 'red';
-                ctx.fillRect(apple.x, apple.y, grid-1, grid-1);
-                
+                ctx.fillStyle = 'red'; ctx.fillRect(apple.x, apple.y, grid-1, grid-1);
                 ctx.fillStyle = '#0f0';
                 snake.cells.forEach(function(cell, index) {
                     ctx.fillRect(cell.x, cell.y, grid-1, grid-1);
                     if (cell.x === apple.x && cell.y === apple.y) {
                         snake.maxCells++; score += 10; document.getElementById('score').innerText = score;
+                        spawnFloatingScore(apple.x, apple.y, '+10'); // Анимация очков
                         apple.x = getRandomInt(0, 20) * grid; apple.y = getRandomInt(0, 20) * grid;
                     }
-                    for (let i = index + 1; i < snake.cells.length; i++) {
-                        if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) gameOver();
-                    }
+                    for (let i = index + 1; i < snake.cells.length; i++) { if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) gameOver(); }
                 });
             }
             gameLoop = requestAnimationFrame(loop);
         }
 
-        // --- УВЕЛИЧЕННЫЙ ТЕТРИС ---
+        // --- ЦВЕТНОЙ ТЕТРИС ---
         function initTetris(container) {
-            const grid = document.createElement('div');
-            grid.className = 'tetris-grid';
-            container.appendChild(grid);
+            const grid = document.createElement('div'); grid.className = 'tetris-grid'; container.appendChild(grid);
             const nextPieceGrid = document.getElementById('next-piece-container');
             
-            let cells = Array.from({length: 200}, () => {
-                let div = document.createElement('div');
-                div.className = 'tetris-cell';
-                grid.appendChild(div);
-                return div;
-            });
-            let nextPieceCells = Array.from({length: 16}, () => {
-                let div = document.createElement('div');
-                div.className = 'tetris-cell';
-                nextPieceGrid.appendChild(div);
-                return div;
-            });
+            let cells = Array.from({length: 200}, () => { let div = document.createElement('div'); div.className = 'tetris-cell'; grid.appendChild(div); return div; });
+            let nextPieceCells = Array.from({length: 16}, () => { let div = document.createElement('div'); div.className = 'tetris-cell'; nextPieceGrid.appendChild(div); return div; });
 
             const width = 10;
             const lTetromino = [[1, width+1, width*2+1, 2], [width, width+1, width+2, width*2+2], [1, width+1, width*2+1, width*2], [width, width*2, width*2+1, width*2+2]];
@@ -544,16 +451,17 @@
             let nextRandom = Math.floor(Math.random()*theTetrominoes.length);
             let current = theTetrominoes[random][currentRotation];
 
-            function draw() { current.forEach(index => cells[currentPosition + index].classList.add('filled')); }
-            function undraw() { current.forEach(index => cells[currentPosition + index].classList.remove('filled')); }
+            // Теперь добавляем класс цвета t-c-(id фигуры)
+            function draw() { current.forEach(index => cells[currentPosition + index].classList.add('filled', 't-c-' + random)); }
+            function undraw() { current.forEach(index => cells[currentPosition + index].classList.remove('filled', 't-c-' + random)); }
             
             function displayNextPiece() {
-                nextPieceCells.forEach(cell => cell.classList.remove('filled'));
+                nextPieceCells.forEach(cell => { cell.className = 'tetris-cell'; });
                 const nextTetromino = theTetrominoes[nextRandom][0];
                 let offset = nextRandom === 3 ? 1 : 0;
                 nextTetromino.forEach(index => {
                     let nextIndex = (Math.floor(index/width) * 4) + (index % width) + offset;
-                    if(nextPieceCells[nextIndex]) nextPieceCells[nextIndex].classList.add('filled');
+                    if(nextPieceCells[nextIndex]) nextPieceCells[nextIndex].classList.add('filled', 't-c-' + nextRandom);
                 });
             }
             displayNextPiece();
@@ -568,17 +476,13 @@
             }
             document.addEventListener('keydown', control);
 
-            function moveDown() {
-                if (isPaused || isGameOver) return;
-                undraw(); currentPosition += width; draw(); freeze();
-            }
+            function moveDown() { if (isPaused || isGameOver) return; undraw(); currentPosition += width; draw(); freeze(); }
 
             function freeze() {
                 if(current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) {
-                    current.forEach(index => cells[currentPosition + index].classList.add('taken'));
+                    current.forEach(index => cells[currentPosition + index].classList.add('taken', 't-c-' + random));
                     random = nextRandom; nextRandom = Math.floor(Math.random()*theTetrominoes.length);
-                    current = theTetrominoes[random][currentRotation];
-                    currentPosition = 4; displayNextPiece(); draw(); addScore();
+                    current = theTetrominoes[random][currentRotation]; currentPosition = 4; displayNextPiece(); draw(); addScore();
                     if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) gameOver();
                 }
             }
@@ -590,9 +494,9 @@
                     const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9];
                     if(row.every(index => cells[index].classList.contains('taken'))) {
                         score += 100; document.getElementById('score').innerText = score;
-                        row.forEach(index => { cells[index].classList.remove('taken'); cells[index].classList.remove('filled'); });
-                        const squaresRemoved = cells.splice(i, width);
-                        cells = squaresRemoved.concat(cells);
+                        spawnFloatingScore(100, 300, '+100'); // Анимация очков в центре стакана
+                        row.forEach(index => { cells[index].className = 'tetris-cell'; });
+                        const squaresRemoved = cells.splice(i, width); cells = squaresRemoved.concat(cells);
                         cells.forEach(cell => grid.appendChild(cell));
                     }
                 }
@@ -600,38 +504,26 @@
             gameLoop = setInterval(() => { if(!isPaused && !isGameOver) moveDown(); }, 800);
         }
 
-        // --- УВЕЛИЧЕННЫЙ САПЕР ---
+        // --- САПЕР ---
         function initMinesweeper(container) {
-            const grid = document.createElement('div');
-            grid.className = 'minesweeper-grid';
-            container.appendChild(grid);
-            
+            const grid = document.createElement('div'); grid.className = 'minesweeper-grid'; container.appendChild(grid);
             const width = 10; const bombAmount = 10; let squares = [];
             const gameArray = Array(width*width - bombAmount).fill('valid').concat(Array(bombAmount).fill('bomb')).sort(() => Math.random() - 0.5);
 
             for(let i=0; i<width*width; i++) {
-                const square = document.createElement('div');
-                square.setAttribute('id', i);
-                square.classList.add('ms-cell', gameArray[i]);
-                grid.appendChild(square);
-                squares.push(square);
+                const square = document.createElement('div'); square.setAttribute('id', i); square.classList.add('ms-cell', gameArray[i]);
+                grid.appendChild(square); squares.push(square);
 
-                square.addEventListener('click', function(e) {
-                    if(isPaused || isGameOver || square.classList.contains('flagged')) return;
-                    click(square);
-                });
-
+                square.addEventListener('click', function(e) { if(isPaused || isGameOver || square.classList.contains('flagged')) return; click(square); });
                 square.addEventListener('contextmenu', function(e) {
-                    e.preventDefault();
-                    if(isPaused || isGameOver || square.classList.contains('revealed')) return;
+                    e.preventDefault(); if(isPaused || isGameOver || square.classList.contains('revealed')) return;
                     if(!square.classList.contains('flagged')) { square.classList.add('flagged'); square.innerText = '🚩'; } 
                     else { square.classList.remove('flagged'); square.innerText = ''; }
                 });
             }
 
             for(let i=0; i<squares.length; i++) {
-                let total = 0;
-                const isLeftEdge = (i % width === 0); const isRightEdge = (i % width === width - 1);
+                let total = 0; const isLeftEdge = (i % width === 0); const isRightEdge = (i % width === width - 1);
                 if(squares[i].classList.contains('valid')) {
                     if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('bomb')) total++;
                     if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('bomb')) total++;
@@ -651,7 +543,9 @@
                 let total = square.getAttribute('data');
                 if (total != 0) {
                     square.classList.add('revealed'); square.innerHTML = total;
-                    score += parseInt(total); document.getElementById('score').innerText = score; return;
+                    score += parseInt(total); document.getElementById('score').innerText = score; 
+                    spawnFloatingScore(square.offsetLeft, square.offsetTop, '+' + total); // Анимация
+                    return;
                 }
                 checkSquare(square, square.id);
                 square.classList.add('revealed'); score += 1; document.getElementById('score').innerText = score;
@@ -672,25 +566,23 @@
             }
         }
 
-        // --- УВЕЛИЧЕННЫЙ BRICKS BREAKER ---
+        // --- УСКОРЯЮЩИЙСЯ BRICKS BREAKER ---
         function initBricks(container) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 500; canvas.height = 600; 
-            canvas.className = 'game-canvas';
-            container.appendChild(canvas);
+            const canvas = document.createElement('canvas'); canvas.width = 500; canvas.height = 600; canvas.className = 'game-canvas'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
 
-            let ballRadius = 6;
-            let x = canvas.width/2; let y = canvas.height-40;
-            let dx = 4; let dy = -4;
+            // НАЧАЛЬНАЯ СКОРОСТЬ
+            let baseSpeed = 2.5;
+            let maxSpeed = 7.5;
             
-            let paddleHeight = 12; let paddleWidth = 100;
-            let paddleX = (canvas.width-paddleWidth)/2;
+            let ballRadius = 6; let x = canvas.width/2; let y = canvas.height-40;
+            let dx = baseSpeed; let dy = -baseSpeed;
+            
+            let paddleHeight = 12; let paddleWidth = 100; let paddleX = (canvas.width-paddleWidth)/2;
             let rightPressed = false; let leftPressed = false;
 
             let brickRowCount = 6; let brickColumnCount = 7;
-            let brickWidth = 60; let brickHeight = 25;
-            let brickPadding = 10; let brickOffsetTop = 40; let brickOffsetLeft = 15;
+            let brickWidth = 60; let brickHeight = 25; let brickPadding = 10; let brickOffsetTop = 40; let brickOffsetLeft = 15;
 
             let bricks = [];
             for(let c=0; c<brickColumnCount; c++) {
@@ -699,36 +591,28 @@
             }
 
             document.addEventListener("keydown", (e) => {
-                if(e.key == "Right" || e.key == "ArrowRight") rightPressed = true;
-                else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = true;
+                if(e.key == "Right" || e.key == "ArrowRight") rightPressed = true; else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = true;
             }, false);
             document.addEventListener("keyup", (e) => {
-                if(e.key == "Right" || e.key == "ArrowRight") rightPressed = false;
-                else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = false;
+                if(e.key == "Right" || e.key == "ArrowRight") rightPressed = false; else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = false;
             }, false);
 
-            function getBrickColor(h) {
-                if(h===1) return "#00ff00"; if(h===2) return "#ffff00"; if(h===3) return "#ffa500"; if(h===4) return "#ff0000"; return "#00ffff";
-            }
+            function getBrickColor(h) { if(h===1) return "#00ff00"; if(h===2) return "#ffff00"; if(h===3) return "#ffa500"; if(h===4) return "#ff0000"; return "#00ffff"; }
 
             function draw() {
-                if(currentGame !== 'bricks') return;
-                gameLoop = requestAnimationFrame(draw);
-                if (isPaused || isGameOver) return;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if(currentGame !== 'bricks') return; gameLoop = requestAnimationFrame(draw);
+                if (isPaused || isGameOver) return; ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
                 // Отрисовка блоков
                 for(let c=0; c<brickColumnCount; c++) {
                     for(let r=0; r<brickRowCount; r++) {
                         let b = bricks[c][r];
                         if(b.status > 0) {
-                            let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-                            let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                            let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft; let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
                             b.x = brickX; b.y = brickY;
                             ctx.beginPath(); ctx.rect(brickX, brickY, brickWidth, brickHeight);
                             ctx.fillStyle = getBrickColor(b.status); ctx.fill(); ctx.closePath();
-                            ctx.fillStyle = "#000"; ctx.font = "18px VT323"; ctx.textAlign = "center";
-                            ctx.fillText(b.status, brickX + brickWidth/2, brickY + 18);
+                            ctx.fillStyle = "#000"; ctx.font = "18px VT323"; ctx.textAlign = "center"; ctx.fillText(b.status, brickX + brickWidth/2, brickY + 18);
                         }
                     }
                 }
@@ -737,12 +621,20 @@
                 ctx.beginPath(); ctx.arc(x, y, ballRadius, 0, Math.PI*2); ctx.fillStyle = "#fff"; ctx.fill(); ctx.closePath();
                 ctx.beginPath(); ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight); ctx.fillStyle = "#0f0"; ctx.fill(); ctx.closePath();
                 
-                // Столкновения с блоками
+                // Столкновения с блоками и УСКОРЕНИЕ
                 for(let c=0; c<brickColumnCount; c++) {
                     for(let r=0; r<brickRowCount; r++) {
                         let b = bricks[c][r];
                         if(b.status > 0 && x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
                             dy = -dy; b.status--; score += 5; document.getElementById('score').innerText = score;
+                            spawnFloatingScore(x, y, '+5'); // Анимация
+                            
+                            // Увеличение скорости с каждым ударом
+                            if (baseSpeed < maxSpeed) {
+                                baseSpeed += 0.05; // Шаг ускорения
+                                dx = dx > 0 ? Math.max(dx, baseSpeed/2) : Math.min(dx, -baseSpeed/2);
+                                dy = dy > 0 ? baseSpeed : -baseSpeed;
+                            }
                         }
                     }
                 }
@@ -751,11 +643,16 @@
                 if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) dx = -dx;
                 if(y + dy < ballRadius) dy = -dy;
                 else if(y + dy > canvas.height-ballRadius) {
-                    if(x > paddleX && x < paddleX + paddleWidth) dx = 4 * ((x - (paddleX + paddleWidth/2)) / (paddleWidth/2)), dy = -dy;
+                    if(x > paddleX && x < paddleX + paddleWidth) {
+                        dx = baseSpeed * 1.5 * ((x - (paddleX + paddleWidth/2)) / (paddleWidth/2));
+                        dy = -baseSpeed;
+                    }
                     else { gameOver(); return; }
                 }
-                if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 6;
-                else if(leftPressed && paddleX > 0) paddleX -= 6;
+                
+                // Ракетка двигается быстрее базового шарика
+                if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 8;
+                else if(leftPressed && paddleX > 0) paddleX -= 8;
                 x += dx; y += dy;
             }
             draw();
