@@ -521,4 +521,277 @@
                 if(dino.ducking && !dino.grounded) dino.dy += 2.0;
                 dino.y += dino.dy;
 
-                if(dino.y + dino
+                if(dino.y + dino.h >= groundY) { dino.y = groundY - dino.h; dino.dy = 0; dino.grounded = true; } 
+                else { dino.grounded = false; }
+
+                scoreCounter++;
+                if(scoreCounter % 15 === 0) {
+                    score++; document.getElementById('score').innerText = score;
+                    if (score % 150 === 0 && gameSpeed < 10) { gameSpeed += 0.2; spawnFloatingScore(dino.x, dino.y - 20, 'SPEED UP!'); }
+                }
+
+                ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(canvas.width, groundY); ctx.strokeStyle = isLightMode ? '#718096' : '#0f0'; ctx.lineWidth = 2; ctx.stroke();
+                for(let i = 0; i < canvas.width; i+=30) { if((i + scoreCounter * gameSpeed) % 60 < 30) { ctx.fillStyle = isLightMode ? '#718096' : '#0f0'; ctx.fillRect(i, groundY+5, 4, 2); } }
+
+                ctx.fillStyle = isLightMode ? '#38b2ac' : '#0f0'; ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+                ctx.fillStyle = isLightMode ? '#fff' : '#000'; ctx.fillRect(dino.x + 20, dino.y + 6, 4, 4); 
+
+                spawnTimer--;
+                if (spawnTimer <= 0) {
+                    let type = Math.random() > 0.7 && score > 50 ? 'flying' : 'ground';
+                    if (type === 'ground') { let width = Math.random() > 0.5 ? 20 : 35; obstacles.push({ x: canvas.width, y: groundY - 45, w: width, h: 45, type }); } 
+                    else { let heights = [groundY - 80, groundY - 50, groundY - 30]; let h = heights[Math.floor(Math.random() * heights.length)]; obstacles.push({ x: canvas.width, y: h, w: 35, h: 15, type }); }
+                    
+                    // БЕЗОПАСНАЯ ГЕНЕРАЦИЯ (Гарантирован огромный запас для приземления)
+                    let minGap = 280 + (gameSpeed * 10); let maxGap = 500 + (gameSpeed * 15);
+                    spawnTimer = (Math.random() * (maxGap - minGap) + minGap) / gameSpeed; 
+                }
+
+                for (let i = 0; i < obstacles.length; i++) {
+                    let obs = obstacles[i]; obs.x -= gameSpeed;
+                    if (obs.type === 'ground') {
+                        ctx.fillStyle = isLightMode ? '#4a5568' : '#0f0'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+                        ctx.strokeStyle = isLightMode ? '#fff' : '#000'; ctx.lineWidth = 1;
+                        ctx.strokeRect(obs.x, obs.y, obs.w, obs.h); ctx.strokeRect(obs.x, obs.y + 15, obs.w, 15);
+                    } else { ctx.fillStyle = '#e53e3e'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h); }
+                    
+                    let hitBoxMargin = 5; 
+                    if (dino.x + hitBoxMargin < obs.x + obs.w - hitBoxMargin && dino.x + dino.w - hitBoxMargin > obs.x + hitBoxMargin && 
+                        dino.y + hitBoxMargin < obs.y + obs.h - hitBoxMargin && dino.y + dino.h - hitBoxMargin > obs.y + hitBoxMargin) { gameOver(); return; }
+                }
+                obstacles = obstacles.filter(obs => obs.x + obs.w > 0);
+            }
+            loop();
+        }
+
+        // --- ЗМЕЙКА ---
+        function initSnake(container) {
+            const canvas = document.createElement('canvas'); canvas.width = 500; canvas.height = 500; canvas.className = 'game-canvas'; container.appendChild(canvas);
+            const ctx = canvas.getContext('2d'); const grid = 25; let count = 0;
+            let snake = { x: 200, y: 200, dx: grid, dy: 0, cells: [], maxCells: 4 }; let apple = { x: 375, y: 375 };
+            const speedDelay = 30; 
+            function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
+            document.addEventListener('keydown', function snakeController(e) {
+                if(currentGame !== 'snake' || isPaused || isGameOver) return;
+                if (e.which === 37 && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
+                else if (e.which === 38 && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
+                else if (e.which === 39 && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
+                else if (e.which === 40 && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
+            });
+            function loop() {
+                if(currentGame !== 'snake') return; gameLoop = requestAnimationFrame(loop);
+                if (isPaused || isGameOver) return; if (++count < speedDelay) return; count = 0;
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                snake.x += snake.dx; snake.y += snake.dy;
+                if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) { gameOver(); return; }
+                snake.cells.unshift({x: snake.x, y: snake.y}); if (snake.cells.length > snake.maxCells) snake.cells.pop();
+                ctx.fillStyle = '#e53e3e'; ctx.fillRect(apple.x, apple.y, grid-1, grid-1); 
+                ctx.fillStyle = isLightMode ? '#38b2ac' : '#0f0';
+                snake.cells.forEach(function(cell, index) {
+                    ctx.fillRect(cell.x, cell.y, grid-1, grid-1);
+                    if (cell.x === apple.x && cell.y === apple.y) {
+                        snake.maxCells++; score += 10; document.getElementById('score').innerText = score; spawnFloatingScore(apple.x, apple.y, '+10');
+                        apple.x = getRandomInt(0, 20) * grid; apple.y = getRandomInt(0, 20) * grid;
+                    }
+                    for (let i = index + 1; i < snake.cells.length; i++) { if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) gameOver(); }
+                });
+            }
+            gameLoop = requestAnimationFrame(loop);
+        }
+
+        // --- ЦВЕТНОЙ ТЕТРИС ---
+        function initTetris(container) {
+            const grid = document.createElement('div'); grid.className = 'tetris-grid'; container.appendChild(grid);
+            const nextPieceGrid = document.getElementById('next-piece-container');
+            let cells = Array.from({length: 200}, () => { let div = document.createElement('div'); div.className = 'tetris-cell'; grid.appendChild(div); return div; });
+            let nextPieceCells = Array.from({length: 16}, () => { let div = document.createElement('div'); div.className = 'tetris-cell'; nextPieceGrid.appendChild(div); return div; });
+            const width = 10;
+            const lTetromino = [[1, width+1, width*2+1, 2], [width, width+1, width+2, width*2+2], [1, width+1, width*2+1, width*2], [width, width*2, width*2+1, width*2+2]];
+            const zTetromino = [[0,width,width+1,width*2+1],[width+1, width+2,width*2,width*2+1],[0,width,width+1,width*2+1],[width+1, width+2,width*2,width*2+1]];
+            const tTetromino = [[1,width,width+1,width+2],[1,width+1,width+2,width*2+1],[width,width+1,width+2,width*2+1],[1,width,width+1,width*2+1]];
+            const oTetromino = [[0,1,width,width+1],[0,1,width,width+1],[0,1,width,width+1],[0,1,width,width+1]];
+            const iTetromino = [[1,width+1,width*2+1,width*3+1],[width,width+1,width+2,width+3],[1,width+1,width*2+1,width*3+1],[width,width+1,width+2,width+3]];
+            const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
+            
+            let currentPosition = 4; let currentRotation = 0;
+            let random = Math.floor(Math.random()*theTetrominoes.length); let nextRandom = Math.floor(Math.random()*theTetrominoes.length);
+            let current = theTetrominoes[random][currentRotation];
+            let inputLocked = false; 
+
+            function draw() { current.forEach(index => cells[currentPosition + index].classList.add('filled', 't-c-' + random)); }
+            function undraw() { current.forEach(index => cells[currentPosition + index].classList.remove('filled', 't-c-' + random)); }
+            function displayNextPiece() {
+                nextPieceCells.forEach(cell => { cell.className = 'tetris-cell'; });
+                const nextTetromino = theTetrominoes[nextRandom][0]; let offset = nextRandom === 3 ? 1 : 0;
+                nextTetromino.forEach(index => {
+                    let nextIndex = (Math.floor(index/width) * 4) + (index % width) + offset;
+                    if(nextPieceCells[nextIndex]) nextPieceCells[nextIndex].classList.add('filled', 't-c-' + nextRandom);
+                });
+            }
+            displayNextPiece();
+            
+            function control(e) {
+                if(currentGame !== 'tetris' || isPaused || isGameOver || inputLocked) return;
+                if(e.keyCode === 32 && e.repeat) return; 
+                
+                if(e.keyCode === 37) moveLeft(); 
+                else if(e.keyCode === 38) rotate(); 
+                else if(e.keyCode === 39) moveRight(); 
+                else if(e.keyCode === 40) moveDown(); 
+                else if(e.keyCode === 32) { 
+                    while(!current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) { 
+                        undraw(); currentPosition += width; draw(); 
+                    } 
+                    freeze(); 
+                }
+            }
+            document.addEventListener('keydown', control);
+            
+            function moveDown() { if (isPaused || isGameOver || inputLocked) return; undraw(); currentPosition += width; draw(); freeze(); }
+            
+            function freeze() {
+                if(current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) {
+                    current.forEach(index => cells[currentPosition + index].classList.add('taken', 't-c-' + random));
+                    addScore(); 
+                    inputLocked = true; setTimeout(() => { inputLocked = false; }, 150);
+                    random = nextRandom; nextRandom = Math.floor(Math.random()*theTetrominoes.length);
+                    current = theTetrominoes[random][currentRotation]; currentPosition = 4; displayNextPiece(); draw(); 
+                    if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) gameOver();
+                }
+            }
+            
+            function moveLeft() { undraw(); if(!current.some(index => (currentPosition + index) % width === 0)) currentPosition -=1; if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition +=1; draw(); }
+            function moveRight() { undraw(); if(!current.some(index => (currentPosition + index) % width === width -1)) currentPosition +=1; if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition -=1; draw(); }
+            function rotate() { undraw(); currentRotation = (currentRotation + 1) % current.length; current = theTetrominoes[random][currentRotation]; draw(); }
+            function addScore() {
+                for (let i = 0; i < 199; i +=width) {
+                    const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9];
+                    if(row.every(index => cells[index].classList.contains('taken'))) {
+                        score += 100; document.getElementById('score').innerText = score; spawnFloatingScore(100, 300, '+100'); 
+                        row.forEach(index => { cells[index].className = 'tetris-cell'; });
+                        const squaresRemoved = cells.splice(i, width); cells = squaresRemoved.concat(cells);
+                        cells.forEach(cell => grid.appendChild(cell));
+                    }
+                }
+            }
+            gameLoop = setInterval(() => { if(!isPaused && !isGameOver && !inputLocked) moveDown(); }, 800);
+        }
+
+        // --- САПЕР ---
+        function initMinesweeper(container) {
+            const grid = document.createElement('div'); grid.className = 'minesweeper-grid'; container.appendChild(grid);
+            const width = 10; const bombAmount = 10; let squares = [];
+            const gameArray = Array(width*width - bombAmount).fill('valid').concat(Array(bombAmount).fill('bomb')).sort(() => Math.random() - 0.5);
+            for(let i=0; i<width*width; i++) {
+                const square = document.createElement('div'); square.setAttribute('id', i); square.classList.add('ms-cell', gameArray[i]); grid.appendChild(square); squares.push(square);
+                square.addEventListener('click', function(e) { if(isPaused || isGameOver || square.classList.contains('flagged')) return; click(square); });
+                square.addEventListener('contextmenu', function(e) {
+                    e.preventDefault(); if(isPaused || isGameOver || square.classList.contains('revealed')) return;
+                    if(!square.classList.contains('flagged')) { square.classList.add('flagged'); square.innerText = '🚩'; } else { square.classList.remove('flagged'); square.innerText = ''; }
+                });
+            }
+            for(let i=0; i<squares.length; i++) {
+                let total = 0; const isLeftEdge = (i % width === 0); const isRightEdge = (i % width === width - 1);
+                if(squares[i].classList.contains('valid')) {
+                    if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('bomb')) total++;
+                    if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('bomb')) total++;
+                    if (i > 10 && squares[i -width].classList.contains('bomb')) total++;
+                    if (i > 11 && !isLeftEdge && squares[i -1 -width].classList.contains('bomb')) total++;
+                    if (i < 98 && !isRightEdge && squares[i +1].classList.contains('bomb')) total++;
+                    if (i < 90 && !isLeftEdge && squares[i -1 +width].classList.contains('bomb')) total++;
+                    if (i < 88 && !isRightEdge && squares[i +1 +width].classList.contains('bomb')) total++;
+                    if (i < 89 && squares[i +width].classList.contains('bomb')) total++;
+                    squares[i].setAttribute('data', total);
+                }
+            }
+            function click(square) {
+                if (square.classList.contains('revealed')) return;
+                if (square.classList.contains('bomb')) { gameOver(); return; }
+                let total = square.getAttribute('data');
+                if (total != 0) {
+                    square.classList.add('revealed'); square.innerHTML = total; score += parseInt(total); document.getElementById('score').innerText = score; 
+                    spawnFloatingScore(square.offsetLeft, square.offsetTop, '+' + total); return;
+                }
+                checkSquare(square, square.id); square.classList.add('revealed'); score += 1; document.getElementById('score').innerText = score;
+            }
+            function checkSquare(square, currentId) {
+                const isLeft = (currentId % width === 0); const isRight = (currentId % width === width -1);
+                setTimeout(() => {
+                    if (currentId > 0 && !isLeft) click(document.getElementById(parseInt(currentId) -1));
+                    if (currentId > 9 && !isRight) click(document.getElementById(parseInt(currentId) +1 -width));
+                    if (currentId > 10) click(document.getElementById(parseInt(currentId -width)));
+                    if (currentId > 11 && !isLeft) click(document.getElementById(parseInt(currentId) -1 -width));
+                    if (currentId < 98 && !isRight) click(document.getElementById(parseInt(currentId) +1));
+                    if (currentId < 90 && !isLeft) click(document.getElementById(parseInt(currentId) -1 +width));
+                    if (currentId < 88 && !isRight) click(document.getElementById(parseInt(currentId) +1 +width));
+                    if (currentId < 89) click(document.getElementById(parseInt(currentId) +width));
+                }, 10);
+            }
+        }
+
+        // --- УСКОРЯЮЩИЙСЯ BRICKS BREAKER ---
+        function initBricks(container) {
+            const canvas = document.createElement('canvas'); canvas.width = 500; canvas.height = 600; canvas.className = 'game-canvas'; container.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+            let baseSpeed = 1.5; let maxSpeed = 7.5;
+            let ballRadius = 6; let x = canvas.width/2; let y = canvas.height-40;
+            let dx = baseSpeed; let dy = -baseSpeed;
+            
+            let paddleHeight = 12; let paddleWidth = 100; let paddleX = (canvas.width-paddleWidth)/2;
+            let rightPressed = false; let leftPressed = false;
+            let brickRowCount = 6; let brickColumnCount = 7;
+            let brickWidth = 60; let brickHeight = 25; let brickPadding = 10; let brickOffsetTop = 40; let brickOffsetLeft = 15;
+            let bricks = [];
+            for(let c=0; c<brickColumnCount; c++) {
+                bricks[c] = [];
+                for(let r=0; r<brickRowCount; r++) bricks[c][r] = { x: 0, y: 0, status: Math.floor(Math.random() * 5) + 1 };
+            }
+            document.addEventListener("keydown", (e) => { if(e.key == "Right" || e.key == "ArrowRight") rightPressed = true; else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = true; }, false);
+            document.addEventListener("keyup", (e) => { if(e.key == "Right" || e.key == "ArrowRight") rightPressed = false; else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = false; }, false);
+            function getBrickColor(h) { if(h===1) return "#38b2ac"; if(h===2) return "#ecc94b"; if(h===3) return "#dd6b20"; if(h===4) return "#e53e3e"; return "#3182ce"; }
+            function getDarkBrickColor(h) { if(h===1) return "#00ff00"; if(h===2) return "#ffff00"; if(h===3) return "#ffa500"; if(h===4) return "#ff0000"; return "#00ffff"; }
+            
+            function draw() {
+                if(currentGame !== 'bricks') return; gameLoop = requestAnimationFrame(draw);
+                if (isPaused || isGameOver) return; ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for(let c=0; c<brickColumnCount; c++) {
+                    for(let r=0; r<brickRowCount; r++) {
+                        let b = bricks[c][r];
+                        if(b.status > 0) {
+                            let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft; let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop; b.x = brickX; b.y = brickY;
+                            ctx.beginPath(); ctx.rect(brickX, brickY, brickWidth, brickHeight); 
+                            ctx.fillStyle = isLightMode ? getBrickColor(b.status) : getDarkBrickColor(b.status); 
+                            ctx.fill(); ctx.closePath();
+                            ctx.fillStyle = isLightMode ? "#fff" : "#000"; ctx.font = "18px VT323"; ctx.textAlign = "center"; ctx.fillText(b.status, brickX + brickWidth/2, brickY + 18);
+                        }
+                    }
+                }
+                ctx.beginPath(); ctx.arc(x, y, ballRadius, 0, Math.PI*2); ctx.fillStyle = "#fff"; ctx.fill(); ctx.closePath();
+                ctx.beginPath(); ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight); ctx.fillStyle = isLightMode ? "#38b2ac" : "#0f0"; ctx.fill(); ctx.closePath();
+                for(let c=0; c<brickColumnCount; c++) {
+                    for(let r=0; r<brickRowCount; r++) {
+                        let b = bricks[c][r];
+                        if(b.status > 0 && x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                            dy = -dy; b.status--; score += 5; document.getElementById('score').innerText = score; spawnFloatingScore(x, y, '+5'); 
+                            if (baseSpeed < maxSpeed) {
+                                baseSpeed += 0.05; 
+                                dx = dx > 0 ? Math.max(dx, baseSpeed/2) : Math.min(dx, -baseSpeed/2);
+                                dy = dy > 0 ? baseSpeed : -baseSpeed;
+                            }
+                        }
+                    }
+                }
+                if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) dx = -dx;
+                if(y + dy < ballRadius) dy = -dy;
+                else if(y + dy > canvas.height-ballRadius) {
+                    if(x > paddleX && x < paddleX + paddleWidth) { dx = baseSpeed * 1.5 * ((x - (paddleX + paddleWidth/2)) / (paddleWidth/2)); dy = -baseSpeed; }
+                    else { gameOver(); return; }
+                }
+                if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 4.5; else if(leftPressed && paddleX > 0) paddleX -= 4.5;
+                x += dx; y += dy;
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
