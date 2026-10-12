@@ -430,7 +430,7 @@
             gameLoop = requestAnimationFrame(loop);
         }
 
-        // --- ЦВЕТНОЙ ТЕТРИС ---
+        // --- ЦВЕТНОЙ ТЕТРИС С ИСПРАВЛЕННЫМ СБРОСОМ ---
         function initTetris(container) {
             const grid = document.createElement('div'); grid.className = 'tetris-grid'; container.appendChild(grid);
             const nextPieceGrid = document.getElementById('next-piece-container');
@@ -451,7 +451,6 @@
             let nextRandom = Math.floor(Math.random()*theTetrominoes.length);
             let current = theTetrominoes[random][currentRotation];
 
-            // Теперь добавляем класс цвета t-c-(id фигуры)
             function draw() { current.forEach(index => cells[currentPosition + index].classList.add('filled', 't-c-' + random)); }
             function undraw() { current.forEach(index => cells[currentPosition + index].classList.remove('filled', 't-c-' + random)); }
             
@@ -468,27 +467,51 @@
 
             function control(e) {
                 if(currentGame !== 'tetris' || isPaused || isGameOver) return;
+                
+                // ИСПРАВЛЕННАЯ ЛОГИКА УПРАВЛЕНИЯ
                 if(e.keyCode === 37) moveLeft();
                 else if(e.keyCode === 38) rotate();
                 else if(e.keyCode === 39) moveRight();
-                else if(e.keyCode === 40) moveDown();
-                else if(e.keyCode === 32) { while(!current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) moveDown(); }
+                else if(e.keyCode === 40) moveDown(); // Стрелка вниз (плавный спуск)
+                else if(e.keyCode === 32) { // Пробел (моментальный спуск)
+                    while(!current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) {
+                        undraw(); 
+                        currentPosition += width; 
+                        draw();
+                    }
+                    freeze(); // Фиксируем фигуру сразу, не запуская бесконечный цикл
+                }
             }
             document.addEventListener('keydown', control);
 
             function moveDown() { if (isPaused || isGameOver) return; undraw(); currentPosition += width; draw(); freeze(); }
 
+            // ИСПРАВЛЕННЫЙ ПОРЯДОК ФИКСАЦИИ
             function freeze() {
                 if(current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) {
+                    // 1. Фиксируем фигуру
                     current.forEach(index => cells[currentPosition + index].classList.add('taken', 't-c-' + random));
-                    random = nextRandom; nextRandom = Math.floor(Math.random()*theTetrominoes.length);
-                    current = theTetrominoes[random][currentRotation]; currentPosition = 4; displayNextPiece(); draw(); addScore();
+                    
+                    // 2. Начисляем очки и удаляем линии ДО спавна новой фигуры
+                    addScore(); 
+                    
+                    // 3. Создаем новую фигуру
+                    random = nextRandom; 
+                    nextRandom = Math.floor(Math.random()*theTetrominoes.length);
+                    current = theTetrominoes[random][currentRotation]; 
+                    currentPosition = 4; 
+                    displayNextPiece(); 
+                    draw(); 
+                    
+                    // 4. Проверяем не переполнен ли стакан
                     if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) gameOver();
                 }
             }
+            
             function moveLeft() { undraw(); if(!current.some(index => (currentPosition + index) % width === 0)) currentPosition -=1; if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition +=1; draw(); }
             function moveRight() { undraw(); if(!current.some(index => (currentPosition + index) % width === width -1)) currentPosition +=1; if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition -=1; draw(); }
             function rotate() { undraw(); currentRotation = (currentRotation + 1) % current.length; current = theTetrominoes[random][currentRotation]; draw(); }
+            
             function addScore() {
                 for (let i = 0; i < 199; i +=width) {
                     const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9];
@@ -571,10 +594,7 @@
             const canvas = document.createElement('canvas'); canvas.width = 500; canvas.height = 600; canvas.className = 'game-canvas'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
 
-            // НАЧАЛЬНАЯ СКОРОСТЬ
-            let baseSpeed = 2.5;
-            let maxSpeed = 7.5;
-            
+            let baseSpeed = 2.5; let maxSpeed = 7.5;
             let ballRadius = 6; let x = canvas.width/2; let y = canvas.height-40;
             let dx = baseSpeed; let dy = -baseSpeed;
             
@@ -627,11 +647,10 @@
                         let b = bricks[c][r];
                         if(b.status > 0 && x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
                             dy = -dy; b.status--; score += 5; document.getElementById('score').innerText = score;
-                            spawnFloatingScore(x, y, '+5'); // Анимация
+                            spawnFloatingScore(x, y, '+5'); 
                             
-                            // Увеличение скорости с каждым ударом
                             if (baseSpeed < maxSpeed) {
-                                baseSpeed += 0.05; // Шаг ускорения
+                                baseSpeed += 0.05; 
                                 dx = dx > 0 ? Math.max(dx, baseSpeed/2) : Math.min(dx, -baseSpeed/2);
                                 dy = dy > 0 ? baseSpeed : -baseSpeed;
                             }
@@ -650,7 +669,6 @@
                     else { gameOver(); return; }
                 }
                 
-                // Ракетка двигается быстрее базового шарика
                 if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 8;
                 else if(leftPressed && paddleX > 0) paddleX -= 8;
                 x += dx; y += dy;
