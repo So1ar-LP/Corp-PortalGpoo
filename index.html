@@ -6,7 +6,6 @@
     <title>Support Terminal - Relaxation Protocol</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Терминальный ретро-дизайн */
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         
         body {
@@ -24,14 +23,29 @@
             content: " ";
             display: block;
             position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 2;
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
+        }
+
+        /* Бегающая строчка (Scanline) */
+        .scanline {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(0deg, rgba(0,255,0,0) 0%, rgba(0,255,0,0.1) 50%, rgba(0,255,0,0) 100%);
+            position: absolute;
+            top: -100px;
+            left: 0;
+            animation: scanline 6s linear infinite;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% { top: -100px; }
+            100% { top: 100vh; }
         }
 
         .screen {
@@ -40,13 +54,13 @@
             display: flex;
             flex-direction: column;
             z-index: 1;
+            width: 100%;
         }
 
-        /* Элементы интерфейса */
         .panel {
             border: 2px solid #0f0;
             background: rgba(0, 20, 0, 0.8);
-            box-shadow: inset 0 0 10px #0f0;
+            box-shadow: inset 0 0 15px #0f0;
         }
         
         button {
@@ -79,8 +93,9 @@
         input::placeholder { color: #070; }
 
         .game-canvas {
-            border: 1px solid #0f0;
+            border: 2px solid #0f0;
             image-rendering: pixelated;
+            background-color: #000;
         }
 
         .minesweeper-grid {
@@ -93,17 +108,11 @@
             margin: 0 auto;
         }
         .ms-cell {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             background: #002200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            font-weight: bold;
-            user-select: none;
-            box-shadow: inset 0 0 5px #0f0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; cursor: pointer; font-weight: bold;
+            user-select: none; box-shadow: inset 0 0 5px #0f0;
         }
         .ms-cell:hover { background: #004400; }
         .ms-cell.revealed { background: #000; box-shadow: none; cursor: default; }
@@ -115,46 +124,52 @@
             gap: 1px;
             background: #0f0;
             border: 2px solid #0f0;
-            width: 300px;
-            height: 600px;
+            width: 300px; height: 600px;
             margin: 0 auto;
         }
         .tetris-cell { background: #002200; }
         .tetris-cell.filled { background: #0f0; box-shadow: 0 0 5px #0f0; }
-
         .next-piece-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 1px;
-            background: #0f0;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto;
+            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);
+            gap: 1px; background: #0f0; width: 120px; height: 120px; margin: 0 auto;
         }
 
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
-        .game-over-text {
-            color: #f00;
-            text-shadow: 0 0 10px #f00;
-            font-size: 2.5rem;
-            text-align: center;
-            margin-top: 20px;
+        /* ПОЛНОЭКРАННЫЙ GAME OVER */
+        #game-over-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(10, 0, 0, 0.95);
+            z-index: 100;
             display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.5);
+        }
+        .game-over-huge-text {
+            color: #f00;
+            text-shadow: 0 0 20px #f00;
+            font-size: 5rem;
+            text-align: center;
+            border: 4px solid #f00;
+            padding: 40px;
+            background: rgba(255,0,0,0.1);
+            text-transform: uppercase;
         }
 
-        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 1.2rem; }
-        .leaderboard-table th, .leaderboard-table td { border: 1px solid #0f0; padding: 8px; text-align: left; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 1.3rem; }
+        .leaderboard-table th, .leaderboard-table td { border: 1px solid #0f0; padding: 10px; text-align: left; }
         .leaderboard-table th { background: rgba(0, 255, 0, 0.2); }
 
-        /* Экраны */
         #auth-screen, #dashboard-screen, #game-screen { display: none; }
         #auth-screen.active, #dashboard-screen.active, #game-screen.active { display: flex; }
     </style>
 </head>
 <body class="crt">
+    <div class="scanline"></div>
     
     <!-- ЭКРАН ВХОДА -->
     <div id="auth-screen" class="screen active items-center justify-center p-4">
@@ -165,41 +180,43 @@
                 <input type="text" id="username" placeholder="Логин инженера" required>
                 <input type="password" id="password" placeholder="Пароль доступа" required minlength="6">
                 <div class="flex gap-4 mt-6 justify-center">
-                    <button type="submit" id="btn-login">ВОЙТИ</button>
-                    <button type="button" id="btn-register" onclick="handleAuth(event, true)">РЕГИСТРАЦИЯ</button>
+                    <button type="submit" id="btn-login" class="w-full">АВТОРИЗАЦИЯ</button>
                 </div>
                 <p id="auth-error" class="text-red-500 mt-6 text-xl blink"></p>
             </form>
         </div>
     </div>
 
-    <!-- ДАШБОРД (МЕНЮ И ЛИДЕРЫ) -->
-    <div id="dashboard-screen" class="screen flex-col p-6 h-full max-w-7xl mx-auto w-full">
+    <!-- ДАШБОРД (НА ВЕСЬ ЭКРАН) -->
+    <div id="dashboard-screen" class="screen flex-col p-6 h-full w-full">
         <header class="flex justify-between items-center mb-6 panel p-4">
             <div class="text-3xl">SUPPORT_DASHBOARD <span id="user-display-name" class="text-yellow-400 ml-4"></span></div>
             <button onclick="logout()">[ LOGOUT ]</button>
         </header>
 
-        <div class="flex gap-6 h-full overflow-hidden pb-6">
-            <!-- Выбор игры (Центральный фокус) -->
-            <div class="panel flex-1 p-8 flex flex-col items-center justify-center">
-                <h2 class="text-5xl mb-12 border-b-2 border-green-500 pb-4">RELAXATION_PROTOCOL</h2>
-                <div class="grid grid-cols-1 gap-8 w-full max-w-md">
-                    <button onclick="startGame('snake')" class="text-3xl py-4 hover:bg-green-500 hover:text-black transition-colors">> SNAKE.sh</button>
-                    <button onclick="startGame('tetris')" class="text-3xl py-4 hover:bg-green-500 hover:text-black transition-colors">> TETRIS.bat</button>
-                    <button onclick="startGame('minesweeper')" class="text-3xl py-4 hover:bg-green-500 hover:text-black transition-colors">> MINESWEEPER.exe</button>
-                    <button onclick="startGame('bricks')" class="text-3xl py-4 hover:bg-green-500 hover:text-black transition-colors">> BRICKS.exe</button>
+        <div class="flex gap-6 h-full overflow-hidden pb-6 w-full">
+            <!-- Выбор игры -->
+            <div class="panel flex-1 p-8 flex flex-col items-center justify-center relative">
+                <h2 class="text-6xl mb-16 border-b-2 border-green-500 pb-4">RELAXATION_PROTOCOL</h2>
+                <div class="grid grid-cols-2 gap-8 w-full max-w-4xl">
+                    <button onclick="startGame('snake')" class="text-4xl py-8 hover:bg-green-500 hover:text-black transition-colors">> SNAKE.sh</button>
+                    <button onclick="startGame('tetris')" class="text-4xl py-8 hover:bg-green-500 hover:text-black transition-colors">> TETRIS.bat</button>
+                    <button onclick="startGame('minesweeper')" class="text-4xl py-8 hover:bg-green-500 hover:text-black transition-colors">> MINESWEEPER.exe</button>
+                    <button onclick="startGame('bricks')" class="text-4xl py-8 hover:bg-green-500 hover:text-black transition-colors">> BRICKS.exe</button>
                 </div>
             </div>
 
-            <!-- Таблица лидеров (Компактная справа) -->
-            <div class="panel w-96 p-4 flex flex-col h-full">
-                <h2 class="text-2xl mb-4 text-center border-b border-green-500 pb-2">LEADERBOARD</h2>
+            <!-- Таблица лидеров -->
+            <div class="panel w-[500px] p-6 flex flex-col h-full shrink-0">
+                <div class="flex justify-between items-center border-b-2 border-green-500 pb-4 mb-4">
+                    <h2 class="text-3xl">LEADERBOARD</h2>
+                    <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-black" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
+                </div>
                 <div class="grid grid-cols-2 gap-2 mb-4" id="lb-tabs">
-                    <button class="text-sm py-1 bg-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
-                    <button class="text-sm py-1" onclick="loadLeaderboard('tetris')">TETRIS</button>
-                    <button class="text-sm py-1" onclick="loadLeaderboard('minesweeper')">MINESWEEP</button>
-                    <button class="text-sm py-1" onclick="loadLeaderboard('bricks')">BRICKS</button>
+                    <button class="text-lg py-2 bg-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
+                    <button class="text-lg py-2" onclick="loadLeaderboard('tetris')">TETRIS</button>
+                    <button class="text-lg py-2" onclick="loadLeaderboard('minesweeper')">MINESWEEP</button>
+                    <button class="text-lg py-2" onclick="loadLeaderboard('bricks')">BRICKS</button>
                 </div>
                 <div class="overflow-y-auto flex-1 mt-2">
                     <table class="leaderboard-table">
@@ -220,35 +237,39 @@
         <div class="panel p-8 flex flex-col items-center max-w-5xl w-full">
             <div class="flex justify-between w-full mb-6">
                 <div class="text-3xl">SCORE: <span id="score">0</span></div>
-                <div id="game-title" class="text-3xl">GAME</div>
+                <div id="game-title" class="text-4xl font-bold">GAME</div>
                 <div class="flex gap-4">
-                    <button onclick="togglePause()" style="color: yellow; border-color: yellow;">[ PAUSE ]</button>
+                    <button onclick="togglePause()" style="color: yellow; border-color: yellow;">[ PAUSE (P) ]</button>
                     <button onclick="exitGame()">[ TERMINATE ]</button>
                 </div>
             </div>
             
             <div class="flex gap-8 items-start">
-                <div id="game-container" class="relative">
-                    <!-- Сюда рендерится увеличенный Canvas или Grid игры -->
-                </div>
-                <!-- Правая панель для Тетриса (Следующая фигура) -->
+                <div id="game-container" class="relative"></div>
                 <div id="tetris-sidebar" style="display: none;" class="panel p-4 text-center">
-                    <div class="mb-4 text-xl">NEXT PIECE:</div>
+                    <div class="mb-4 text-2xl">NEXT PIECE:</div>
                     <div id="next-piece-container" class="next-piece-grid"></div>
                 </div>
             </div>
+            <div id="pause-msg" class="text-4xl blink mt-6" style="display:none; color: yellow; text-shadow: 0 0 15px yellow;">SYSTEM PAUSED</div>
+        </div>
+    </div>
 
-            <div id="game-over-msg" class="game-over-text blink">ЗАЯВКА ПО ЭЦП ВНЕ ОЧЕРЕДИ</div>
-            <div id="pause-msg" class="game-over-text blink" style="color: yellow; text-shadow: 0 0 10px yellow;">SYSTEM PAUSED</div>
-            <button id="restart-btn" class="mt-6 hidden text-2xl" onclick="restartCurrentGame()">[ REBOOT SYSTEM ]</button>
+    <!-- ПОЛНОЭКРАННЫЙ ОВЕРЛЕЙ ПРОИГРЫША -->
+    <div id="game-over-overlay">
+        <div class="game-over-huge-text blink">ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ</div>
+        <div class="mt-8 text-4xl text-green-500">FINAL SCORE: <span id="final-score-display" class="text-white">0</span></div>
+        <div class="flex gap-6 mt-12">
+            <button onclick="restartCurrentGame()" class="text-3xl border-red-500 text-red-500 hover:bg-red-500 hover:text-black py-4 px-8">[ REBOOT SYSTEM ]</button>
+            <button onclick="exitGame()" class="text-3xl py-4 px-8">[ EXIT TO MENU ]</button>
         </div>
     </div>
 
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAx3Dw6ZRX-_3YF_YoIbay8lYei28veW0E",
@@ -262,11 +283,20 @@
         const app = initializeApp(firebaseConfig);
         window.db = getFirestore(app);
         window.auth = getAuth(app);
-        window.firebaseAPI = { collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile };
+        window.firebaseAPI = { collection, getDocs, query, orderBy, limit, serverTimestamp, doc, setDoc, getDoc, deleteDoc, signInWithEmailAndPassword, onAuthStateChanged, signOut };
 
         window.firebaseAPI.onAuthStateChanged(window.auth, (user) => {
             if (user) {
-                document.getElementById('user-display-name').innerText = `[${user.displayName || user.email.split('@')[0]}]`;
+                const displayName = user.email.split('@')[0];
+                document.getElementById('user-display-name').innerText = `[${displayName}]`;
+                
+                // Проверка на админа
+                if (displayName === 'adminms') {
+                    document.getElementById('admin-reset-btn').classList.remove('hidden');
+                } else {
+                    document.getElementById('admin-reset-btn').classList.add('hidden');
+                }
+
                 switchScreen('dashboard-screen');
                 loadLeaderboard('snake');
             } else {
@@ -275,15 +305,14 @@
         });
     </script>
 
-    <!-- Основная логика -->
     <script>
         function switchScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
         }
 
-        async function handleAuth(e, isRegister = false) {
-            if(e) e.preventDefault();
+        async function handleAuth(e) {
+            e.preventDefault();
             const usernameInput = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorEl = document.getElementById('auth-error');
@@ -291,30 +320,34 @@
             if(!usernameInput) { errorEl.innerText = "ОШИБКА: ЛОГИН ПУСТ"; return; }
             const fakeEmail = `${usernameInput.toLowerCase()}@support.corp`;
             
-            errorEl.innerText = "ОБРАБОТКА...";
+            errorEl.innerText = "ПОДКЛЮЧЕНИЕ...";
             try {
-                if (isRegister) {
-                    const userCred = await window.firebaseAPI.createUserWithEmailAndPassword(window.auth, fakeEmail, password);
-                    await window.firebaseAPI.updateProfile(userCred.user, { displayName: usernameInput });
-                } else {
-                    await window.firebaseAPI.signInWithEmailAndPassword(window.auth, fakeEmail, password);
-                }
+                await window.firebaseAPI.signInWithEmailAndPassword(window.auth, fakeEmail, password);
                 errorEl.innerText = "";
             } catch (error) {
-                if(error.code === 'auth/email-already-in-use') errorEl.innerText = "ОШИБКА: ЛОГИН ЗАНЯТ";
-                else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') errorEl.innerText = "ОШИБКА: НЕВЕРНЫЙ ПАРОЛЬ";
-                else errorEl.innerText = "ОШИБКА: " + error.message;
+                errorEl.innerText = "ОШИБКА ДОСТУПА. ПРОВЕРЬТЕ ДАННЫЕ.";
             }
         }
 
         async function logout() { await window.firebaseAPI.signOut(window.auth); }
 
+        // ИСПРАВЛЕНИЕ ДУБЛИКАТОВ: Использование doc/setDoc вместо addDoc
         async function saveScore(gameName, score) {
             if (!window.auth.currentUser || score <= 0) return;
             try {
-                const userDisplayName = window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0];
-                await window.firebaseAPI.addDoc(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), {
-                    username: userDisplayName,
+                const username = window.auth.currentUser.email.split('@')[0];
+                // Создаем ссылку на конкретный документ пользователя (имя документа = логин)
+                const docRef = window.firebaseAPI.doc(window.db, "leaderboards", gameName, "scores", username);
+                
+                const docSnap = await window.firebaseAPI.getDoc(docRef);
+                if (docSnap.exists()) {
+                    const currentRecord = docSnap.data().score;
+                    if (currentRecord >= score) return; // Если старый рекорд больше или равен новому, ничего не делаем
+                }
+                
+                // Если рекорда не было или новый больше, записываем
+                await window.firebaseAPI.setDoc(docRef, {
+                    username: username,
                     score: score,
                     timestamp: window.firebaseAPI.serverTimestamp()
                 });
@@ -350,6 +383,22 @@
             } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500">ERROR LOADING DB</td></tr>'; }
         }
 
+        // АДМИНСКАЯ ФУНКЦИЯ ОЧИСТКИ ТАБЛИЦЫ
+        async function resetLeaderboard() {
+            if(!confirm(`Вы уверены, что хотите удалить ВСЕ рекорды в игре ${currentLbGame.toUpperCase()}?`)) return;
+            try {
+                const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", currentLbGame, "scores"));
+                const querySnapshot = await window.firebaseAPI.getDocs(q);
+                querySnapshot.forEach(async (documentSnapshot) => {
+                    await window.firebaseAPI.deleteDoc(documentSnapshot.ref);
+                });
+                alert('База очищена.');
+                setTimeout(() => loadLeaderboard(currentLbGame), 500);
+            } catch (e) {
+                alert('Ошибка при очистке: ' + e.message);
+            }
+        }
+
         let currentGame = null;
         let gameLoop = null;
         let score = 0;
@@ -363,9 +412,8 @@
             score = 0;
             document.getElementById('score').innerText = score;
             document.getElementById('game-title').innerText = game.toUpperCase();
-            document.getElementById('game-over-msg').style.display = 'none';
+            document.getElementById('game-over-overlay').style.display = 'none';
             document.getElementById('pause-msg').style.display = 'none';
-            document.getElementById('restart-btn').classList.add('hidden');
             document.getElementById('tetris-sidebar').style.display = game === 'tetris' ? 'block' : 'none';
             
             const container = document.getElementById('game-container');
@@ -388,16 +436,21 @@
             if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause();
         });
 
+        // ПОЛНОЭКРАННЫЙ GAME OVER
         function gameOver() {
             isGameOver = true;
-            document.getElementById('game-over-msg').style.display = 'block';
-            document.getElementById('restart-btn').classList.remove('hidden');
+            document.getElementById('final-score-display').innerText = score;
+            document.getElementById('game-over-overlay').style.display = 'flex';
             if(gameLoop) { cancelAnimationFrame(gameLoop); clearTimeout(gameLoop); clearInterval(gameLoop); }
             saveScore(currentGame, score);
         }
 
-        function restartCurrentGame() { startGame(currentGame); }
+        function restartCurrentGame() { 
+            document.getElementById('game-over-overlay').style.display = 'none';
+            startGame(currentGame); 
+        }
         function exitGame() {
+            document.getElementById('game-over-overlay').style.display = 'none';
             if(gameLoop) { cancelAnimationFrame(gameLoop); clearTimeout(gameLoop); clearInterval(gameLoop); }
             switchScreen('dashboard-screen');
         }
@@ -405,15 +458,15 @@
         // --- УВЕЛИЧЕННАЯ ЗМЕЙКА ---
         function initSnake(container) {
             const canvas = document.createElement('canvas');
-            canvas.width = 500; canvas.height = 500; // Увеличено
+            canvas.width = 500; canvas.height = 500; 
             canvas.className = 'game-canvas';
             container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
-            const grid = 25; // Укрупненные ячейки
+            const grid = 25; 
             let count = 0;
             let snake = { x: 200, y: 200, dx: grid, dy: 0, cells: [], maxCells: 4 };
             let apple = { x: 375, y: 375 };
-            const speedDelay = 30; // Медленная скорость
+            const speedDelay = 30; 
 
             function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
 
@@ -622,7 +675,7 @@
         // --- УВЕЛИЧЕННЫЙ BRICKS BREAKER ---
         function initBricks(container) {
             const canvas = document.createElement('canvas');
-            canvas.width = 500; canvas.height = 600; // Увеличено
+            canvas.width = 500; canvas.height = 600; 
             canvas.className = 'game-canvas';
             container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
@@ -674,7 +727,7 @@
                             b.x = brickX; b.y = brickY;
                             ctx.beginPath(); ctx.rect(brickX, brickY, brickWidth, brickHeight);
                             ctx.fillStyle = getBrickColor(b.status); ctx.fill(); ctx.closePath();
-                            ctx.fillStyle = "#000"; ctx.font = "16px VT323"; ctx.textAlign = "center";
+                            ctx.fillStyle = "#000"; ctx.font = "18px VT323"; ctx.textAlign = "center";
                             ctx.fillText(b.status, brickX + brickWidth/2, brickY + 18);
                         }
                     }
