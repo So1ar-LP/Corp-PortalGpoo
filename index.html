@@ -53,9 +53,9 @@
             color: #0f0;
             background: transparent;
             border: 1px solid #0f0;
-            padding: 5px 15px;
+            padding: 8px 20px;
             font-family: 'VT323', monospace;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -70,11 +70,11 @@
             border: 1px solid #0f0;
             color: #0f0;
             font-family: 'VT323', monospace;
-            font-size: 1.2rem;
-            padding: 5px;
+            font-size: 1.5rem;
+            padding: 10px;
             outline: none;
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         input::placeholder { color: #070; }
 
@@ -86,20 +86,20 @@
         .minesweeper-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 1px;
+            gap: 2px;
             background: #0f0;
-            border: 1px solid #0f0;
+            border: 2px solid #0f0;
             width: fit-content;
             margin: 0 auto;
         }
         .ms-cell {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             background: #002200;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             cursor: pointer;
             font-weight: bold;
             user-select: none;
@@ -114,9 +114,9 @@
             grid-template-rows: repeat(20, 1fr);
             gap: 1px;
             background: #0f0;
-            border: 1px solid #0f0;
-            width: 250px;
-            height: 500px;
+            border: 2px solid #0f0;
+            width: 300px;
+            height: 600px;
             margin: 0 auto;
         }
         .tetris-cell { background: #002200; }
@@ -128,8 +128,8 @@
             grid-template-rows: repeat(4, 1fr);
             gap: 1px;
             background: #0f0;
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            height: 120px;
             margin: 0 auto;
         }
 
@@ -139,14 +139,14 @@
         .game-over-text {
             color: #f00;
             text-shadow: 0 0 10px #f00;
-            font-size: 2rem;
+            font-size: 2.5rem;
             text-align: center;
             margin-top: 20px;
             display: none;
         }
 
-        .leaderboard-table { width: 100%; border-collapse: collapse; }
-        .leaderboard-table th, .leaderboard-table td { border: 1px solid #0f0; padding: 5px; text-align: left; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 1.2rem; }
+        .leaderboard-table th, .leaderboard-table td { border: 1px solid #0f0; padding: 8px; text-align: left; }
         .leaderboard-table th { background: rgba(0, 255, 0, 0.2); }
 
         /* Экраны */
@@ -158,53 +158,53 @@
     
     <!-- ЭКРАН ВХОДА -->
     <div id="auth-screen" class="screen active items-center justify-center p-4">
-        <div class="panel p-8 max-w-md w-full text-center">
-            <h1 class="text-4xl mb-2">SUPPORT.OS</h1>
-            <p class="mb-6">v2.1 / SECURE LOGIN</p>
+        <div class="panel p-10 max-w-lg w-full text-center">
+            <h1 class="text-6xl mb-4">SUPPORT.OS</h1>
+            <p class="mb-8 text-xl">v2.1 / SECURE LOGIN</p>
             <form id="auth-form" onsubmit="handleAuth(event)">
-                <input type="text" id="username" placeholder="Логин (без @domen)" required>
-                <input type="password" id="password" placeholder="Пароль" required minlength="6">
-                <div class="flex gap-4 mt-4 justify-center">
+                <input type="text" id="username" placeholder="Логин инженера" required>
+                <input type="password" id="password" placeholder="Пароль доступа" required minlength="6">
+                <div class="flex gap-4 mt-6 justify-center">
                     <button type="submit" id="btn-login">ВОЙТИ</button>
                     <button type="button" id="btn-register" onclick="handleAuth(event, true)">РЕГИСТРАЦИЯ</button>
                 </div>
-                <p id="auth-error" class="text-red-500 mt-4 text-sm blink"></p>
+                <p id="auth-error" class="text-red-500 mt-6 text-xl blink"></p>
             </form>
         </div>
     </div>
 
     <!-- ДАШБОРД (МЕНЮ И ЛИДЕРЫ) -->
-    <div id="dashboard-screen" class="screen flex-col p-4 h-full">
-        <header class="flex justify-between items-center mb-4 panel p-4">
-            <div class="text-2xl">SUPPORT_DASHBOARD <span id="user-display-name" class="text-yellow-400"></span></div>
+    <div id="dashboard-screen" class="screen flex-col p-6 h-full max-w-7xl mx-auto w-full">
+        <header class="flex justify-between items-center mb-6 panel p-4">
+            <div class="text-3xl">SUPPORT_DASHBOARD <span id="user-display-name" class="text-yellow-400 ml-4"></span></div>
             <button onclick="logout()">[ LOGOUT ]</button>
         </header>
 
-        <div class="flex gap-4 h-full overflow-hidden">
-            <!-- Выбор игры -->
-            <div class="panel w-1/2 p-6 flex flex-col items-center justify-center">
-                <h2 class="text-3xl mb-8 border-b border-green-500 pb-2">RELAXATION_PROTOCOL</h2>
-                <div class="grid grid-cols-1 gap-6 w-full max-w-xs">
-                    <button onclick="startGame('snake')" class="text-xl py-3">> SNAKE.sh</button>
-                    <button onclick="startGame('tetris')" class="text-xl py-3">> TETRIS.bat</button>
-                    <button onclick="startGame('minesweeper')" class="text-xl py-3">> MINESWEEPER.exe</button>
-                    <button onclick="startGame('bricks')" class="text-xl py-3">> BRICKS.exe</button>
+        <div class="flex gap-6 h-full overflow-hidden pb-6">
+            <!-- Выбор игры (Центральный фокус) -->
+            <div class="panel flex-1 p-8 flex flex-col items-center justify-center">
+                <h2 class="text-5xl mb-12 border-b-2 border-green-500 pb-4">RELAXATION_PROTOCOL</h2>
+                <div class="grid grid-cols-1 gap-8 w-full max-w-md">
+                    <button onclick="startGame('snake')" class="text-3xl py-4 hover:bg-green-500 hover:text-black transition-colors">> SNAKE.sh</button>
+                    <button onclick="startGame('tetris')" class="text-3xl py-4 hover:bg-green-500 hover:text-black transition-colors">> TETRIS.bat</button>
+                    <button onclick="startGame('minesweeper')" class="text-3xl py-4 hover:bg-green-500 hover:text-black transition-colors">> MINESWEEPER.exe</button>
+                    <button onclick="startGame('bricks')" class="text-3xl py-4 hover:bg-green-500 hover:text-black transition-colors">> BRICKS.exe</button>
                 </div>
             </div>
 
-            <!-- Таблица лидеров -->
-            <div class="panel w-1/2 p-4 flex flex-col h-full">
-                <h2 class="text-2xl mb-4 text-center">GLOBAL_LEADERBOARD</h2>
-                <div class="flex justify-around mb-2 border-b border-green-500 pb-2" id="lb-tabs">
-                    <button class="text-sm bg-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
-                    <button class="text-sm" onclick="loadLeaderboard('tetris')">TETRIS</button>
-                    <button class="text-sm" onclick="loadLeaderboard('minesweeper')">MINESWEEPER</button>
-                    <button class="text-sm" onclick="loadLeaderboard('bricks')">BRICKS</button>
+            <!-- Таблица лидеров (Компактная справа) -->
+            <div class="panel w-96 p-4 flex flex-col h-full">
+                <h2 class="text-2xl mb-4 text-center border-b border-green-500 pb-2">LEADERBOARD</h2>
+                <div class="grid grid-cols-2 gap-2 mb-4" id="lb-tabs">
+                    <button class="text-sm py-1 bg-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
+                    <button class="text-sm py-1" onclick="loadLeaderboard('tetris')">TETRIS</button>
+                    <button class="text-sm py-1" onclick="loadLeaderboard('minesweeper')">MINESWEEP</button>
+                    <button class="text-sm py-1" onclick="loadLeaderboard('bricks')">BRICKS</button>
                 </div>
                 <div class="overflow-y-auto flex-1 mt-2">
                     <table class="leaderboard-table">
                         <thead>
-                            <tr><th>РАНК</th><th>ОПЕРАТОР</th><th>СЧЕТ</th></tr>
+                            <tr><th>#</th><th>ОПЕРАТОР</th><th>СЧЕТ</th></tr>
                         </thead>
                         <tbody id="leaderboard-body">
                             <tr><td colspan="3" class="text-center blink">LOADING...</td></tr>
@@ -217,34 +217,34 @@
 
     <!-- ЭКРАН ИГРЫ -->
     <div id="game-screen" class="screen items-center justify-center p-4">
-        <div class="panel p-6 flex flex-col items-center">
-            <div class="flex justify-between w-full mb-4">
-                <div class="text-xl">SCORE: <span id="score">0</span></div>
-                <div id="game-title" class="text-xl">GAME</div>
-                <div class="flex gap-2">
+        <div class="panel p-8 flex flex-col items-center max-w-5xl w-full">
+            <div class="flex justify-between w-full mb-6">
+                <div class="text-3xl">SCORE: <span id="score">0</span></div>
+                <div id="game-title" class="text-3xl">GAME</div>
+                <div class="flex gap-4">
                     <button onclick="togglePause()" style="color: yellow; border-color: yellow;">[ PAUSE ]</button>
                     <button onclick="exitGame()">[ TERMINATE ]</button>
                 </div>
             </div>
             
-            <div class="flex gap-4">
+            <div class="flex gap-8 items-start">
                 <div id="game-container" class="relative">
-                    <!-- Сюда рендерится Canvas или Grid игры -->
+                    <!-- Сюда рендерится увеличенный Canvas или Grid игры -->
                 </div>
                 <!-- Правая панель для Тетриса (Следующая фигура) -->
-                <div id="tetris-sidebar" style="display: none;" class="panel p-2 text-center h-fit">
-                    <div class="mb-2">NEXT:</div>
+                <div id="tetris-sidebar" style="display: none;" class="panel p-4 text-center">
+                    <div class="mb-4 text-xl">NEXT PIECE:</div>
                     <div id="next-piece-container" class="next-piece-grid"></div>
                 </div>
             </div>
 
             <div id="game-over-msg" class="game-over-text blink">ЗАЯВКА ПО ЭЦП ВНЕ ОЧЕРЕДИ</div>
             <div id="pause-msg" class="game-over-text blink" style="color: yellow; text-shadow: 0 0 10px yellow;">SYSTEM PAUSED</div>
-            <button id="restart-btn" class="mt-4 hidden" onclick="restartCurrentGame()">[ REBOOT ]</button>
+            <button id="restart-btn" class="mt-6 hidden text-2xl" onclick="restartCurrentGame()">[ REBOOT SYSTEM ]</button>
         </div>
     </div>
 
-    <!-- Firebase SDK (Modular v11.6.1) -->
+    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -262,14 +262,11 @@
         const app = initializeApp(firebaseConfig);
         window.db = getFirestore(app);
         window.auth = getAuth(app);
-
-        // Экспорт функций для использования в обычных <script> (onclick и т.д.)
         window.firebaseAPI = { collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile };
 
-        // Инициализация проверки авторизации
         window.firebaseAPI.onAuthStateChanged(window.auth, (user) => {
             if (user) {
-                document.getElementById('user-display-name').innerText = user.displayName || user.email.split('@')[0];
+                document.getElementById('user-display-name').innerText = `[${user.displayName || user.email.split('@')[0]}]`;
                 switchScreen('dashboard-screen');
                 loadLeaderboard('snake');
             } else {
@@ -278,9 +275,8 @@
         });
     </script>
 
-    <!-- Основная логика интерфейса и игр -->
+    <!-- Основная логика -->
     <script>
-        // --- AUTH & UI LOGIC ---
         function switchScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -292,35 +288,26 @@
             const password = document.getElementById('password').value;
             const errorEl = document.getElementById('auth-error');
             
-            if(!usernameInput) {
-                errorEl.innerText = "ОШИБКА: ЛОГИН ПУСТ";
-                return;
-            }
-
-            // МАГИЯ ЗДЕСЬ: Превращаем логин в фейковый email для Firebase
+            if(!usernameInput) { errorEl.innerText = "ОШИБКА: ЛОГИН ПУСТ"; return; }
             const fakeEmail = `${usernameInput.toLowerCase()}@support.corp`;
             
             errorEl.innerText = "ОБРАБОТКА...";
             try {
                 if (isRegister) {
                     const userCred = await window.firebaseAPI.createUserWithEmailAndPassword(window.auth, fakeEmail, password);
-                    // Сохраняем чистый логин в профиль пользователя
                     await window.firebaseAPI.updateProfile(userCred.user, { displayName: usernameInput });
                 } else {
                     await window.firebaseAPI.signInWithEmailAndPassword(window.auth, fakeEmail, password);
                 }
                 errorEl.innerText = "";
             } catch (error) {
-                console.error(error);
                 if(error.code === 'auth/email-already-in-use') errorEl.innerText = "ОШИБКА: ЛОГИН ЗАНЯТ";
                 else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') errorEl.innerText = "ОШИБКА: НЕВЕРНЫЙ ПАРОЛЬ";
                 else errorEl.innerText = "ОШИБКА: " + error.message;
             }
         }
 
-        async function logout() {
-            await window.firebaseAPI.signOut(window.auth);
-        }
+        async function logout() { await window.firebaseAPI.signOut(window.auth); }
 
         async function saveScore(gameName, score) {
             if (!window.auth.currentUser || score <= 0) return;
@@ -331,25 +318,20 @@
                     score: score,
                     timestamp: window.firebaseAPI.serverTimestamp()
                 });
-                loadLeaderboard(gameName); // Обновляем таблицу после сохранения
-            } catch (e) {
-                console.error("Error saving score: ", e);
-            }
+                loadLeaderboard(gameName); 
+            } catch (e) { console.error("Error saving score", e); }
         }
 
         let currentLbGame = 'snake';
         async function loadLeaderboard(gameName) {
             currentLbGame = gameName;
-            // Подсветка активного таба
             const tabs = document.getElementById('lb-tabs').children;
-            for(let tab of tabs) tab.style.background = 'transparent';
+            for(let tab of tabs) { tab.style.background = 'transparent'; tab.style.color = '#0f0'; }
             event?.target ? event.target.style.background = '#0f0' : tabs[0].style.background = '#0f0';
             event?.target ? event.target.style.color = '#000' : tabs[0].style.color = '#000';
-            for(let tab of tabs) if(tab.style.background === 'transparent') tab.style.color = '#0f0';
 
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = '<tr><td colspan="3" class="text-center blink">LOADING...</td></tr>';
-            
             try {
                 const q = window.firebaseAPI.query(
                     window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"),
@@ -365,13 +347,9 @@
                     rank++;
                 });
                 if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500">NO DATA FOUND</td></tr>';
-            } catch (e) {
-                console.error("Error loading LB: ", e);
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500">ERROR LOADING DB</td></tr>';
-            }
+            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500">ERROR LOADING DB</td></tr>'; }
         }
 
-        // --- GAME ENGINE ---
         let currentGame = null;
         let gameLoop = null;
         let score = 0;
@@ -407,42 +385,35 @@
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) {
-                togglePause();
-            }
+            if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause();
         });
 
         function gameOver() {
             isGameOver = true;
             document.getElementById('game-over-msg').style.display = 'block';
             document.getElementById('restart-btn').classList.remove('hidden');
-            if(gameLoop) { cancelAnimationFrame(gameLoop); clearTimeout(gameLoop); }
+            if(gameLoop) { cancelAnimationFrame(gameLoop); clearTimeout(gameLoop); clearInterval(gameLoop); }
             saveScore(currentGame, score);
         }
 
-        function restartCurrentGame() {
-            startGame(currentGame);
-        }
-
+        function restartCurrentGame() { startGame(currentGame); }
         function exitGame() {
-            if(gameLoop) { cancelAnimationFrame(gameLoop); clearTimeout(gameLoop); }
+            if(gameLoop) { cancelAnimationFrame(gameLoop); clearTimeout(gameLoop); clearInterval(gameLoop); }
             switchScreen('dashboard-screen');
         }
 
-        // --- SNAKE ---
+        // --- УВЕЛИЧЕННАЯ ЗМЕЙКА ---
         function initSnake(container) {
             const canvas = document.createElement('canvas');
-            canvas.width = 400; canvas.height = 400;
+            canvas.width = 500; canvas.height = 500; // Увеличено
             canvas.className = 'game-canvas';
             container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
-            const grid = 20;
+            const grid = 25; // Укрупненные ячейки
             let count = 0;
-            let snake = { x: 160, y: 160, dx: grid, dy: 0, cells: [], maxCells: 4 };
-            let apple = { x: 320, y: 320 };
-
-            // ОЧЕНЬ медленная скорость Змейки (60 кадров задержки)
-            const speedDelay = 30; 
+            let snake = { x: 200, y: 200, dx: grid, dy: 0, cells: [], maxCells: 4 };
+            let apple = { x: 375, y: 375 };
+            const speedDelay = 30; // Медленная скорость
 
             function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
 
@@ -458,7 +429,6 @@
                 if(currentGame !== 'snake') return;
                 gameLoop = requestAnimationFrame(loop);
                 if (isPaused || isGameOver) return;
-                
                 if (++count < speedDelay) return;
                 count = 0;
                 ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -477,11 +447,8 @@
                 snake.cells.forEach(function(cell, index) {
                     ctx.fillRect(cell.x, cell.y, grid-1, grid-1);
                     if (cell.x === apple.x && cell.y === apple.y) {
-                        snake.maxCells++;
-                        score += 10;
-                        document.getElementById('score').innerText = score;
-                        apple.x = getRandomInt(0, 20) * grid;
-                        apple.y = getRandomInt(0, 20) * grid;
+                        snake.maxCells++; score += 10; document.getElementById('score').innerText = score;
+                        apple.x = getRandomInt(0, 20) * grid; apple.y = getRandomInt(0, 20) * grid;
                     }
                     for (let i = index + 1; i < snake.cells.length; i++) {
                         if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) gameOver();
@@ -491,7 +458,7 @@
             gameLoop = requestAnimationFrame(loop);
         }
 
-        // --- TETRIS ---
+        // --- УВЕЛИЧЕННЫЙ ТЕТРИС ---
         function initTetris(container) {
             const grid = document.createElement('div');
             grid.className = 'tetris-grid';
@@ -519,8 +486,7 @@
             const iTetromino = [[1,width+1,width*2+1,width*3+1],[width,width+1,width+2,width+3],[1,width+1,width*2+1,width*3+1],[width,width+1,width+2,width+3]];
             const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
             
-            let currentPosition = 4;
-            let currentRotation = 0;
+            let currentPosition = 4; let currentRotation = 0;
             let random = Math.floor(Math.random()*theTetrominoes.length);
             let nextRandom = Math.floor(Math.random()*theTetrominoes.length);
             let current = theTetrominoes[random][currentRotation];
@@ -531,13 +497,9 @@
             function displayNextPiece() {
                 nextPieceCells.forEach(cell => cell.classList.remove('filled'));
                 const nextTetromino = theTetrominoes[nextRandom][0];
-                const displayWidth = 4;
-                let offset = 0;
-                if(nextRandom === 3) offset = 1; // Центровка квадрата
+                let offset = nextRandom === 3 ? 1 : 0;
                 nextTetromino.forEach(index => {
-                    let y = Math.floor(index/width);
-                    let x = index % width;
-                    let nextIndex = (y * displayWidth) + x + offset;
+                    let nextIndex = (Math.floor(index/width) * 4) + (index % width) + offset;
                     if(nextPieceCells[nextIndex]) nextPieceCells[nextIndex].classList.add('filled');
                 });
             }
@@ -555,55 +517,26 @@
 
             function moveDown() {
                 if (isPaused || isGameOver) return;
-                undraw();
-                currentPosition += width;
-                draw();
-                freeze();
+                undraw(); currentPosition += width; draw(); freeze();
             }
 
             function freeze() {
                 if(current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) {
                     current.forEach(index => cells[currentPosition + index].classList.add('taken'));
-                    random = nextRandom;
-                    nextRandom = Math.floor(Math.random()*theTetrominoes.length);
+                    random = nextRandom; nextRandom = Math.floor(Math.random()*theTetrominoes.length);
                     current = theTetrominoes[random][currentRotation];
-                    currentPosition = 4;
-                    displayNextPiece();
-                    draw();
-                    addScore();
-                    if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) {
-                        gameOver();
-                    }
+                    currentPosition = 4; displayNextPiece(); draw(); addScore();
+                    if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) gameOver();
                 }
             }
-
-            function moveLeft() {
-                undraw();
-                const isAtLeftEdge = current.some(index => (currentPosition + index) % width === 0);
-                if(!isAtLeftEdge) currentPosition -=1;
-                if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition +=1;
-                draw();
-            }
-            function moveRight() {
-                undraw();
-                const isAtRightEdge = current.some(index => (currentPosition + index) % width === width -1);
-                if(!isAtRightEdge) currentPosition +=1;
-                if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition -=1;
-                draw();
-            }
-            function rotate() {
-                undraw();
-                currentRotation ++;
-                if(currentRotation === current.length) currentRotation = 0;
-                current = theTetrominoes[random][currentRotation];
-                draw();
-            }
+            function moveLeft() { undraw(); if(!current.some(index => (currentPosition + index) % width === 0)) currentPosition -=1; if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition +=1; draw(); }
+            function moveRight() { undraw(); if(!current.some(index => (currentPosition + index) % width === width -1)) currentPosition +=1; if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition -=1; draw(); }
+            function rotate() { undraw(); currentRotation = (currentRotation + 1) % current.length; current = theTetrominoes[random][currentRotation]; draw(); }
             function addScore() {
                 for (let i = 0; i < 199; i +=width) {
                     const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9];
                     if(row.every(index => cells[index].classList.contains('taken'))) {
-                        score += 100;
-                        document.getElementById('score').innerText = score;
+                        score += 100; document.getElementById('score').innerText = score;
                         row.forEach(index => { cells[index].classList.remove('taken'); cells[index].classList.remove('filled'); });
                         const squaresRemoved = cells.splice(i, width);
                         cells = squaresRemoved.concat(cells);
@@ -611,148 +544,105 @@
                     }
                 }
             }
-            gameLoop = setInterval(() => { if(!isPaused && !isGameOver) moveDown(); }, 800); // Медленная скорость Тетриса
+            gameLoop = setInterval(() => { if(!isPaused && !isGameOver) moveDown(); }, 800);
         }
 
-        // --- MINESWEEPER ---
+        // --- УВЕЛИЧЕННЫЙ САПЕР ---
         function initMinesweeper(container) {
             const grid = document.createElement('div');
             grid.className = 'minesweeper-grid';
             container.appendChild(grid);
             
-            const width = 10;
-            const bombAmount = 10;
-            let squares = [];
-            let isFirstClick = true;
-            let bombsFlagged = 0;
-
-            // Создаем поле
-            const bombsArray = Array(bombAmount).fill('bomb');
-            const emptyArray = Array(width*width - bombAmount).fill('valid');
-            const gameArray = emptyArray.concat(bombsArray).sort(() => Math.random() - 0.5);
+            const width = 10; const bombAmount = 10; let squares = [];
+            const gameArray = Array(width*width - bombAmount).fill('valid').concat(Array(bombAmount).fill('bomb')).sort(() => Math.random() - 0.5);
 
             for(let i=0; i<width*width; i++) {
                 const square = document.createElement('div');
                 square.setAttribute('id', i);
-                square.classList.add('ms-cell');
-                square.classList.add(gameArray[i]);
+                square.classList.add('ms-cell', gameArray[i]);
                 grid.appendChild(square);
                 squares.push(square);
 
-                // Левый клик (Открыть)
                 square.addEventListener('click', function(e) {
-                    if(isPaused || isGameOver) return;
-                    if(square.classList.contains('flagged')) return;
+                    if(isPaused || isGameOver || square.classList.contains('flagged')) return;
                     click(square);
                 });
 
-                // Правый клик (Флажок)
                 square.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
-                    if(isPaused || isGameOver) return;
-                    if(!square.classList.contains('revealed')) {
-                        if(!square.classList.contains('flagged')) {
-                            square.classList.add('flagged');
-                            square.innerText = '🚩';
-                            bombsFlagged++;
-                        } else {
-                            square.classList.remove('flagged');
-                            square.innerText = '';
-                            bombsFlagged--;
-                        }
-                    }
+                    if(isPaused || isGameOver || square.classList.contains('revealed')) return;
+                    if(!square.classList.contains('flagged')) { square.classList.add('flagged'); square.innerText = '🚩'; } 
+                    else { square.classList.remove('flagged'); square.innerText = ''; }
                 });
             }
 
             for(let i=0; i<squares.length; i++) {
                 let total = 0;
-                const isLeftEdge = (i % width === 0);
-                const isRightEdge = (i % width === width - 1);
-
+                const isLeftEdge = (i % width === 0); const isRightEdge = (i % width === width - 1);
                 if(squares[i].classList.contains('valid')) {
-                    if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('bomb')) total ++;
-                    if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('bomb')) total ++;
-                    if (i > 10 && squares[i -width].classList.contains('bomb')) total ++;
-                    if (i > 11 && !isLeftEdge && squares[i -1 -width].classList.contains('bomb')) total ++;
-                    if (i < 98 && !isRightEdge && squares[i +1].classList.contains('bomb')) total ++;
-                    if (i < 90 && !isLeftEdge && squares[i -1 +width].classList.contains('bomb')) total ++;
-                    if (i < 88 && !isRightEdge && squares[i +1 +width].classList.contains('bomb')) total ++;
-                    if (i < 89 && squares[i +width].classList.contains('bomb')) total ++;
+                    if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('bomb')) total++;
+                    if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('bomb')) total++;
+                    if (i > 10 && squares[i -width].classList.contains('bomb')) total++;
+                    if (i > 11 && !isLeftEdge && squares[i -1 -width].classList.contains('bomb')) total++;
+                    if (i < 98 && !isRightEdge && squares[i +1].classList.contains('bomb')) total++;
+                    if (i < 90 && !isLeftEdge && squares[i -1 +width].classList.contains('bomb')) total++;
+                    if (i < 88 && !isRightEdge && squares[i +1 +width].classList.contains('bomb')) total++;
+                    if (i < 89 && squares[i +width].classList.contains('bomb')) total++;
                     squares[i].setAttribute('data', total);
                 }
             }
 
             function click(square) {
-                if (square.classList.contains('revealed') || square.classList.contains('flagged')) return;
+                if (square.classList.contains('revealed')) return;
                 if (square.classList.contains('bomb')) { gameOver(); return; }
-                
                 let total = square.getAttribute('data');
                 if (total != 0) {
-                    square.classList.add('revealed');
-                    square.innerHTML = total;
-                    score += parseInt(total);
-                    document.getElementById('score').innerText = score;
-                    return;
+                    square.classList.add('revealed'); square.innerHTML = total;
+                    score += parseInt(total); document.getElementById('score').innerText = score; return;
                 }
                 checkSquare(square, square.id);
-                square.classList.add('revealed');
-                score += 1;
-                document.getElementById('score').innerText = score;
+                square.classList.add('revealed'); score += 1; document.getElementById('score').innerText = score;
             }
 
             function checkSquare(square, currentId) {
-                const isLeftEdge = (currentId % width === 0);
-                const isRightEdge = (currentId % width === width -1);
-                
+                const isLeft = (currentId % width === 0); const isRight = (currentId % width === width -1);
                 setTimeout(() => {
-                    if (currentId > 0 && !isLeftEdge) click(document.getElementById(parseInt(currentId) -1));
-                    if (currentId > 9 && !isRightEdge) click(document.getElementById(parseInt(currentId) +1 -width));
+                    if (currentId > 0 && !isLeft) click(document.getElementById(parseInt(currentId) -1));
+                    if (currentId > 9 && !isRight) click(document.getElementById(parseInt(currentId) +1 -width));
                     if (currentId > 10) click(document.getElementById(parseInt(currentId -width)));
-                    if (currentId > 11 && !isLeftEdge) click(document.getElementById(parseInt(currentId) -1 -width));
-                    if (currentId < 98 && !isRightEdge) click(document.getElementById(parseInt(currentId) +1));
-                    if (currentId < 90 && !isLeftEdge) click(document.getElementById(parseInt(currentId) -1 +width));
-                    if (currentId < 88 && !isRightEdge) click(document.getElementById(parseInt(currentId) +1 +width));
+                    if (currentId > 11 && !isLeft) click(document.getElementById(parseInt(currentId) -1 -width));
+                    if (currentId < 98 && !isRight) click(document.getElementById(parseInt(currentId) +1));
+                    if (currentId < 90 && !isLeft) click(document.getElementById(parseInt(currentId) -1 +width));
+                    if (currentId < 88 && !isRight) click(document.getElementById(parseInt(currentId) +1 +width));
                     if (currentId < 89) click(document.getElementById(parseInt(currentId) +width));
                 }, 10);
             }
         }
 
-        // --- BRICKS BREAKER ---
+        // --- УВЕЛИЧЕННЫЙ BRICKS BREAKER ---
         function initBricks(container) {
             const canvas = document.createElement('canvas');
-            canvas.width = 400; canvas.height = 500;
+            canvas.width = 500; canvas.height = 600; // Увеличено
             canvas.className = 'game-canvas';
             container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
 
-            let ballRadius = 5;
-            let x = canvas.width/2;
-            let y = canvas.height-30;
-            let dx = 3;
-            let dy = -3;
+            let ballRadius = 6;
+            let x = canvas.width/2; let y = canvas.height-40;
+            let dx = 4; let dy = -4;
             
-            let paddleHeight = 10;
-            let paddleWidth = 75;
+            let paddleHeight = 12; let paddleWidth = 100;
             let paddleX = (canvas.width-paddleWidth)/2;
-            let rightPressed = false;
-            let leftPressed = false;
+            let rightPressed = false; let leftPressed = false;
 
-            let brickRowCount = 5;
-            let brickColumnCount = 7;
-            let brickWidth = 50;
-            let brickHeight = 20;
-            let brickPadding = 5;
-            let brickOffsetTop = 30;
-            let brickOffsetLeft = 10;
+            let brickRowCount = 6; let brickColumnCount = 7;
+            let brickWidth = 60; let brickHeight = 25;
+            let brickPadding = 10; let brickOffsetTop = 40; let brickOffsetLeft = 15;
 
             let bricks = [];
             for(let c=0; c<brickColumnCount; c++) {
                 bricks[c] = [];
-                for(let r=0; r<brickRowCount; r++) {
-                    // Случайное здоровье от 1 до 5
-                    let health = Math.floor(Math.random() * 5) + 1;
-                    bricks[c][r] = { x: 0, y: 0, status: health };
-                }
+                for(let r=0; r<brickRowCount; r++) bricks[c][r] = { x: 0, y: 0, status: Math.floor(Math.random() * 5) + 1 };
             }
 
             document.addEventListener("keydown", (e) => {
@@ -764,102 +654,56 @@
                 else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = false;
             }, false);
 
-            function drawBall() {
-                ctx.beginPath();
-                ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-                ctx.fillStyle = "#fff";
-                ctx.fill();
-                ctx.closePath();
-            }
-
-            function drawPaddle() {
-                ctx.beginPath();
-                ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-                ctx.fillStyle = "#0f0";
-                ctx.fill();
-                ctx.closePath();
-            }
-
-            function getBrickColor(health) {
-                if(health === 1) return "#00ff00"; // Зеленый
-                if(health === 2) return "#ffff00"; // Желтый
-                if(health === 3) return "#ffa500"; // Оранжевый
-                if(health === 4) return "#ff0000"; // Красный
-                return "#00ffff"; // Голубой
-            }
-
-            function drawBricks() {
-                for(let c=0; c<brickColumnCount; c++) {
-                    for(let r=0; r<brickRowCount; r++) {
-                        let b = bricks[c][r];
-                        if(b.status > 0) {
-                            let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-                            let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-                            b.x = brickX;
-                            b.y = brickY;
-                            
-                            ctx.beginPath();
-                            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                            ctx.fillStyle = getBrickColor(b.status);
-                            ctx.fill();
-                            ctx.closePath();
-
-                            // Рисуем цифру внутри
-                            ctx.fillStyle = "#000";
-                            ctx.font = "12px VT323";
-                            ctx.textAlign = "center";
-                            ctx.fillText(b.status, brickX + brickWidth/2, brickY + 14);
-                        }
-                    }
-                }
-            }
-
-            function collisionDetection() {
-                for(let c=0; c<brickColumnCount; c++) {
-                    for(let r=0; r<brickRowCount; r++) {
-                        let b = bricks[c][r];
-                        if(b.status > 0) {
-                            if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
-                                dy = -dy;
-                                b.status--;
-                                score += 5;
-                                document.getElementById('score').innerText = score;
-                            }
-                        }
-                    }
-                }
+            function getBrickColor(h) {
+                if(h===1) return "#00ff00"; if(h===2) return "#ffff00"; if(h===3) return "#ffa500"; if(h===4) return "#ff0000"; return "#00ffff";
             }
 
             function draw() {
                 if(currentGame !== 'bricks') return;
                 gameLoop = requestAnimationFrame(draw);
                 if (isPaused || isGameOver) return;
-
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawBricks();
-                drawBall();
-                drawPaddle();
-                collisionDetection();
-
-                if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) dx = -dx;
-                if(y + dy < ballRadius) dy = -dy;
-                else if(y + dy > canvas.height-ballRadius) {
-                    if(x > paddleX && x < paddleX + paddleWidth) {
-                        dy = -dy;
-                        // Немного меняем угол отскока в зависимости от места удара о ракетку
-                        dx = 3 * ((x - (paddleX + paddleWidth/2)) / (paddleWidth/2));
+                
+                // Отрисовка блоков
+                for(let c=0; c<brickColumnCount; c++) {
+                    for(let r=0; r<brickRowCount; r++) {
+                        let b = bricks[c][r];
+                        if(b.status > 0) {
+                            let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                            let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                            b.x = brickX; b.y = brickY;
+                            ctx.beginPath(); ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                            ctx.fillStyle = getBrickColor(b.status); ctx.fill(); ctx.closePath();
+                            ctx.fillStyle = "#000"; ctx.font = "16px VT323"; ctx.textAlign = "center";
+                            ctx.fillText(b.status, brickX + brickWidth/2, brickY + 18);
+                        }
                     }
-                    else {
-                        gameOver();
-                        return;
+                }
+                
+                // Отрисовка шарика и ракетки
+                ctx.beginPath(); ctx.arc(x, y, ballRadius, 0, Math.PI*2); ctx.fillStyle = "#fff"; ctx.fill(); ctx.closePath();
+                ctx.beginPath(); ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight); ctx.fillStyle = "#0f0"; ctx.fill(); ctx.closePath();
+                
+                // Столкновения с блоками
+                for(let c=0; c<brickColumnCount; c++) {
+                    for(let r=0; r<brickRowCount; r++) {
+                        let b = bricks[c][r];
+                        if(b.status > 0 && x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                            dy = -dy; b.status--; score += 5; document.getElementById('score').innerText = score;
+                        }
                     }
                 }
 
-                if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 5;
-                else if(leftPressed && paddleX > 0) paddleX -= 5;
-
-                x += dx;
-                y += dy;
+                // Столкновения со стенами
+                if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) dx = -dx;
+                if(y + dy < ballRadius) dy = -dy;
+                else if(y + dy > canvas.height-ballRadius) {
+                    if(x > paddleX && x < paddleX + paddleWidth) dx = 4 * ((x - (paddleX + paddleWidth/2)) / (paddleWidth/2)), dy = -dy;
+                    else { gameOver(); return; }
+                }
+                if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 6;
+                else if(leftPressed && paddleX > 0) paddleX -= 6;
+                x += dx; y += dy;
             }
             draw();
         }
