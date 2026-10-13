@@ -20,16 +20,7 @@
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* --- ФОНОВЫЙ КАНВАС ДЛЯ АНИМАЦИИ (ТЕПЕРЬ БОЛЕЕ СПОКОЙНЫЙ) --- */
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.35; /* Снижена прозрачность, чтобы не мельтешило */
-            transition: opacity 0.5s ease;
-        }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; opacity: 0.35; transition: opacity 0.5s ease; }
 
         /* --- DARK THEME --- */
         .crt::before {
@@ -63,11 +54,10 @@
         body.light-theme .text-yellow-400 { color: #dd6b20; font-weight: bold;}
         body.light-theme .game-canvas { border-color: #a0aec0; background-color: #1a202c; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-radius: 8px;}
         
-        body.light-theme .minesweeper-grid, body.light-theme .tetris-grid, body.light-theme .next-piece-grid { background: #a0aec0; border-color: #a0aec0; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+        body.light-theme .minesweeper-grid { background: #a0aec0; border-color: #a0aec0; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
         body.light-theme .ms-cell { background: #e2e8f0; box-shadow: inset 0 0 4px rgba(0,0,0,0.1); color: #2d3748; }
         body.light-theme .ms-cell:hover { background: #cbd5e0; }
         body.light-theme .ms-cell.revealed { background: #f7fafc; box-shadow: none; }
-        body.light-theme .tetris-cell { background: #edf2f7; }
         
         body.light-theme #game-over-overlay { background: rgba(226, 232, 240, 0.95); backdrop-filter: blur(5px); box-shadow: inset 0 0 100px rgba(229, 62, 62, 0.15); }
 
@@ -99,7 +89,7 @@
         .game-card:hover svg { animation: iconBounce 0.6s ease-in-out infinite; }
 
         .game-over-huge-text {
-            color: #f00; text-shadow: 0 0 20px #f00, 2px 2px 0px #00f, -2px -2px 0px #0f0; font-size: 5rem; text-align: center; border: 4px solid #f00; padding: 40px; 
+            color: #f00; text-shadow: 0 0 20px #f00, 2px 2px 0px #00f, -2px -2px 0px #0f0; font-size: 5rem; text-align: center; border: 4px solid currentColor; padding: 40px; 
             background: rgba(255,0,0,0.1); text-transform: uppercase; animation: glitch-anim 0.15s linear infinite;
         }
         body.light-theme .game-over-huge-text { color: #e53e3e; border-color: #e53e3e; text-shadow: 3px 3px 0px rgba(0,0,0,0.05); background: rgba(229, 62, 62, 0.05); }
@@ -116,15 +106,6 @@
         .ms-cell { width: 40px; height: 40px; background: #002200; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; font-weight: bold; user-select: none; box-shadow: inset 0 0 5px #0f0; transition: all 0.1s;}
         .ms-cell:hover { background: #004400; }
         .ms-cell.revealed { background: #000; box-shadow: none; cursor: default; }
-        .tetris-grid { display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(20, 1fr); gap: 1px; background: #0f0; border: 2px solid #0f0; width: 300px; height: 600px; margin: 0 auto; transition: all 0.3s;}
-        .tetris-cell { background: #002200; transition: background-color 0.1s; }
-        .next-piece-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 1px; background: #0f0; width: 120px; height: 120px; margin: 0 auto; transition: all 0.3s;}
-        
-        .t-c-0 { background: #FF3366 !important; box-shadow: inset 0 0 10px rgba(255,51,102,0.8) !important; } 
-        .t-c-1 { background: #33CCFF !important; box-shadow: inset 0 0 10px rgba(51,204,255,0.8) !important; } 
-        .t-c-2 { background: #9933FF !important; box-shadow: inset 0 0 10px rgba(153,51,255,0.8) !important; } 
-        .t-c-3 { background: #FFFF33 !important; box-shadow: inset 0 0 10px rgba(255,255,51,0.8) !important; } 
-        .t-c-4 { background: #33FF33 !important; box-shadow: inset 0 0 10px rgba(51,255,51,0.8) !important; } 
 
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
@@ -167,7 +148,7 @@
     <div id="auth-screen" class="screen active items-center justify-center p-4">
         <div class="panel p-10 max-w-lg w-full text-center fade-in-up">
             <h1 class="text-6xl mb-4 typewriter w-fit pulse-text">SUPPORT.OS</h1>
-            <p class="mb-8 text-xl opacity-80 delay-1 fade-in-up" style="animation-fill-mode: forwards;">v8.5 / SECURE LOGIN</p>
+            <p class="mb-8 text-xl opacity-80 delay-1 fade-in-up" style="animation-fill-mode: forwards;">v9.0 / SECURE LOGIN</p>
             <form id="auth-form" onsubmit="handleAuth(event)" class="delay-2 fade-in-up" style="animation-fill-mode: forwards;">
                 <input type="text" id="username" placeholder="Логин инженера" required>
                 <input type="password" id="password" placeholder="Пароль доступа" required minlength="6">
@@ -179,85 +160,77 @@
         </div>
     </div>
 
-    <!-- ДАШБОРД (ИГРЫ ПО ЦЕНТРУ, ЛИДЕРЫ СПРАВА) -->
-    <div id="dashboard-screen" class="screen flex-col p-6 h-full w-full max-w-[1600px] mx-auto">
-        
-        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
-        <header class="panel flex justify-between items-center p-4 mb-6 fade-in-up z-10">
-            <div class="text-4xl font-bold pulse-text flex items-center gap-4">
-                SUPPORT.OS
-                <span class="text-2xl text-yellow-400 font-normal mt-1 opacity-90">[ OP: <span id="user-display-name"></span> ]</span>
-            </div>
-            <div class="flex gap-4">
-                <button onclick="toggleTheme()" id="theme-btn" class="text-lg px-6 hover:bg-gray-500 hover:text-white transition-colors">[ THEME: DARK ]</button>
-                <button onclick="logout()" class="text-lg px-6 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors">[ LOGOUT ]</button>
-            </div>
-        </header>
-
-        <div class="flex gap-6 h-full overflow-hidden pb-6 w-full">
-            <!-- Выбор игры (ГЛАВНЫЙ ФОКУС) -->
-            <main class="panel flex-1 p-8 flex flex-col items-center justify-center relative fade-in-up delay-1">
-                <h2 class="text-5xl mb-10 border-b-2 border-green-500 pb-4 pulse-text">RELAXATION_PROTOCOL</h2>
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
-                    <button onclick="startGame('snake')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
+    <!-- ДАШБОРД -->
+    <div id="dashboard-screen" class="screen h-full w-full">
+        <div class="flex h-full w-full gap-6 p-6 max-w-[1600px] mx-auto">
+            <!-- ЛЕВАЯ ПАНЕЛЬ: НАВИГАЦИЯ -->
+            <aside class="panel w-80 lg:w-96 flex flex-col p-6 shrink-0 fade-in-up">
+                <div class="border-b-2 border-green-500 pb-6 mb-6 text-center">
+                    <h1 class="text-5xl font-bold pulse-text mb-2 typewriter w-fit mx-auto">SUPPORT.OS</h1>
+                    <div class="text-2xl text-yellow-400 mt-4">OP: <span id="user-display-name"></span></div>
+                </div>
+                <h3 class="text-xl opacity-70 mb-4 pl-2">/EXECUTABLES</h3>
+                <nav class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3">
+                    <button onclick="startGame('snake')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
                         <span>SNAKE.sh</span>
                     </button>
-                    <button onclick="startGame('tetris')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
+                    <button onclick="startGame('tetris')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
                         <span>TETRIS.bat</span>
                     </button>
-                    <button onclick="startGame('minesweeper')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-12 h-12 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
-                        <span>MINESWEEP</span>
+                    <button onclick="startGame('minesweeper')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-8 h-8 fill-none stroke-current shrink-0" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
+                        <span>MINESWEEP.exe</span>
                     </button>
-                    <button onclick="startGame('bricks')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-12 h-12 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
+                    <button onclick="startGame('bricks')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-8 h-8 fill-none stroke-current shrink-0" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
                         <span>BRICKS.exe</span>
                     </button>
-                    <button onclick="startGame('dino')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
+                    <button onclick="startGame('dino')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
                         <span>DINO.exe</span>
                     </button>
-                    <button onclick="startGame('survivor')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
+                    <button onclick="startGame('survivor')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
                         <span>SURVIVOR.app</span>
                     </button>
+                </nav>
+                <div class="pt-6 border-t-2 border-green-500 mt-4 flex flex-col gap-3">
+                    <button onclick="toggleTheme()" id="theme-btn" class="w-full text-xl py-3 border-gray-500 hover:bg-gray-500 hover:text-white transition-colors">[ THEME: DARK ]</button>
+                    <button onclick="logout()" class="w-full text-xl py-3 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors">[ LOGOUT ]</button>
                 </div>
-            </main>
+            </aside>
 
-            <!-- Таблица лидеров (СБОКУ) -->
-            <aside class="panel w-[450px] p-6 flex flex-col h-full shrink-0 fade-in-up delay-2">
-                <div class="flex justify-between items-center border-b-2 border-green-500 pb-4 mb-4">
-                    <h2 class="text-3xl">LEADERBOARD</h2>
-                    <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-white" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
+            <!-- ПРАВАЯ ПАНЕЛЬ: ТАБЛИЦА ЛИДЕРОВ -->
+            <main class="panel flex-1 flex flex-col p-8 fade-in-up delay-1 overflow-hidden">
+                <div class="flex justify-between items-center mb-8 border-b border-green-500 pb-4">
+                    <h2 class="text-5xl pulse-text font-bold">GLOBAL_LEADERBOARD</h2>
+                    <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
                 </div>
-                
-                <!-- Сетка вкладок таблицы 3x2 -->
-                <div class="grid grid-cols-3 gap-2 mb-4" id="lb-tabs">
-                    <button class="text-sm py-2 px-2 bg-green-900 !text-white border-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('tetris')">TETRIS</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('minesweeper')">MINES</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('bricks')">BRICKS</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('dino')">DINO</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('survivor')">SURVIVOR</button>
+                <div class="flex flex-wrap gap-2 mb-6" id="lb-tabs">
+                    <button class="text-xl py-2 px-6 bg-green-900 !text-white border-green-900 rounded-t-lg" onclick="loadLeaderboard('snake')">SNAKE</button>
+                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('tetris')">TETRIS</button>
+                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('minesweeper')">MINES</button>
+                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('bricks')">BRICKS</button>
+                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('dino')">DINO</button>
+                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('survivor')">SURVIVOR</button>
                 </div>
-                
-                <div class="overflow-y-auto flex-1 table-wrapper p-4">
+                <div class="overflow-y-auto flex-1 table-wrapper p-6 rounded-b-lg rounded-tr-lg">
                     <table class="leaderboard-table w-full">
                         <thead>
                             <tr>
-                                <th class="w-16">#</th>
-                                <th>ОПЕРАТОР</th>
-                                <th class="text-right">СЧЕТ</th>
+                                <th class="w-24">РАНК</th>
+                                <th>ИМЯ ОПЕРАТОРА</th>
+                                <th class="text-right">ЛУЧШИЙ СЧЕТ</th>
                             </tr>
                         </thead>
                         <tbody id="leaderboard-body">
-                            <tr><td colspan="3" class="text-center blink text-xl pt-6">LOADING...</td></tr>
+                            <tr><td colspan="3" class="text-center blink text-2xl pt-10">ОЖИДАНИЕ ДАННЫХ...</td></tr>
                         </tbody>
                     </table>
                 </div>
-            </aside>
+            </main>
         </div>
     </div>
 
@@ -274,22 +247,24 @@
         
         <main class="flex-1 flex justify-center items-center relative fade-in-up delay-1">
             <div class="flex gap-8 items-start relative z-10">
-                <div id="game-container" class="relative shadow-2xl rounded-lg overflow-hidden"></div>
+                <!-- Контейнер для Canvas -->
+                <div id="game-container" class="relative shadow-2xl rounded-lg overflow-hidden flex justify-center items-center"></div>
                 <div id="floating-scores-layer" class="absolute top-0 left-0 w-full h-full pointer-events-none z-30"></div>
 
+                <!-- Сайдбар для Тетриса -->
                 <div id="tetris-sidebar" style="display: none;" class="panel p-6 text-center shadow-xl">
                     <div class="mb-4 text-2xl border-b border-green-500 pb-2">NEXT PIECE</div>
-                    <div id="next-piece-container" class="next-piece-grid mt-6"></div>
+                    <div id="next-piece-container" class="mt-6 flex justify-center items-center"></div>
                 </div>
             </div>
-            <!-- Глобальный оверлей паузы -->
+            <!-- Оверлей паузы -->
             <div id="pause-msg" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl blink z-50 bg-black/90 p-12 border-4 border-yellow-500 rounded-2xl shadow-[0_0_50px_rgba(214,158,46,0.5)]" style="display:none; color: #d69e2e;">SYSTEM PAUSED</div>
         </main>
     </div>
 
-    <!-- ПОЛНОЭКРАННЫЙ ОВЕРЛЕЙ ПРОИГРЫША -->
+    <!-- ПОЛНОЭКРАННЫЙ ОВЕРЛЕЙ ПРОИГРЫША / ПОБЕДЫ -->
     <div id="game-over-overlay">
-        <div class="game-over-huge-text">ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ</div>
+        <div id="game-over-huge-text" class="game-over-huge-text">ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ</div>
         <div class="mt-8 text-4xl opacity-80">FINAL SCORE: <span id="final-score-display" class="font-bold" style="opacity: 1 !important;">0</span></div>
         <div class="flex gap-6 mt-12">
             <button onclick="restartCurrentGame()" class="text-3xl border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-4 px-8 glitch-hover transition-colors">[ REBOOT SYSTEM ]</button>
@@ -297,7 +272,7 @@
         </div>
     </div>
 
-    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ (ЗАМЕДЛЕННАЯ) -->
+    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ -->
     <script>
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
@@ -307,12 +282,10 @@
         const drops = []; for(let x = 0; x < columns; x++) drops[x] = 1;
         
         function drawBg() {
-            // Быстрее зачищаем шлейф, чтобы не было "каши"
             bgCtx.fillStyle = document.body.classList.contains('light-theme') ? 'rgba(203, 213, 224, 0.15)' : 'rgba(0, 0, 0, 0.15)';
             bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
             bgCtx.fillStyle = document.body.classList.contains('light-theme') ? '#a0aec0' : '#0f0';
             bgCtx.font = fontSize + 'px monospace';
-            
             for(let i = 0; i < drops.length; i++) {
                 const text = chars[Math.floor(Math.random() * chars.length)];
                 bgCtx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -320,7 +293,6 @@
                 drops[i]++;
             }
         }
-        // Интервал увеличен с 50ms до 120ms для более спокойного движения
         setInterval(drawBg, 120);
         window.addEventListener('resize', () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; });
     </script>
@@ -358,7 +330,7 @@
     </script>
 
     <script>
-        // ИДЕАЛЬНАЯ ОЧИСТКА ПАМЯТИ И ФИКС ФАНТОМНЫХ ИГР
+        // ИДЕАЛЬНАЯ ОЧИСТКА ПАМЯТИ
         let activeGameListeners = [];
         window.currentRunId = 0; 
 
@@ -438,7 +410,7 @@
             if (isLightMode) { activeTab.style.background = '#38b2ac'; activeTab.style.borderColor = '#38b2ac'; }
             else { activeTab.style.background = '#14532d'; activeTab.style.borderColor = '#14532d'; } 
 
-            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-xl pt-6">LOADING...</td></tr>';
+            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-2xl pt-10">LOADING...</td></tr>';
             try {
                 const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), window.firebaseAPI.orderBy("score", "desc"), window.firebaseAPI.limit(20));
                 const querySnapshot = await window.firebaseAPI.getDocs(q);
@@ -448,11 +420,11 @@
                     tbody.innerHTML += `<tr class="border-b border-green-500/30">
                         <td class="font-bold text-yellow-400">#${rank}</td>
                         <td class="font-bold">${data.username}</td>
-                        <td class="text-right font-bold text-xl">${data.score}</td>
+                        <td class="text-right font-bold text-2xl">${data.score}</td>
                     </tr>`; rank++;
                 });
-                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-6">NO DATA FOUND</td></tr>';
-            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-6">ERROR LOADING DB</td></tr>'; }
+                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-10">NO DATA FOUND</td></tr>';
+            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-10">ERROR LOADING DB</td></tr>'; }
         }
 
         async function resetLeaderboard() {
@@ -499,107 +471,72 @@
             if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause(); 
         });
 
-        function gameOver() {
-            isGameOver = true; document.getElementById('final-score-display').innerText = score; document.getElementById('game-over-overlay').style.display = 'flex';
+        // ИЗМЕНЕНИЕ: Функция gameOver теперь принимает параметр победы (для Сапера)
+        function gameOver(isWin = false) {
+            isGameOver = true; 
+            document.getElementById('final-score-display').innerText = score; 
+            
+            const overlay = document.getElementById('game-over-overlay');
+            const titleText = document.getElementById('game-over-huge-text');
+            
+            if (isWin) {
+                titleText.innerHTML = 'СИСТЕМА<br>ОЧИЩЕНА';
+                titleText.style.color = '#38b2ac'; // Бирюзовый цвет для победы
+                titleText.style.borderColor = '#38b2ac';
+                titleText.style.textShadow = '0 0 20px #38b2ac, 2px 2px 0px #fff, -2px -2px 0px #0f0';
+            } else {
+                titleText.innerHTML = 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ';
+                titleText.style.color = ''; // Сброс к CSS классу (Красный)
+                titleText.style.borderColor = '';
+                titleText.style.textShadow = '';
+            }
+            
+            overlay.style.display = 'flex';
             saveScore(currentGame, score);
         }
+        
         function restartCurrentGame() { window.currentRunId = Date.now(); document.getElementById('game-over-overlay').style.display = 'none'; startGame(currentGame); }
         function exitGame() { window.currentRunId = Date.now(); document.getElementById('game-over-overlay').style.display = 'none'; switchScreen('dashboard-screen'); }
 
-        // --- DINO ---
-        function initDino(container) {
-            const myRun = window.currentRunId; 
-            const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 350; canvas.className = 'game-canvas w-full h-full'; container.appendChild(canvas);
-            const ctx = canvas.getContext('2d');
-            let gameSpeed = 1.8; let scoreCounter = 0;
-            let dino = { x: 50, y: 200, w: 30, h: 40, dy: 0, gravity: 0.5, jumpPower: -14, grounded: true, ducking: false };
-            let obstacles = []; const groundY = 280; let spawnTimer = 100;
-
-            addGameListener('keydown', (e) => {
-                if(currentGame !== 'dino' || isPaused || isGameOver) return;
-                if ((e.code === 'Space' || e.code === 'ArrowUp') && dino.grounded) { dino.dy = dino.jumpPower; dino.grounded = false; }
-                if (e.code === 'ArrowDown') { dino.ducking = true; dino.h = 20; if(dino.grounded) dino.y = groundY - dino.h; }
-            });
-            addGameListener('keyup', (e) => {
-                if(currentGame !== 'dino' || isPaused || isGameOver) return;
-                if (e.code === 'ArrowDown') { dino.ducking = false; dino.h = 40; if(dino.grounded) dino.y = groundY - dino.h; }
-            });
-
-            function loop() {
-                if (myRun !== window.currentRunId) return; 
-                requestAnimationFrame(loop);
-                if (isPaused || isGameOver) return;
-                
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                dino.dy += dino.gravity; 
-                if(dino.ducking && !dino.grounded) dino.dy += 2.0;
-                dino.y += dino.dy;
-
-                if(dino.y + dino.h >= groundY) { dino.y = groundY - dino.h; dino.dy = 0; dino.grounded = true; } 
-                else { dino.grounded = false; }
-
-                scoreCounter++;
-                if(scoreCounter % 15 === 0) {
-                    score++; document.getElementById('score').innerText = score;
-                    if (score % 150 === 0 && gameSpeed < 10) { gameSpeed += 0.2; spawnFloatingScore(dino.x, dino.y - 20, 'SPEED UP!'); }
-                }
-
-                ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(canvas.width, groundY); ctx.strokeStyle = isLightMode ? '#718096' : '#0f0'; ctx.lineWidth = 2; ctx.stroke();
-                for(let i = 0; i < canvas.width; i+=30) { if((i + scoreCounter * gameSpeed) % 60 < 30) { ctx.fillStyle = isLightMode ? '#718096' : '#0f0'; ctx.fillRect(i, groundY+5, 4, 2); } }
-
-                ctx.fillStyle = isLightMode ? '#38b2ac' : '#0f0'; ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
-                ctx.fillStyle = isLightMode ? '#fff' : '#000'; ctx.fillRect(dino.x + 20, dino.y + 6, 4, 4); 
-
-                spawnTimer--;
-                if (spawnTimer <= 0) {
-                    let type = Math.random() > 0.7 && score > 50 ? 'flying' : 'ground';
-                    if (type === 'ground') { let width = Math.random() > 0.5 ? 20 : 35; obstacles.push({ x: canvas.width, y: groundY - 45, w: width, h: 45, type }); } 
-                    else { let heights = [groundY - 80, groundY - 50, groundY - 30]; let h = heights[Math.floor(Math.random() * heights.length)]; obstacles.push({ x: canvas.width, y: h, w: 35, h: 15, type }); }
-                    
-                    let minGap = 350 + (gameSpeed * 15); let maxGap = 600 + (gameSpeed * 20);
-                    spawnTimer = (Math.random() * (maxGap - minGap) + minGap) / gameSpeed; 
-                }
-
-                for (let i = 0; i < obstacles.length; i++) {
-                    let obs = obstacles[i]; obs.x -= gameSpeed;
-                    if (obs.type === 'ground') {
-                        ctx.fillStyle = isLightMode ? '#4a5568' : '#0f0'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-                        ctx.strokeStyle = isLightMode ? '#fff' : '#000'; ctx.lineWidth = 1;
-                        ctx.strokeRect(obs.x, obs.y, obs.w, obs.h); ctx.strokeRect(obs.x, obs.y + 15, obs.w, 15);
-                    } else { ctx.fillStyle = '#e53e3e'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h); }
-                    
-                    let hitBoxMargin = 5; 
-                    if (dino.x + hitBoxMargin < obs.x + obs.w - hitBoxMargin && dino.x + dino.w - hitBoxMargin > obs.x + hitBoxMargin && 
-                        dino.y + hitBoxMargin < obs.y + obs.h - hitBoxMargin && dino.y + dino.h - hitBoxMargin > obs.y + hitBoxMargin) { gameOver(); return; }
-                }
-                obstacles = obstacles.filter(obs => obs.x + obs.w > 0);
-            }
-            requestAnimationFrame(loop);
-        }
-
-        // --- ЗМЕЙКА ---
+        // --- УЛУЧШЕННАЯ ЗМЕЙКА С ОЧЕРЕДЬЮ ВВОДА ---
         function initSnake(container) {
             const myRun = window.currentRunId;
             const canvas = document.createElement('canvas'); canvas.width = 600; canvas.height = 600; canvas.className = 'game-canvas'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d'); const grid = 30; let count = 0;
             let snake = { x: 300, y: 300, dx: grid, dy: 0, cells: [], maxCells: 4 }; let apple = { x: 450, y: 450 };
             const speedDelay = 30; 
+            
+            // ИСПРАВЛЕНИЕ: Очередь команд для мгновенной регистрации клавиш без багов самопоедания
+            let inputQueue = [];
+
             function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
+            
             addGameListener('keydown', function snakeController(e) {
                 if(currentGame !== 'snake' || isPaused || isGameOver) return;
-                if (e.which === 37 && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
-                else if (e.which === 38 && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
-                else if (e.which === 39 && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
-                else if (e.which === 40 && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
+                
+                // Проверяем последнюю заданную команду (или текущее направление)
+                let lastDir = inputQueue.length ? inputQueue[inputQueue.length - 1] : {dx: snake.dx, dy: snake.dy};
+                
+                if (e.which === 37 && lastDir.dx === 0) inputQueue.push({dx: -grid, dy: 0});
+                else if (e.which === 38 && lastDir.dy === 0) inputQueue.push({dx: 0, dy: -grid});
+                else if (e.which === 39 && lastDir.dx === 0) inputQueue.push({dx: grid, dy: 0});
+                else if (e.which === 40 && lastDir.dy === 0) inputQueue.push({dx: 0, dy: grid});
             });
+
             function loop() {
                 if (myRun !== window.currentRunId) return;
                 requestAnimationFrame(loop);
                 if (isPaused || isGameOver) return; if (++count < speedDelay) return; count = 0;
                 ctx.clearRect(0,0,canvas.width,canvas.height);
+                
+                // Берем следующую команду из очереди
+                if (inputQueue.length > 0) {
+                    let nextInput = inputQueue.shift();
+                    snake.dx = nextInput.dx; snake.dy = nextInput.dy;
+                }
+
                 snake.x += snake.dx; snake.y += snake.dy;
-                if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) { gameOver(); return; }
+                if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) { gameOver(false); return; }
                 snake.cells.unshift({x: snake.x, y: snake.y}); if (snake.cells.length > snake.maxCells) snake.cells.pop();
                 ctx.fillStyle = '#e53e3e'; ctx.fillRect(apple.x, apple.y, grid-1, grid-1); 
                 ctx.fillStyle = isLightMode ? '#38b2ac' : '#0f0';
@@ -609,97 +546,167 @@
                         snake.maxCells++; score += 10; document.getElementById('score').innerText = score; spawnFloatingScore(apple.x, apple.y, '+10');
                         apple.x = getRandomInt(0, 20) * grid; apple.y = getRandomInt(0, 20) * grid;
                     }
-                    for (let i = index + 1; i < snake.cells.length; i++) { if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) gameOver(); }
+                    for (let i = index + 1; i < snake.cells.length; i++) { if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) gameOver(false); }
                 });
             }
             requestAnimationFrame(loop);
         }
 
-        // --- ЦВЕТНОЙ ТЕТРИС ---
+        // --- ТЕТРИС: ПОЛНОСТЬЮ ПЕРЕПИСАН НА CANVAS БЕЗ БАГОВ ---
         function initTetris(container) {
             const myRun = window.currentRunId;
-            const grid = document.createElement('div'); grid.className = 'tetris-grid'; container.appendChild(grid);
-            const nextPieceGrid = document.getElementById('next-piece-container');
-            let cells = Array.from({length: 200}, () => { let div = document.createElement('div'); div.className = 'tetris-cell'; grid.appendChild(div); return div; });
-            let nextPieceCells = Array.from({length: 16}, () => { let div = document.createElement('div'); div.className = 'tetris-cell'; nextPieceGrid.appendChild(div); return div; });
-            const width = 10;
-            const lTetromino = [[1, width+1, width*2+1, 2], [width, width+1, width+2, width*2+2], [1, width+1, width*2+1, width*2], [width, width*2, width*2+1, width*2+2]];
-            const zTetromino = [[0,width,width+1,width*2+1],[width+1, width+2,width*2,width*2+1],[0,width,width+1,width*2+1],[width+1, width+2,width*2,width*2+1]];
-            const tTetromino = [[1,width,width+1,width+2],[1,width+1,width+2,width*2+1],[width,width+1,width+2,width*2+1],[1,width,width+1,width*2+1]];
-            const oTetromino = [[0,1,width,width+1],[0,1,width,width+1],[0,1,width,width+1],[0,1,width,width+1]];
-            const iTetromino = [[1,width+1,width*2+1,width*3+1],[width,width+1,width+2,width+3],[1,width+1,width*2+1,width*3+1],[width,width+1,width+2,width+3]];
-            const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
+            const canvas = document.createElement('canvas'); canvas.width = 300; canvas.height = 600; canvas.className = 'game-canvas'; container.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
             
-            let currentPosition = 4; let currentRotation = 0;
-            let random = Math.floor(Math.random()*theTetrominoes.length); let nextRandom = Math.floor(Math.random()*theTetrominoes.length);
-            let current = theTetrominoes[random][currentRotation];
-            let inputLocked = false; 
+            const nextContainer = document.getElementById('next-piece-container');
+            nextContainer.innerHTML = '';
+            const nextCanvas = document.createElement('canvas'); nextCanvas.width = 120; nextCanvas.height = 120; nextCanvas.className = 'bg-black shadow-inner rounded border border-green-500'; nextContainer.appendChild(nextCanvas);
+            const nextCtx = nextCanvas.getContext('2d');
 
-            function draw() { current.forEach(index => cells[currentPosition + index].classList.add('filled', 't-c-' + random)); }
-            function undraw() { current.forEach(index => cells[currentPosition + index].classList.remove('filled', 't-c-' + random)); }
-            function displayNextPiece() {
-                nextPieceCells.forEach(cell => { cell.className = 'tetris-cell'; });
-                const nextTetromino = theTetrominoes[nextRandom][0]; let offset = nextRandom === 3 ? 1 : 0;
-                nextTetromino.forEach(index => {
-                    let nextIndex = (Math.floor(index/width) * 4) + (index % width) + offset;
-                    if(nextPieceCells[nextIndex]) nextPieceCells[nextIndex].classList.add('filled', 't-c-' + nextRandom);
-                });
-            }
-            displayNextPiece();
+            const ROWS = 20; const COLS = 10; const BLOCK_SIZE = 30;
+            let playfield = Array.from({length: ROWS}, () => Array(COLS).fill(0));
             
-            addGameListener('keydown', function control(e) {
-                if(currentGame !== 'tetris' || isPaused || isGameOver || inputLocked) return;
-                if(e.keyCode === 32 && e.repeat) return; 
+            const tetrominos = {
+                'I': [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+                'J': [[1,0,0],[1,1,1],[0,0,0]],
+                'L': [[0,0,1],[1,1,1],[0,0,0]],
+                'O': [[1,1],[1,1]],
+                'S': [[0,1,1],[1,1,0],[0,0,0]],
+                'T': [[0,1,0],[1,1,1],[0,0,0]],
+                'Z': [[1,1,0],[0,1,1],[0,0,0]]
+            };
+            const colors = {'I': '#33CCFF', 'J': '#3333FF', 'L': '#FF9933', 'O': '#FFFF33', 'S': '#33FF33', 'T': '#9933FF', 'Z': '#FF3366'};
+            const keys = Object.keys(tetrominos);
+
+            function getRandomPiece() {
+                const name = keys[Math.floor(Math.random() * keys.length)];
+                return { name: name, matrix: tetrominos[name], row: name === 'I' ? -1 : 0, col: Math.floor(COLS/2) - Math.floor(tetrominos[name][0].length/2) };
+            }
+
+            let tetromino = getRandomPiece();
+            let nextTetromino = getRandomPiece();
+
+            function drawBlock(ctx, x, y, color) {
+                ctx.fillStyle = color; ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            }
+
+            function rotate(matrix) {
+                const N = matrix.length; const result = matrix.map((row, i) => row.map((val, j) => matrix[N - 1 - j][i]));
+                return result;
+            }
+
+            function isValidMove(matrix, cellRow, cellCol) {
+                for (let r = 0; r < matrix.length; r++) {
+                    for (let c = 0; c < matrix[r].length; c++) {
+                        if (matrix[r][c] && (cellCol + c < 0 || cellCol + c >= COLS || cellRow + r >= ROWS || (cellRow + r >= 0 && playfield[cellRow + r][cellCol + c]))) return false;
+                    }
+                }
+                return true;
+            }
+
+            function placeTetromino() {
+                for (let r = 0; r < tetromino.matrix.length; r++) {
+                    for (let c = 0; c < tetromino.matrix[r].length; c++) {
+                        if (tetromino.matrix[r][c]) {
+                            if (tetromino.row + r < 0) return gameOver(false);
+                            playfield[tetromino.row + r][tetromino.col + c] = tetromino.name;
+                        }
+                    }
+                }
                 
-                if(e.keyCode === 37) moveLeft(); 
-                else if(e.keyCode === 38) rotate(); 
-                else if(e.keyCode === 39) moveRight(); 
-                else if(e.keyCode === 40) moveDown(); 
-                else if(e.keyCode === 32) { 
-                    while(!current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) { 
-                        undraw(); currentPosition += width; draw(); 
-                    } 
-                    freeze(); 
+                let linesCleared = 0;
+                for (let r = ROWS - 1; r >= 0; ) {
+                    if (playfield[r].every(cell => !!cell)) {
+                        playfield.splice(r, 1); playfield.unshift(Array(COLS).fill(0)); linesCleared++;
+                    } else r--;
                 }
-            });
-            
-            function moveDown() { if (isPaused || isGameOver || inputLocked) return; undraw(); currentPosition += width; draw(); freeze(); }
-            
-            function freeze() {
-                if(current.some(index => cells[currentPosition + index + width]?.classList.contains('taken') || currentPosition + index + width >= 200)) {
-                    current.forEach(index => cells[currentPosition + index].classList.add('taken', 't-c-' + random));
-                    addScore(); 
-                    inputLocked = true; setTimeout(() => { inputLocked = false; }, 150);
-                    random = nextRandom; nextRandom = Math.floor(Math.random()*theTetrominoes.length);
-                    current = theTetrominoes[random][currentRotation]; currentPosition = 4; displayNextPiece(); draw(); 
-                    if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) gameOver();
+
+                if (linesCleared > 0) {
+                    const lineScores = [0, 100, 300, 500, 800];
+                    score += lineScores[linesCleared];
+                    document.getElementById('score').innerText = score;
+                    spawnFloatingScore(150, 300, '+' + lineScores[linesCleared]);
                 }
+
+                tetromino = nextTetromino; nextTetromino = getRandomPiece();
             }
-            
-            function moveLeft() { undraw(); if(!current.some(index => (currentPosition + index) % width === 0)) currentPosition -=1; if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition +=1; draw(); }
-            function moveRight() { undraw(); if(!current.some(index => (currentPosition + index) % width === width -1)) currentPosition +=1; if(current.some(index => cells[currentPosition + index].classList.contains('taken'))) currentPosition -=1; draw(); }
-            function rotate() { undraw(); currentRotation = (currentRotation + 1) % current.length; current = theTetrominoes[random][currentRotation]; draw(); }
-            function addScore() {
-                for (let i = 0; i < 199; i +=width) {
-                    const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9];
-                    if(row.every(index => cells[index].classList.contains('taken'))) {
-                        score += 100; document.getElementById('score').innerText = score; spawnFloatingScore(150, 300, '+100'); 
-                        row.forEach(index => { cells[index].className = 'tetris-cell'; });
-                        const squaresRemoved = cells.splice(i, width); cells = squaresRemoved.concat(cells);
-                        cells.forEach(cell => grid.appendChild(cell));
+
+            addGameListener('keydown', function(e) {
+                if(currentGame !== 'tetris' || isPaused || isGameOver) return;
+                
+                if (e.which === 37) { if (isValidMove(tetromino.matrix, tetromino.row, tetromino.col - 1)) tetromino.col--; } 
+                else if (e.which === 39) { if (isValidMove(tetromino.matrix, tetromino.row, tetromino.col + 1)) tetromino.col++; } 
+                else if (e.which === 38) { const m = rotate(tetromino.matrix); if (isValidMove(m, tetromino.row, tetromino.col)) tetromino.matrix = m; } 
+                else if (e.which === 40) { if (isValidMove(tetromino.matrix, tetromino.row + 1, tetromino.col)) tetromino.row++; } 
+                else if (e.which === 32 && !e.repeat) { 
+                    while (isValidMove(tetromino.matrix, tetromino.row + 1, tetromino.col)) tetromino.row++; 
+                    placeTetromino(); 
+                }
+                draw();
+            });
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = isLightMode ? '#cbd5e0' : '#002200'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Рисуем поле
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        if (playfield[r][c]) drawBlock(ctx, c, r, colors[playfield[r][c]]);
+                    }
+                }
+                
+                // Рисуем текущую фигуру
+                if (tetromino) {
+                    for (let r = 0; r < tetromino.matrix.length; r++) {
+                        for (let c = 0; c < tetromino.matrix[r].length; c++) {
+                            if (tetromino.matrix[r][c]) drawBlock(ctx, tetromino.col + c, tetromino.row + r, colors[tetromino.name]);
+                        }
+                    }
+                }
+
+                // Рисуем следующую фигуру
+                nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+                if (nextTetromino) {
+                    const offset = nextTetromino.name === 'I' || nextTetromino.name === 'O' ? 20 : 30;
+                    for (let r = 0; r < nextTetromino.matrix.length; r++) {
+                        for (let c = 0; c < nextTetromino.matrix[r].length; c++) {
+                            if (nextTetromino.matrix[r][c]) {
+                                nextCtx.fillStyle = colors[nextTetromino.name];
+                                nextCtx.fillRect(offset + c * BLOCK_SIZE, offset + r * BLOCK_SIZE - 15, BLOCK_SIZE, BLOCK_SIZE);
+                                nextCtx.strokeStyle = 'rgba(0,0,0,0.5)';
+                                nextCtx.strokeRect(offset + c * BLOCK_SIZE, offset + r * BLOCK_SIZE - 15, BLOCK_SIZE, BLOCK_SIZE);
+                            }
+                        }
                     }
                 }
             }
-            let tLoop = setInterval(() => { 
-                if (myRun !== window.currentRunId) { clearInterval(tLoop); return; }
-                if(!isPaused && !isGameOver && !inputLocked) moveDown(); 
-            }, 800);
+
+            let lastTime = 0; let dropCounter = 0; let dropInterval = 800;
+            function update(time = 0) {
+                if (myRun !== window.currentRunId) return;
+                if (!isPaused && !isGameOver) {
+                    const dt = time - lastTime; lastTime = time; dropCounter += dt;
+                    if (dropCounter > dropInterval) {
+                        if (isValidMove(tetromino.matrix, tetromino.row + 1, tetromino.col)) tetromino.row++;
+                        else placeTetromino();
+                        dropCounter = 0;
+                    }
+                    draw();
+                } else { lastTime = time; }
+                requestAnimationFrame(update);
+            }
+            update();
         }
 
-        // --- САПЕР ---
+        // --- САПЕР С УСЛОВИЕМ ПОБЕДЫ ---
         function initMinesweeper(container) {
             const grid = document.createElement('div'); grid.className = 'minesweeper-grid'; container.appendChild(grid);
             const width = 10; const bombAmount = 10; let squares = [];
+            const TOTAL_SAFE = width * width - bombAmount;
+            let revealedCount = 0; // ИСПРАВЛЕНИЕ: Счетчик для определения победы
+
             const gameArray = Array(width*width - bombAmount).fill('valid').concat(Array(bombAmount).fill('bomb')).sort(() => Math.random() - 0.5);
             for(let i=0; i<width*width; i++) {
                 const square = document.createElement('div'); square.setAttribute('id', i); square.classList.add('ms-cell', gameArray[i]); grid.appendChild(square); squares.push(square);
@@ -725,13 +732,27 @@
             }
             function click(square) {
                 if (square.classList.contains('revealed')) return;
-                if (square.classList.contains('bomb')) { gameOver(); return; }
+                if (square.classList.contains('bomb')) { 
+                    square.style.backgroundColor = 'red';
+                    gameOver(false); return; 
+                }
+                
+                square.classList.add('revealed'); 
+                revealedCount++; // Считаем безопасные клетки
+                score += 10; document.getElementById('score').innerText = score; 
+
                 let total = square.getAttribute('data');
                 if (total != 0) {
-                    square.classList.add('revealed'); square.innerHTML = total; score += parseInt(total); document.getElementById('score').innerText = score; 
-                    spawnFloatingScore(square.offsetLeft, square.offsetTop, '+' + total); return;
+                    square.innerHTML = total; spawnFloatingScore(square.offsetLeft, square.offsetTop, '+10'); 
+                } else {
+                    checkSquare(square, square.id);
                 }
-                checkSquare(square, square.id); square.classList.add('revealed'); score += 1; document.getElementById('score').innerText = score;
+
+                // ИСПРАВЛЕНИЕ: УСЛОВИЕ ПОБЕДЫ
+                if (revealedCount === TOTAL_SAFE) {
+                    score += 1000; document.getElementById('score').innerText = score; 
+                    gameOver(true); // Вызываем победный экран
+                }
             }
             function checkSquare(square, currentId) {
                 const isLeft = (currentId % width === 0); const isRight = (currentId % width === width -1);
@@ -806,12 +827,90 @@
                 if(y + dy < ballRadius) dy = -dy;
                 else if(y + dy > canvas.height-ballRadius) {
                     if(x > paddleX && x < paddleX + paddleWidth) { dx = baseSpeed * 1.5 * ((x - (paddleX + paddleWidth/2)) / (paddleWidth/2)); dy = -baseSpeed; }
-                    else { gameOver(); return; }
+                    else { gameOver(false); return; }
                 }
                 if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 4.5; else if(leftPressed && paddleX > 0) paddleX -= 4.5;
                 x += dx; y += dy;
             }
             requestAnimationFrame(draw);
+        }
+
+        // --- ПОЛНОСТЬЮ ПЕРЕОСМЫСЛЕННЫЙ DINO ---
+        function initDino(container) {
+            const myRun = window.currentRunId; 
+            const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 350; canvas.className = 'game-canvas w-full h-full'; container.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+            
+            // ИДЕАЛЬНАЯ ФИЗИКА: Медленный старт, мощный и плавный прыжок (как в оригинальном хроме).
+            let gameSpeed = 5.0; 
+            let scoreCounter = 0;
+            let dino = { x: 50, y: 250, w: 40, h: 40, dy: 0, gravity: 0.6, jumpPower: -12, isJumping: false, isDucking: false };
+            
+            let obstacles = []; const groundY = 290; let spawnTimer = 100;
+
+            addGameListener('keydown', (e) => {
+                if(currentGame !== 'dino' || isPaused || isGameOver) return;
+                if ((e.code === 'Space' || e.code === 'ArrowUp') && !dino.isJumping) { dino.dy = dino.jumpPower; dino.isJumping = true; }
+                if (e.code === 'ArrowDown') { dino.isDucking = true; dino.h = 20; if(!dino.isJumping) dino.y = groundY - dino.h; }
+            });
+            addGameListener('keyup', (e) => {
+                if(currentGame !== 'dino' || isPaused || isGameOver) return;
+                if (e.code === 'ArrowDown') { dino.isDucking = false; dino.h = 40; if(!dino.isJumping) dino.y = groundY - dino.h; }
+            });
+
+            function loop() {
+                if (myRun !== window.currentRunId) return; 
+                requestAnimationFrame(loop);
+                if (isPaused || isGameOver) return;
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Физика прыжка
+                dino.dy += dino.gravity; 
+                if(dino.isDucking && dino.isJumping) dino.dy += 2.0; // Быстрый спуск
+                dino.y += dino.dy;
+
+                if(dino.y + dino.h >= groundY) { dino.y = groundY - dino.h; dino.dy = 0; dino.isJumping = false; } 
+
+                scoreCounter++;
+                if(scoreCounter % 5 === 0) {
+                    score++; document.getElementById('score').innerText = score;
+                    if (score % 500 === 0 && gameSpeed < 15) { gameSpeed += 0.5; spawnFloatingScore(dino.x, dino.y - 20, 'SPEED UP!'); }
+                }
+
+                ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(canvas.width, groundY); ctx.strokeStyle = isLightMode ? '#718096' : '#0f0'; ctx.lineWidth = 2; ctx.stroke();
+                for(let i = 0; i < canvas.width; i+=40) { if((i + scoreCounter * (gameSpeed*0.5)) % 80 < 40) { ctx.fillStyle = isLightMode ? '#718096' : '#0f0'; ctx.fillRect(i, groundY+5, 6, 2); } }
+
+                ctx.fillStyle = isLightMode ? '#38b2ac' : '#0f0'; ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+                ctx.fillStyle = isLightMode ? '#fff' : '#000'; ctx.fillRect(dino.x + 25, dino.y + 8, 5, 5); // Глаз
+
+                // Надежная система спавна на основе дистанции
+                spawnTimer -= gameSpeed;
+                if (spawnTimer <= 0) {
+                    let type = Math.random() > 0.7 && score > 200 ? 'flying' : 'ground';
+                    if (type === 'ground') { let width = Math.random() > 0.6 ? 30 : 60; obstacles.push({ x: canvas.width, y: groundY - 50, w: width, h: 50, type }); } 
+                    else { let heights = [groundY - 90, groundY - 60, groundY - 30]; let h = heights[Math.floor(Math.random() * heights.length)]; obstacles.push({ x: canvas.width, y: h, w: 40, h: 15, type }); }
+                    
+                    // Гарантированный зазор для приземления динозаврика
+                    let minGap = 400 + (gameSpeed * 10); let maxGap = 700 + (gameSpeed * 15);
+                    spawnTimer = Math.random() * (maxGap - minGap) + minGap; 
+                }
+
+                for (let i = 0; i < obstacles.length; i++) {
+                    let obs = obstacles[i]; obs.x -= gameSpeed;
+                    if (obs.type === 'ground') {
+                        ctx.fillStyle = isLightMode ? '#4a5568' : '#0f0'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+                        ctx.strokeStyle = isLightMode ? '#fff' : '#000'; ctx.lineWidth = 2;
+                        ctx.strokeRect(obs.x, obs.y, obs.w, obs.h); ctx.strokeRect(obs.x, obs.y + 15, obs.w, 15);
+                    } else { ctx.fillStyle = '#e53e3e'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h); }
+                    
+                    let hitMargin = 6; 
+                    if (dino.x + hitMargin < obs.x + obs.w - hitMargin && dino.x + dino.w - hitMargin > obs.x + hitMargin && 
+                        dino.y + hitMargin < obs.y + obs.h - hitMargin && dino.y + dino.h - hitMargin > obs.y + hitMargin) { gameOver(false); return; }
+                }
+                obstacles = obstacles.filter(obs => obs.x + obs.w > 0);
+            }
+            requestAnimationFrame(loop);
         }
 
         // --- SYSADMIN SURVIVOR ---
@@ -983,7 +1082,7 @@
                 }
                 hit(dmg) {
                     if (this.invuln > 0) return; this.hp -= dmg; this.invuln = 0.5; svGame.shake = 0.2; spawnParticles(this.x, this.y, '#ef4444', 10); updateHUD();
-                    if (this.hp <= 0) { gameOver(); } 
+                    if (this.hp <= 0) { gameOver(false); } 
                 }
                 update(dt) {
                     if (this.invuln > 0) this.invuln -= dt;
@@ -1182,13 +1281,14 @@
             addGameListener('keydown', kdown); addGameListener('keyup', kup);
 
             svPlayer = new Player(); updateHUD();
+            
             let clearInt = setInterval(() => { 
                 if (myRun !== window.currentRunId) { clearInterval(clearInt); return; }
                 if (svGame.state === 'PLAY') cleanupWorld(); 
             }, 5000);
 
             function survivorLoop(ts) {
-                if (myRun !== window.currentRunId) return; // УБИВАЕТ ФАНТОМНЫЕ ИГРЫ ПРИ ПЕРЕЗАПУСКЕ
+                if (myRun !== window.currentRunId) return; 
                 if (isPaused || isGameOver || svGame.state === 'LVLUP') { svGame.lastTime = ts; requestAnimationFrame(survivorLoop); return; }
 
                 if (!svGame.lastTime) svGame.lastTime = ts; 
