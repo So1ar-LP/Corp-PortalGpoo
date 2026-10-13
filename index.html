@@ -20,10 +20,15 @@
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* --- ФОНОВЫЙ КАНВАС ДЛЯ АНИМАЦИИ --- */
+        /* --- ФОНОВЫЙ КАНВАС ДЛЯ АНИМАЦИИ (ТЕПЕРЬ БОЛЕЕ СПОКОЙНЫЙ) --- */
         #bg-canvas {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0; pointer-events: none; opacity: 0.6;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.35; /* Снижена прозрачность, чтобы не мельтешило */
+            transition: opacity 0.5s ease;
         }
 
         /* --- DARK THEME --- */
@@ -39,12 +44,12 @@
         @keyframes scanline { 0% { top: -100px; } 100% { top: 100vh; } }
         
         .pulse-text { animation: textPulse 3s infinite alternate; }
-        @keyframes textPulse { 0% { text-shadow: 0 0 5px #0f0; } 100% { text-shadow: 0 0 20px #0f0, 0 0 30px #0f0; } }
+        @keyframes textPulse { 0% { text-shadow: 0 0 5px #0f0; } 100% { text-shadow: 0 0 15px #0f0, 0 0 25px #0f0; } }
 
         /* --- LIGHT THEME --- */
         body.light-theme { background-color: #cbd5e0; color: #2d3748; text-shadow: none; }
         body.light-theme .crt::before, body.light-theme .scanline { display: none; }
-        body.light-theme #bg-canvas { opacity: 0.3; } 
+        body.light-theme #bg-canvas { opacity: 0.15; } 
         body.light-theme .pulse-text { animation: textPulseLight 3s infinite alternate; }
         @keyframes textPulseLight { 0% { text-shadow: 0 0 2px #38b2ac; } 100% { text-shadow: 0 0 10px #38b2ac, 0 0 20px #38b2ac; } }
 
@@ -162,7 +167,7 @@
     <div id="auth-screen" class="screen active items-center justify-center p-4">
         <div class="panel p-10 max-w-lg w-full text-center fade-in-up">
             <h1 class="text-6xl mb-4 typewriter w-fit pulse-text">SUPPORT.OS</h1>
-            <p class="mb-8 text-xl opacity-80 delay-1 fade-in-up" style="animation-fill-mode: forwards;">v8.0 / SECURE LOGIN</p>
+            <p class="mb-8 text-xl opacity-80 delay-1 fade-in-up" style="animation-fill-mode: forwards;">v8.5 / SECURE LOGIN</p>
             <form id="auth-form" onsubmit="handleAuth(event)" class="delay-2 fade-in-up" style="animation-fill-mode: forwards;">
                 <input type="text" id="username" placeholder="Логин инженера" required>
                 <input type="password" id="password" placeholder="Пароль доступа" required minlength="6">
@@ -174,82 +179,85 @@
         </div>
     </div>
 
-    <!-- НОВЫЙ ДАШБОРД (САЙДБАР + КОНТЕНТ) -->
-    <div id="dashboard-screen" class="screen h-full w-full">
-        <div class="flex h-full w-full gap-6 p-6 max-w-[1600px] mx-auto">
-            
-            <!-- ЛЕВАЯ ПАНЕЛЬ: НАВИГАЦИЯ -->
-            <aside class="panel w-80 lg:w-96 flex flex-col p-6 shrink-0 fade-in-up">
-                <div class="border-b-2 border-green-500 pb-6 mb-6 text-center">
-                    <h1 class="text-5xl font-bold pulse-text mb-2 typewriter w-fit mx-auto">SUPPORT.OS</h1>
-                    <div class="text-2xl text-yellow-400 mt-4">OP: <span id="user-display-name"></span></div>
-                </div>
-                
-                <h3 class="text-xl opacity-70 mb-4 pl-2">/EXECUTABLES</h3>
-                <nav class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3">
-                    <button onclick="startGame('snake')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
+    <!-- ДАШБОРД (ИГРЫ ПО ЦЕНТРУ, ЛИДЕРЫ СПРАВА) -->
+    <div id="dashboard-screen" class="screen flex-col p-6 h-full w-full max-w-[1600px] mx-auto">
+        
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+        <header class="panel flex justify-between items-center p-4 mb-6 fade-in-up z-10">
+            <div class="text-4xl font-bold pulse-text flex items-center gap-4">
+                SUPPORT.OS
+                <span class="text-2xl text-yellow-400 font-normal mt-1 opacity-90">[ OP: <span id="user-display-name"></span> ]</span>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="toggleTheme()" id="theme-btn" class="text-lg px-6 hover:bg-gray-500 hover:text-white transition-colors">[ THEME: DARK ]</button>
+                <button onclick="logout()" class="text-lg px-6 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors">[ LOGOUT ]</button>
+            </div>
+        </header>
+
+        <div class="flex gap-6 h-full overflow-hidden pb-6 w-full">
+            <!-- Выбор игры (ГЛАВНЫЙ ФОКУС) -->
+            <main class="panel flex-1 p-8 flex flex-col items-center justify-center relative fade-in-up delay-1">
+                <h2 class="text-5xl mb-10 border-b-2 border-green-500 pb-4 pulse-text">RELAXATION_PROTOCOL</h2>
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
+                    <button onclick="startGame('snake')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
                         <span>SNAKE.sh</span>
                     </button>
-                    <button onclick="startGame('tetris')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
+                    <button onclick="startGame('tetris')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
                         <span>TETRIS.bat</span>
                     </button>
-                    <button onclick="startGame('minesweeper')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-none stroke-current shrink-0" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
-                        <span>MINESWEEP.exe</span>
+                    <button onclick="startGame('minesweeper')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-12 h-12 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
+                        <span>MINESWEEP</span>
                     </button>
-                    <button onclick="startGame('bricks')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-none stroke-current shrink-0" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
+                    <button onclick="startGame('bricks')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-12 h-12 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
                         <span>BRICKS.exe</span>
                     </button>
-                    <button onclick="startGame('dino')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
+                    <button onclick="startGame('dino')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
                         <span>DINO.exe</span>
                     </button>
-                    <button onclick="startGame('survivor')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
+                    <button onclick="startGame('survivor')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
                         <span>SURVIVOR.app</span>
                     </button>
-                </nav>
-
-                <div class="pt-6 border-t-2 border-green-500 mt-4 flex flex-col gap-3">
-                    <button onclick="toggleTheme()" id="theme-btn" class="w-full text-xl py-3 border-gray-500 hover:bg-gray-500 hover:text-white transition-colors">[ THEME: DARK ]</button>
-                    <button onclick="logout()" class="w-full text-xl py-3 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors">[ LOGOUT ]</button>
                 </div>
-            </aside>
+            </main>
 
-            <!-- ПРАВАЯ ПАНЕЛЬ: ТАБЛИЦА ЛИДЕРОВ -->
-            <main class="panel flex-1 flex flex-col p-8 fade-in-up delay-1 overflow-hidden">
-                <div class="flex justify-between items-center mb-8 border-b border-green-500 pb-4">
-                    <h2 class="text-5xl pulse-text font-bold">GLOBAL_LEADERBOARD</h2>
-                    <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
+            <!-- Таблица лидеров (СБОКУ) -->
+            <aside class="panel w-[450px] p-6 flex flex-col h-full shrink-0 fade-in-up delay-2">
+                <div class="flex justify-between items-center border-b-2 border-green-500 pb-4 mb-4">
+                    <h2 class="text-3xl">LEADERBOARD</h2>
+                    <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-white" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
                 </div>
                 
-                <div class="flex flex-wrap gap-2 mb-6" id="lb-tabs">
-                    <button class="text-xl py-2 px-6 bg-green-900 !text-white border-green-900 rounded-t-lg" onclick="loadLeaderboard('snake')">SNAKE</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('tetris')">TETRIS</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('minesweeper')">MINES</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('bricks')">BRICKS</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('dino')">DINO</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('survivor')">SURVIVOR</button>
+                <!-- Сетка вкладок таблицы 3x2 -->
+                <div class="grid grid-cols-3 gap-2 mb-4" id="lb-tabs">
+                    <button class="text-sm py-2 px-2 bg-green-900 !text-white border-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('tetris')">TETRIS</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('minesweeper')">MINES</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('bricks')">BRICKS</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('dino')">DINO</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('survivor')">SURVIVOR</button>
                 </div>
                 
-                <div class="overflow-y-auto flex-1 table-wrapper p-6 rounded-b-lg rounded-tr-lg">
+                <div class="overflow-y-auto flex-1 table-wrapper p-4">
                     <table class="leaderboard-table w-full">
                         <thead>
                             <tr>
-                                <th class="w-24">РАНК</th>
-                                <th>ИМЯ ОПЕРАТОРА</th>
-                                <th class="text-right">ЛУЧШИЙ СЧЕТ</th>
+                                <th class="w-16">#</th>
+                                <th>ОПЕРАТОР</th>
+                                <th class="text-right">СЧЕТ</th>
                             </tr>
                         </thead>
                         <tbody id="leaderboard-body">
-                            <tr><td colspan="3" class="text-center blink text-2xl pt-10">ОЖИДАНИЕ ДАННЫХ...</td></tr>
+                            <tr><td colspan="3" class="text-center blink text-xl pt-6">LOADING...</td></tr>
                         </tbody>
                     </table>
                 </div>
-            </main>
+            </aside>
         </div>
     </div>
 
@@ -289,7 +297,7 @@
         </div>
     </div>
 
-    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ -->
+    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ (ЗАМЕДЛЕННАЯ) -->
     <script>
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
@@ -299,10 +307,12 @@
         const drops = []; for(let x = 0; x < columns; x++) drops[x] = 1;
         
         function drawBg() {
-            bgCtx.fillStyle = document.body.classList.contains('light-theme') ? 'rgba(203, 213, 224, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            // Быстрее зачищаем шлейф, чтобы не было "каши"
+            bgCtx.fillStyle = document.body.classList.contains('light-theme') ? 'rgba(203, 213, 224, 0.15)' : 'rgba(0, 0, 0, 0.15)';
             bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
             bgCtx.fillStyle = document.body.classList.contains('light-theme') ? '#a0aec0' : '#0f0';
             bgCtx.font = fontSize + 'px monospace';
+            
             for(let i = 0; i < drops.length; i++) {
                 const text = chars[Math.floor(Math.random() * chars.length)];
                 bgCtx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -310,7 +320,8 @@
                 drops[i]++;
             }
         }
-        setInterval(drawBg, 50);
+        // Интервал увеличен с 50ms до 120ms для более спокойного движения
+        setInterval(drawBg, 120);
         window.addEventListener('resize', () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; });
     </script>
 
@@ -337,7 +348,7 @@
         window.firebaseAPI.onAuthStateChanged(window.auth, (user) => {
             if (user) {
                 const displayName = user.email.split('@')[0];
-                document.getElementById('user-display-name').innerText = `[${displayName}]`;
+                document.getElementById('user-display-name').innerText = `${displayName}`;
                 if (displayName === 'adminms') document.getElementById('admin-reset-btn').classList.remove('hidden');
                 else document.getElementById('admin-reset-btn').classList.add('hidden');
                 switchScreen('dashboard-screen');
@@ -349,7 +360,7 @@
     <script>
         // ИДЕАЛЬНАЯ ОЧИСТКА ПАМЯТИ И ФИКС ФАНТОМНЫХ ИГР
         let activeGameListeners = [];
-        window.currentRunId = 0; // Глобальный ID текущей сессии игры
+        window.currentRunId = 0; 
 
         function addGameListener(type, func, options=false) {
             document.addEventListener(type, func, options);
@@ -427,7 +438,7 @@
             if (isLightMode) { activeTab.style.background = '#38b2ac'; activeTab.style.borderColor = '#38b2ac'; }
             else { activeTab.style.background = '#14532d'; activeTab.style.borderColor = '#14532d'; } 
 
-            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-2xl pt-10">LOADING...</td></tr>';
+            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-xl pt-6">LOADING...</td></tr>';
             try {
                 const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), window.firebaseAPI.orderBy("score", "desc"), window.firebaseAPI.limit(20));
                 const querySnapshot = await window.firebaseAPI.getDocs(q);
@@ -437,11 +448,11 @@
                     tbody.innerHTML += `<tr class="border-b border-green-500/30">
                         <td class="font-bold text-yellow-400">#${rank}</td>
                         <td class="font-bold">${data.username}</td>
-                        <td class="text-right font-bold text-2xl">${data.score}</td>
+                        <td class="text-right font-bold text-xl">${data.score}</td>
                     </tr>`; rank++;
                 });
-                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-10">NO DATA FOUND</td></tr>';
-            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-10">ERROR LOADING DB</td></tr>'; }
+                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-6">NO DATA FOUND</td></tr>';
+            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-6">ERROR LOADING DB</td></tr>'; }
         }
 
         async function resetLeaderboard() {
@@ -464,7 +475,7 @@
 
         function startGame(game) {
             clearGameListeners(); 
-            window.currentRunId = Date.now(); // Генерируем новый ID для каждой игры
+            window.currentRunId = Date.now(); 
             
             currentGame = game; isPaused = false; isGameOver = false; score = 0;
             document.getElementById('score').innerText = score; document.getElementById('game-title').innerText = game.toUpperCase();
@@ -484,7 +495,6 @@
             isPaused = !isPaused; document.getElementById('pause-msg').style.display = isPaused ? 'block' : 'none';
         }
         
-        // Глобальный слушатель паузы добавляется один раз
         document.addEventListener('keydown', (e) => { 
             if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause(); 
         });
@@ -498,11 +508,11 @@
 
         // --- DINO ---
         function initDino(container) {
-            const myRun = window.currentRunId; // Привязываем цикл к этому запуску
+            const myRun = window.currentRunId; 
             const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 350; canvas.className = 'game-canvas w-full h-full'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
-            let gameSpeed = 2.0; let scoreCounter = 0;
-            let dino = { x: 50, y: 200, w: 30, h: 40, dy: 0, gravity: 0.4, jumpPower: -11, grounded: true, ducking: false };
+            let gameSpeed = 1.8; let scoreCounter = 0;
+            let dino = { x: 50, y: 200, w: 30, h: 40, dy: 0, gravity: 0.5, jumpPower: -14, grounded: true, ducking: false };
             let obstacles = []; const groundY = 280; let spawnTimer = 100;
 
             addGameListener('keydown', (e) => {
@@ -516,7 +526,7 @@
             });
 
             function loop() {
-                if (myRun !== window.currentRunId) return; // Убиваем старый цикл
+                if (myRun !== window.currentRunId) return; 
                 requestAnimationFrame(loop);
                 if (isPaused || isGameOver) return;
                 
@@ -547,7 +557,7 @@
                     if (type === 'ground') { let width = Math.random() > 0.5 ? 20 : 35; obstacles.push({ x: canvas.width, y: groundY - 45, w: width, h: 45, type }); } 
                     else { let heights = [groundY - 80, groundY - 50, groundY - 30]; let h = heights[Math.floor(Math.random() * heights.length)]; obstacles.push({ x: canvas.width, y: h, w: 35, h: 15, type }); }
                     
-                    let minGap = 280 + (gameSpeed * 10); let maxGap = 500 + (gameSpeed * 15);
+                    let minGap = 350 + (gameSpeed * 15); let maxGap = 600 + (gameSpeed * 20);
                     spawnTimer = (Math.random() * (maxGap - minGap) + minGap) / gameSpeed; 
                 }
 
@@ -804,9 +814,9 @@
             requestAnimationFrame(draw);
         }
 
-        // --- SYSADMIN SURVIVOR (БЕЗ ФАНТОМНЫХ БАГОВ) ---
+        // --- SYSADMIN SURVIVOR ---
         function initSurvivor(container) {
-            const myRun = window.currentRunId; // Строгая привязка цикла к этому запуску
+            const myRun = window.currentRunId; 
             const canvas = document.createElement('canvas'); canvas.width = 1000; canvas.height = 700; 
             canvas.className = 'game-canvas w-full h-full'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d', { alpha: false });
@@ -1172,10 +1182,9 @@
             addGameListener('keydown', kdown); addGameListener('keyup', kup);
 
             svPlayer = new Player(); updateHUD();
-            
             let clearInt = setInterval(() => { 
                 if (myRun !== window.currentRunId) { clearInterval(clearInt); return; }
-                if (svGame.state === 'PLAY' && currentGame === 'survivor') cleanupWorld(); 
+                if (svGame.state === 'PLAY') cleanupWorld(); 
             }, 5000);
 
             function survivorLoop(ts) {
