@@ -154,7 +154,7 @@
     <div id="auth-screen" class="screen active items-center justify-center p-4">
         <div class="panel p-10 max-w-lg w-full text-center fade-in-up">
             <h1 class="text-6xl mb-4 typewriter w-fit pulse-text">SUPPORT.OS</h1>
-            <p class="mb-8 text-xl opacity-80 delay-1 fade-in-up" style="animation-fill-mode: forwards;">v9.5 / SECURE LOGIN</p>
+            <p class="mb-8 text-xl opacity-80 delay-1 fade-in-up" style="animation-fill-mode: forwards;">v10.0 / SECURE LOGIN</p>
             <form id="auth-form" onsubmit="handleAuth(event)" class="delay-2 fade-in-up" style="animation-fill-mode: forwards;">
                 <input type="text" id="username" placeholder="Логин инженера" required>
                 <input type="password" id="password" placeholder="Пароль доступа" required minlength="6">
@@ -166,10 +166,8 @@
         </div>
     </div>
 
-    <!-- ДАШБОРД (ИГРЫ ПО ЦЕНТРУ, ЛИДЕРЫ СПРАВА) -->
+    <!-- ДАШБОРД -->
     <div id="dashboard-screen" class="screen flex-col p-6 h-full w-full max-w-[1600px] mx-auto">
-        
-        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
         <header class="panel flex justify-between items-center p-4 mb-6 fade-in-up z-10">
             <div class="text-4xl font-bold pulse-text flex items-center gap-4">
                 SUPPORT.OS
@@ -182,51 +180,57 @@
         </header>
 
         <div class="flex gap-6 h-full overflow-hidden pb-6 w-full">
-            <!-- ВЫБОР ИГР (ГЛАВНЫЙ ФОКУС, ШИРОКАЯ ПАНЕЛЬ) -->
+            <!-- ВЫБОР ИГР -->
             <main class="panel flex-[2] p-8 flex flex-col items-center justify-center relative fade-in-up delay-1">
                 <h2 class="text-6xl mb-12 border-b-2 border-green-500 pb-4 pulse-text">RELAXATION_PROTOCOL</h2>
                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl">
-                    <button onclick="startGame('snake')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                    <button onclick="startGame('snake')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
                         <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
                         <span>SNAKE.sh</span>
                     </button>
-                    <button onclick="startGame('tetris')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                    <button onclick="startGame('tetris')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
                         <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
                         <span>TETRIS.bat</span>
                     </button>
-                    <button onclick="startGame('minesweeper')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                    <button onclick="startGame('minesweeper')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
                         <svg class="w-16 h-16 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
                         <span>MINESWEEP</span>
                     </button>
-                    <button onclick="startGame('bricks')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                    <button onclick="startGame('bricks')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
                         <svg class="w-16 h-16 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
                         <span>BRICKS.exe</span>
                     </button>
-                    <button onclick="startGame('dino')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                    <button onclick="startGame('dino')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
                         <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
                         <span>DINO.exe</span>
                     </button>
-                    <button onclick="startGame('survivor')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                    <button onclick="startGame('survivor')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-8 px-6 glitch-hover border border-green-500 transition-colors">
                         <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
                         <span>SURVIVOR</span>
+                    </button>
+                    <!-- НОВАЯ ИГРА GALAGA -->
+                    <button onclick="startGame('galaga')" class="game-card lg:col-span-3 flex flex-row items-center justify-center gap-4 text-3xl py-6 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M12 2L4 14l3 2 1-4h8l1 4 3-2-8-12z"/></svg>
+                        <span>GALAGA.exe</span>
                     </button>
                 </div>
             </main>
 
-            <!-- ТАБЛИЦА ЛИДЕРОВ (БОКОВАЯ ПАНЕЛЬ) -->
+            <!-- ТАБЛИЦА ЛИДЕРОВ -->
             <aside class="panel flex-1 max-w-[450px] p-6 flex flex-col h-full shrink-0 fade-in-up delay-2">
                 <div class="flex justify-between items-center border-b-2 border-green-500 pb-4 mb-4">
                     <h2 class="text-3xl">LEADERBOARD</h2>
                     <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-white" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
                 </div>
                 
-                <div class="grid grid-cols-3 gap-2 mb-4" id="lb-tabs">
-                    <button class="text-sm py-2 px-2 bg-green-900 !text-white border-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('tetris')">TETRIS</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('minesweeper')">MINES</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('bricks')">BRICKS</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('dino')">DINO</button>
-                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('survivor')">SURVIVOR</button>
+                <div class="flex flex-wrap gap-2 mb-4" id="lb-tabs">
+                    <button class="text-sm py-2 px-2 flex-1 bg-green-900 !text-white border-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
+                    <button class="text-sm py-2 px-2 flex-1" onclick="loadLeaderboard('tetris')">TETRIS</button>
+                    <button class="text-sm py-2 px-2 flex-1" onclick="loadLeaderboard('minesweeper')">MINES</button>
+                    <button class="text-sm py-2 px-2 flex-1" onclick="loadLeaderboard('bricks')">BRICKS</button>
+                    <button class="text-sm py-2 px-2 flex-1" onclick="loadLeaderboard('dino')">DINO</button>
+                    <button class="text-sm py-2 px-2 flex-1" onclick="loadLeaderboard('survivor')">SURVIV</button>
+                    <button class="text-sm py-2 px-2 flex-1" onclick="loadLeaderboard('galaga')">GALAGA</button>
                 </div>
                 
                 <div class="overflow-y-auto flex-1 table-wrapper p-4">
@@ -259,8 +263,8 @@
         </header>
         
         <main class="flex-1 flex justify-center items-center relative fade-in-up delay-1">
-            <div class="flex gap-8 items-start relative z-10">
-                <div id="game-container" class="relative shadow-2xl rounded-lg overflow-hidden flex justify-center items-center"></div>
+            <div class="flex gap-8 items-start relative z-10 w-full justify-center">
+                <div id="game-container" class="relative shadow-2xl rounded-lg overflow-hidden flex justify-center items-center w-fit mx-auto"></div>
                 <div id="floating-scores-layer" class="absolute top-0 left-0 w-full h-full pointer-events-none z-30"></div>
 
                 <div id="tetris-sidebar" style="display: none;" class="panel p-6 text-center shadow-xl">
@@ -282,7 +286,7 @@
         </div>
     </div>
 
-    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ (ЗАМЕДЛЕННАЯ) -->
+    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ -->
     <script>
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
@@ -296,7 +300,6 @@
             bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
             bgCtx.fillStyle = document.body.classList.contains('light-theme') ? '#a0aec0' : '#0f0';
             bgCtx.font = fontSize + 'px monospace';
-            
             for(let i = 0; i < drops.length; i++) {
                 const text = chars[Math.floor(Math.random() * chars.length)];
                 bgCtx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -341,7 +344,7 @@
     </script>
 
     <script>
-        // ИДЕАЛЬНАЯ ОЧИСТКА ПАМЯТИ И ФИКС ФАНТОМНЫХ ИГР
+        // ГЛОБАЛЬНАЯ ЛОГИКА
         let activeGameListeners = [];
         window.currentRunId = 0; 
 
@@ -421,7 +424,7 @@
             if (isLightMode) { activeTab.style.background = '#38b2ac'; activeTab.style.borderColor = '#38b2ac'; }
             else { activeTab.style.background = '#14532d'; activeTab.style.borderColor = '#14532d'; } 
 
-            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-2xl pt-10">ОЖИДАНИЕ ДАННЫХ...</td></tr>';
+            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-xl pt-6">LOADING...</td></tr>';
             try {
                 const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), window.firebaseAPI.orderBy("score", "desc"), window.firebaseAPI.limit(20));
                 const querySnapshot = await window.firebaseAPI.getDocs(q);
@@ -431,11 +434,11 @@
                     tbody.innerHTML += `<tr class="border-b border-green-500/30">
                         <td class="font-bold text-yellow-400">#${rank}</td>
                         <td class="font-bold">${data.username}</td>
-                        <td class="text-right font-bold text-2xl">${data.score}</td>
+                        <td class="text-right font-bold text-xl">${data.score}</td>
                     </tr>`; rank++;
                 });
-                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-10">NO DATA FOUND</td></tr>';
-            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-10">ERROR LOADING DB</td></tr>'; }
+                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-6">NO DATA FOUND</td></tr>';
+            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-6">ERROR LOADING DB</td></tr>'; }
         }
 
         async function resetLeaderboard() {
@@ -471,6 +474,7 @@
             if(game === 'minesweeper') initMinesweeper(container); if(game === 'bricks') initBricks(container);
             if(game === 'dino') initDino(container);
             if(game === 'survivor') initSurvivor(container);
+            if(game === 'galaga') initGalaga(container); // ИНИЦИАЛИЗАЦИЯ GALAGA
         }
 
         function togglePause() {
@@ -482,32 +486,315 @@
             if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause(); 
         });
 
-        // Функция gameOver поддерживает параметр победы
         function gameOver(isWin = false) {
             isGameOver = true; 
             document.getElementById('final-score-display').innerText = score; 
-            
             const overlay = document.getElementById('game-over-overlay');
             const titleText = document.getElementById('game-over-huge-text');
-            
             if (isWin) {
-                titleText.innerHTML = 'СИСТЕМА<br>ОЧИЩЕНА';
-                titleText.style.color = '#38b2ac'; 
-                titleText.style.borderColor = '#38b2ac';
-                titleText.style.textShadow = '0 0 20px #38b2ac, 2px 2px 0px #fff, -2px -2px 0px #0f0';
+                titleText.innerHTML = 'СИСТЕМА<br>ОЧИЩЕНА'; titleText.style.color = '#38b2ac'; titleText.style.borderColor = '#38b2ac'; titleText.style.textShadow = '0 0 20px #38b2ac, 2px 2px 0px #fff, -2px -2px 0px #0f0';
             } else {
-                titleText.innerHTML = 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ';
-                titleText.style.color = ''; 
-                titleText.style.borderColor = '';
-                titleText.style.textShadow = '';
+                titleText.innerHTML = 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ'; titleText.style.color = ''; titleText.style.borderColor = ''; titleText.style.textShadow = '';
             }
-            
-            overlay.style.display = 'flex';
-            saveScore(currentGame, score);
+            overlay.style.display = 'flex'; saveScore(currentGame, score);
         }
         
         function restartCurrentGame() { window.currentRunId = Date.now(); document.getElementById('game-over-overlay').style.display = 'none'; startGame(currentGame); }
         function exitGame() { window.currentRunId = Date.now(); document.getElementById('game-over-overlay').style.display = 'none'; switchScreen('dashboard-screen'); }
+
+
+        // --- GALAGA (НОВАЯ ИГРА) ---
+        function initGalaga(container) {
+            const myRun = window.currentRunId;
+            const canvas = document.createElement('canvas'); 
+            canvas.width = 800; canvas.height = 600; 
+            canvas.className = 'game-canvas max-w-full'; 
+            container.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+
+            const CANVAS_WIDTH = canvas.width;
+            const CANVAS_HEIGHT = canvas.height;
+            const PLAYER_SPEED = 5; const PLAYER_SHOOT_COOLDOWN = 15; 
+            const BULLET_SPEED = 10; const ENEMY_BULLET_SPEED = 5;
+
+            const ENEMY_TYPES = {
+                NORMAL: { color: '#ffcc00', points: 10, hp: 1, speed: 2, diveSpeed: 4 }, 
+                FAST:   { color: '#00ccff', points: 20, hp: 1, speed: 3, diveSpeed: 6 }, 
+                TANK:   { color: '#ff3333', points: 50, hp: 2, speed: 1.5, diveSpeed: 3 } 
+            };
+
+            let galagaKeys = { ArrowLeft: false, ArrowRight: false, KeyA: false, KeyD: false, Space: false };
+            
+            addGameListener('keydown', (e) => {
+                if(currentGame !== 'galaga' || isPaused || isGameOver) return;
+                if (galagaKeys.hasOwnProperty(e.code)) galagaKeys[e.code] = true;
+            });
+            addGameListener('keyup', (e) => {
+                if(currentGame !== 'galaga' || isPaused || isGameOver) return;
+                if (galagaKeys.hasOwnProperty(e.code)) galagaKeys[e.code] = false;
+            });
+
+            class Star {
+                constructor() { this.reset(true); }
+                reset(randomY = false) {
+                    this.x = Math.random() * CANVAS_WIDTH;
+                    this.y = randomY ? Math.random() * CANVAS_HEIGHT : 0;
+                    this.z = Math.random() * 3 + 1; 
+                    this.size = 1.5 / this.z; this.speed = (5 / this.z) * 0.5; this.alpha = Math.random() * 0.5 + 0.5;
+                }
+                update(speedMultiplier = 1) { this.y += this.speed * speedMultiplier; if (this.y > CANVAS_HEIGHT) this.reset(); }
+                draw(ctx) {
+                    ctx.fillStyle = isLightMode ? `rgba(45, 55, 72, ${this.alpha})` : `rgba(255, 255, 255, ${this.alpha})`;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+
+            class Particle {
+                constructor(x, y, color, speedScale = 1) {
+                    this.x = x; this.y = y; this.color = color;
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 3 * speedScale;
+                    this.vx = Math.cos(angle) * speed; this.vy = Math.sin(angle) * speed;
+                    this.life = 1.0; this.decay = Math.random() * 0.02 + 0.02; this.size = Math.random() * 3 + 1;
+                }
+                update() { this.x += this.vx; this.y += this.vy; this.life -= this.decay; }
+                draw(ctx) {
+                    ctx.globalAlpha = Math.max(0, this.life); ctx.fillStyle = this.color;
+                    ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                    ctx.shadowBlur = 0; ctx.globalAlpha = 1.0;
+                }
+            }
+
+            class Bullet {
+                constructor(x, y, isEnemy, color = '#fff') {
+                    this.x = x; this.y = y; this.isEnemy = isEnemy; this.width = 4; this.height = 15;
+                    this.color = color; this.speed = isEnemy ? ENEMY_BULLET_SPEED : -BULLET_SPEED; this.markedForDeletion = false;
+                }
+                update() { this.y += this.speed; if (this.y < 0 || this.y > CANVAS_HEIGHT) this.markedForDeletion = true; }
+                draw(ctx) {
+                    ctx.fillStyle = this.color; ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+                    ctx.fillRect(this.x - this.width/2, this.y, this.width, this.height); ctx.shadowBlur = 0;
+                }
+            }
+
+            class Player {
+                constructor(game) {
+                    this.game = game; this.width = 30; this.height = 40;
+                    this.x = CANVAS_WIDTH / 2; this.y = CANVAS_HEIGHT - 60;
+                    this.color = '#00ffcc'; this.cooldown = 0; this.invulnerable = 0;
+                }
+                update() {
+                    if ((galagaKeys.ArrowLeft || galagaKeys.KeyA) && this.x > this.width / 2) this.x -= PLAYER_SPEED;
+                    if ((galagaKeys.ArrowRight || galagaKeys.KeyD) && this.x < CANVAS_WIDTH - this.width / 2) this.x += PLAYER_SPEED;
+                    if (this.cooldown > 0) this.cooldown--;
+                    if (galagaKeys.Space && this.cooldown === 0) {
+                        this.game.bullets.push(new Bullet(this.x, this.y - this.height/2, false, this.color));
+                        this.cooldown = PLAYER_SHOOT_COOLDOWN;
+                    }
+                    if (this.invulnerable > 0) this.invulnerable--;
+                }
+                draw(ctx) {
+                    if (this.invulnerable > 0 && Math.floor(Date.now() / 100) % 2 === 0) return;
+                    ctx.strokeStyle = this.color; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = this.color;
+                    ctx.beginPath(); ctx.moveTo(this.x, this.y - this.height / 2); ctx.lineTo(this.x + this.width / 2, this.y + this.height / 2);
+                    ctx.lineTo(this.x, this.y + this.height / 4); ctx.lineTo(this.x - this.width / 2, this.y + this.height / 2);
+                    ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0;
+                }
+                hit() {
+                    if (this.invulnerable > 0) return false;
+                    this.game.createExplosion(this.x, this.y, this.color, 30, 2);
+                    this.game.lives--; this.game.waveFlawless = false; this.invulnerable = 120;
+                    return true;
+                }
+            }
+
+            class Enemy {
+                constructor(game, type, gridX, gridY, levelParams) {
+                    this.game = game; this.type = type;
+                    this.targetX = 100 + gridX * 60; this.targetY = 50 + gridY * 50;
+                    this.x = this.targetX; this.y = -50 - Math.random() * 200;
+                    this.hp = type.hp; this.state = 'enter'; 
+                    this.speedMultiplier = levelParams.speedMulti; this.shootChance = levelParams.shootChance;
+                    this.width = 25; this.height = 25; this.markedForDeletion = false;
+                    this.diveAngle = 0;
+                }
+                update() {
+                    switch (this.state) {
+                        case 'enter': case 'return':
+                            let dx = this.targetX - this.x; let dy = this.targetY - this.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < 5) { this.x = this.targetX; this.y = this.targetY; this.state = 'formation'; } 
+                            else { this.x += (dx / dist) * this.type.speed * this.speedMultiplier; this.y += (dy / dist) * this.type.speed * this.speedMultiplier; }
+                            break;
+                        case 'formation':
+                            this.x = this.targetX + Math.sin(Date.now() / 500 + this.targetY) * 10;
+                            if (Math.random() < 0.002 * this.speedMultiplier) {
+                                this.state = 'dive'; this.diveAngle = Math.atan2(this.game.player.y - this.y, this.game.player.x - this.x);
+                            }
+                            break;
+                        case 'dive':
+                            this.x += Math.cos(this.diveAngle) * this.type.diveSpeed * this.speedMultiplier;
+                            this.y += Math.sin(this.diveAngle) * this.type.diveSpeed * this.speedMultiplier;
+                            this.x += Math.sin(this.y / 30) * 3; 
+                            if (Math.random() < this.shootChance) this.game.bullets.push(new Bullet(this.x, this.y + this.height/2, true, this.type.color));
+                            if (this.y > CANVAS_HEIGHT + 50) { this.y = -50; this.state = 'return'; }
+                            break;
+                    }
+                }
+                draw(ctx) {
+                    ctx.strokeStyle = this.type.color; ctx.lineWidth = 2; ctx.shadowBlur = 10; ctx.shadowColor = this.type.color;
+                    ctx.beginPath();
+                    if (this.type === ENEMY_TYPES.NORMAL) { ctx.moveTo(this.x, this.y + this.height/2); ctx.lineTo(this.x - this.width/2, this.y - this.height/2); ctx.lineTo(this.x + this.width/2, this.y - this.height/2); } 
+                    else if (this.type === ENEMY_TYPES.FAST) { ctx.moveTo(this.x, this.y + this.height/2); ctx.lineTo(this.x - this.width/2, this.y); ctx.lineTo(this.x, this.y - this.height/2); ctx.lineTo(this.x + this.width/2, this.y); } 
+                    else if (this.type === ENEMY_TYPES.TANK) { ctx.rect(this.x - this.width/2, this.y - this.height/2, this.width, this.height); if (this.hp < 2) { ctx.moveTo(this.x - this.width/2, this.y - this.height/2); ctx.lineTo(this.x + this.width/2, this.y + this.height/2); } }
+                    ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0;
+                }
+                hit() {
+                    this.hp--;
+                    if (this.hp <= 0) { this.markedForDeletion = true; this.game.createExplosion(this.x, this.y, this.type.color, 15); return true; }
+                    return false;
+                }
+            }
+
+            class GalagaGame {
+                constructor() {
+                    this.stars = Array.from({ length: 100 }, () => new Star());
+                    this.init();
+                }
+                init() {
+                    this.player = new Player(this);
+                    this.bullets = []; this.enemies = []; this.particles = [];
+                    this.lives = 3; this.level = 1;
+                    this.comboMulti = 1; this.comboTimer = 0; this.comboMaxTime = 120;
+                    this.waveFlawless = true; this.waveMessageTimer = 0; this.waveMessage = "";
+                    this.isSpawningWave = false;
+                    this.spawnWave();
+                }
+                spawnWave() {
+                    this.enemies = []; this.bullets = []; this.waveFlawless = true; this.isSpawningWave = false;
+                    let rows = Math.min(3 + Math.floor(this.level / 2), 6); let cols = Math.min(5 + Math.floor(this.level / 3), 10);
+                    let levelParams = { speedMulti: 1 + (this.level * 0.1), shootChance: 0.005 + (this.level * 0.002) };
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            let type = ENEMY_TYPES.NORMAL; if (r === 0) type = ENEMY_TYPES.TANK; else if (r === 1 || r === 2) type = ENEMY_TYPES.FAST;
+                            this.enemies.push(new Enemy(this, type, c, r, levelParams));
+                        }
+                    }
+                    this.showWaveMessage(`УРОВЕНЬ ${this.level}`);
+                }
+                createExplosion(x, y, color, count, speedScale = 1) { for (let i = 0; i < count; i++) this.particles.push(new Particle(x, y, color, speedScale)); }
+                addScore(points) {
+                    let finalPoints = points * this.comboMulti;
+                    score += finalPoints; // ГЛОБАЛЬНЫЙ СЧЕТ
+                    document.getElementById('score').innerText = score;
+                    spawnFloatingScore(this.player.x, this.player.y - 20, '+' + finalPoints);
+                    
+                    this.comboTimer = this.comboMaxTime;
+                    if (this.comboMulti < 5) this.comboMulti++;
+                }
+                showWaveMessage(msg) { this.waveMessage = msg; this.waveMessageTimer = 120; }
+                checkCollisions() {
+                    this.bullets.forEach(bullet => {
+                        if (bullet.isEnemy || bullet.markedForDeletion) return;
+                        this.enemies.forEach(enemy => {
+                            if (enemy.markedForDeletion) return;
+                            let dx = bullet.x - enemy.x; let dy = bullet.y - enemy.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < enemy.width/2 + bullet.width/2 + 5) {
+                                bullet.markedForDeletion = true;
+                                if (enemy.hit()) this.addScore(enemy.type.points);
+                                else this.createExplosion(bullet.x, bullet.y, '#fff', 5, 0.5);
+                            }
+                        });
+                    });
+                    if (this.player.invulnerable <= 0) {
+                        this.bullets.forEach(bullet => {
+                            if (!bullet.isEnemy || bullet.markedForDeletion) return;
+                            let dx = bullet.x - this.player.x; let dy = bullet.y - this.player.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < this.player.width/2) { bullet.markedForDeletion = true; this.player.hit(); }
+                        });
+                        this.enemies.forEach(enemy => {
+                            let dx = enemy.x - this.player.x; let dy = enemy.y - this.player.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < (this.player.width/2 + enemy.width/2)) { enemy.markedForDeletion = true; this.player.hit(); }
+                        });
+                    }
+                }
+                update() {
+                    this.stars.forEach(s => s.update(this.player.invulnerable > 0 ? 2 : 1));
+                    this.player.update();
+                    this.bullets.forEach(b => b.update()); this.bullets = this.bullets.filter(b => !b.markedForDeletion);
+                    this.enemies.forEach(e => e.update()); this.enemies = this.enemies.filter(e => !e.markedForDeletion);
+                    this.particles.forEach(p => p.update()); this.particles = this.particles.filter(p => p.life > 0);
+                    this.checkCollisions();
+
+                    if (this.comboTimer > 0) { this.comboTimer--; if (this.comboTimer === 0) this.comboMulti = 1; }
+                    if (this.waveMessageTimer > 0) this.waveMessageTimer--;
+
+                    if (this.enemies.length === 0 && !this.isSpawningWave) {
+                        this.isSpawningWave = true;
+                        if (this.waveFlawless) {
+                            let bonus = this.level * 100 * 2;
+                            score += bonus; document.getElementById('score').innerText = score;
+                            spawnFloatingScore(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, '+' + bonus);
+                            this.showWaveMessage("ИДЕАЛЬНАЯ ВОЛНА! БОНУС X2");
+                        }
+                        this.level++;
+                        setTimeout(() => { if (myRun === window.currentRunId && !isGameOver) this.spawnWave(); }, 1500);
+                    }
+
+                    if (this.lives <= 0) { gameOver(false); }
+                }
+                drawText(text, x, y, size, color, align="center", glow=true) {
+                    ctx.fillStyle = color; ctx.font = `bold ${size}px 'Courier New'`; ctx.textAlign = align;
+                    if (glow) { ctx.shadowBlur = 15; ctx.shadowColor = color; }
+                    ctx.fillText(text, x, y); ctx.shadowBlur = 0;
+                }
+                drawHUD() {
+                    this.drawText(`УРОВЕНЬ ${this.level}`, CANVAS_WIDTH / 2, 30, 20, '#00ccff', 'center', true);
+                    for (let i = 0; i < Math.max(0, this.lives); i++) {
+                        ctx.strokeStyle = this.player.color; ctx.lineWidth = 2; ctx.beginPath();
+                        let lx = 30 + i * 25; let ly = 30;
+                        ctx.moveTo(lx, ly - 10); ctx.lineTo(lx + 10, ly + 10); ctx.lineTo(lx, ly + 5); ctx.lineTo(lx - 10, ly + 10); ctx.closePath(); ctx.stroke();
+                    }
+                    if (this.comboMulti > 1) {
+                        this.drawText(`КОМБО x${this.comboMulti}`, 20, 80, 20, '#ff33ff', 'left', true);
+                        ctx.fillStyle = '#ff33ff'; ctx.fillRect(20, 90, (this.comboTimer / this.comboMaxTime) * 100, 5);
+                    }
+                    if (this.waveMessageTimer > 0) this.drawText(this.waveMessage, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 40, '#00ffcc');
+                }
+                draw() {
+                    ctx.fillStyle = isLightMode ? 'rgba(226, 232, 240, 0.3)' : 'rgba(5, 5, 5, 0.3)';
+                    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    this.stars.forEach(s => s.draw(ctx));
+                    this.particles.forEach(p => p.draw(ctx)); this.bullets.forEach(b => b.draw(ctx));
+                    this.enemies.forEach(e => e.draw(ctx));
+                    if (this.lives > 0) this.player.draw(ctx);
+                    this.drawHUD();
+                }
+            }
+
+            let instance = new GalagaGame();
+            let lastTime = 0; let accumulator = 0; const FRAME_TIME = 1000 / 60;
+
+            function loop(timestamp) {
+                if (myRun !== window.currentRunId) return; 
+                requestAnimationFrame(loop);
+                
+                if (isPaused || isGameOver) { lastTime = timestamp; return; }
+                
+                if (!lastTime) lastTime = timestamp;
+                let deltaTime = timestamp - lastTime;
+                lastTime = timestamp;
+                if (deltaTime > 250) deltaTime = 250;
+                accumulator += deltaTime;
+
+                while (accumulator >= FRAME_TIME) {
+                    instance.update();
+                    accumulator -= FRAME_TIME;
+                }
+                instance.draw();
+            }
+            requestAnimationFrame(loop);
+        }
 
         // --- УЛУЧШЕННАЯ ЗМЕЙКА С ОЧЕРЕДЬЮ ВВОДА ---
         function initSnake(container) {
@@ -517,7 +804,6 @@
             let snake = { x: 300, y: 300, dx: grid, dy: 0, cells: [], maxCells: 4 }; let apple = { x: 450, y: 450 };
             const speedDelay = 30; 
             
-            // ИСПРАВЛЕНИЕ: Очередь команд для мгновенной регистрации клавиш без багов
             let inputQueue = [];
 
             function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
@@ -639,7 +925,6 @@
 
                 tetromino = nextTetromino; nextTetromino = getRandomPiece();
                 
-                // ИСПРАВЛЕНИЕ: Проверка на GameOver при спавне (если новая фигура сразу врезается в блоки)
                 if (!isValidMove(tetromino.matrix, tetromino.row, tetromino.col)) {
                     return gameOver(false);
                 }
@@ -663,7 +948,6 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = isLightMode ? '#cbd5e0' : '#002200'; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // ИСПРАВЛЕНИЕ: Отрисовка сетки
                 ctx.strokeStyle = isLightMode ? 'rgba(45, 55, 72, 0.2)' : 'rgba(0, 255, 0, 0.2)';
                 ctx.lineWidth = 1;
                 for (let r = 0; r <= ROWS; r++) {
@@ -725,7 +1009,7 @@
             const grid = document.createElement('div'); grid.className = 'minesweeper-grid'; container.appendChild(grid);
             const width = 10; const bombAmount = 10; let squares = [];
             const TOTAL_SAFE = width * width - bombAmount;
-            let revealedCount = 0; // ИСПРАВЛЕНИЕ: Счетчик для определения победы
+            let revealedCount = 0; 
 
             const gameArray = Array(width*width - bombAmount).fill('valid').concat(Array(bombAmount).fill('bomb')).sort(() => Math.random() - 0.5);
             for(let i=0; i<width*width; i++) {
@@ -768,10 +1052,9 @@
                     checkSquare(square, square.id);
                 }
 
-                // ИСПРАВЛЕНИЕ: УСЛОВИЕ ПОБЕДЫ
                 if (revealedCount === TOTAL_SAFE) {
                     score += 1000; document.getElementById('score').innerText = score; 
-                    gameOver(true); // Вызываем победный экран
+                    gameOver(true); 
                 }
             }
             function checkSquare(square, currentId) {
@@ -861,7 +1144,6 @@
             const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 350; canvas.className = 'game-canvas w-full h-full'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
             
-            // ИДЕАЛЬНАЯ ФИЗИКА: Медленный старт, мощный и плавный прыжок (как в оригинальном хроме).
             let gameSpeed = 5.0; 
             let scoreCounter = 0;
             let dino = { x: 50, y: 250, w: 40, h: 40, dy: 0, gravity: 0.6, jumpPower: -12, isJumping: false, isDucking: false };
@@ -885,9 +1167,8 @@
                 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Физика прыжка
                 dino.dy += dino.gravity; 
-                if(dino.isDucking && dino.isJumping) dino.dy += 2.0; // Быстрый спуск
+                if(dino.isDucking && dino.isJumping) dino.dy += 2.0; 
                 dino.y += dino.dy;
 
                 if(dino.y + dino.h >= groundY) { dino.y = groundY - dino.h; dino.dy = 0; dino.isJumping = false; } 
@@ -902,16 +1183,14 @@
                 for(let i = 0; i < canvas.width; i+=40) { if((i + scoreCounter * (gameSpeed*0.5)) % 80 < 40) { ctx.fillStyle = isLightMode ? '#718096' : '#0f0'; ctx.fillRect(i, groundY+5, 6, 2); } }
 
                 ctx.fillStyle = isLightMode ? '#38b2ac' : '#0f0'; ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
-                ctx.fillStyle = isLightMode ? '#fff' : '#000'; ctx.fillRect(dino.x + 25, dino.y + 8, 5, 5); // Глаз
+                ctx.fillStyle = isLightMode ? '#fff' : '#000'; ctx.fillRect(dino.x + 25, dino.y + 8, 5, 5); 
 
-                // Надежная система спавна на основе дистанции
                 spawnTimer -= gameSpeed;
                 if (spawnTimer <= 0) {
                     let type = Math.random() > 0.7 && score > 200 ? 'flying' : 'ground';
                     if (type === 'ground') { let width = Math.random() > 0.6 ? 30 : 60; obstacles.push({ x: canvas.width, y: groundY - 50, w: width, h: 50, type }); } 
                     else { let heights = [groundY - 90, groundY - 60, groundY - 30]; let h = heights[Math.floor(Math.random() * heights.length)]; obstacles.push({ x: canvas.width, y: h, w: 40, h: 15, type }); }
                     
-                    // Гарантированный зазор для приземления динозаврика
                     let minGap = 400 + (gameSpeed * 10); let maxGap = 700 + (gameSpeed * 15);
                     spawnTimer = Math.random() * (maxGap - minGap) + minGap; 
                 }
@@ -1301,7 +1580,6 @@
             addGameListener('keydown', kdown); addGameListener('keyup', kup);
 
             svPlayer = new Player(); updateHUD();
-            
             let clearInt = setInterval(() => { 
                 if (myRun !== window.currentRunId) { clearInterval(clearInt); return; }
                 if (svGame.state === 'PLAY') cleanupWorld(); 
@@ -1347,6 +1625,299 @@
                 requestAnimationFrame(survivorLoop);
             }
             requestAnimationFrame(survivorLoop);
+        }
+
+        // --- GALAGA (С ИСПРАВЛЕНИЯМИ ОШИБОК) ---
+        function initGalaga(container) {
+            const myRun = window.currentRunId;
+            const canvas = document.createElement('canvas'); 
+            canvas.width = 800; canvas.height = 600; 
+            canvas.className = 'game-canvas max-w-full'; 
+            container.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+
+            const CANVAS_WIDTH = canvas.width;
+            const CANVAS_HEIGHT = canvas.height;
+            const PLAYER_SPEED = 5; const PLAYER_SHOOT_COOLDOWN = 15; 
+            const BULLET_SPEED = 10; const ENEMY_BULLET_SPEED = 5;
+
+            const ENEMY_TYPES = {
+                NORMAL: { color: '#ffcc00', points: 10, hp: 1, speed: 2, diveSpeed: 4 }, 
+                FAST:   { color: '#00ccff', points: 20, hp: 1, speed: 3, diveSpeed: 6 }, 
+                TANK:   { color: '#ff3333', points: 50, hp: 2, speed: 1.5, diveSpeed: 3 } 
+            };
+
+            let galagaKeys = { ArrowLeft: false, ArrowRight: false, KeyA: false, KeyD: false, Space: false };
+            
+            addGameListener('keydown', (e) => {
+                if(currentGame !== 'galaga' || isPaused || isGameOver) return;
+                if (galagaKeys.hasOwnProperty(e.code)) galagaKeys[e.code] = true;
+            });
+            addGameListener('keyup', (e) => {
+                if(currentGame !== 'galaga' || isPaused || isGameOver) return;
+                if (galagaKeys.hasOwnProperty(e.code)) galagaKeys[e.code] = false;
+            });
+
+            class Star {
+                constructor() { this.reset(true); }
+                reset(randomY = false) {
+                    this.x = Math.random() * CANVAS_WIDTH;
+                    this.y = randomY ? Math.random() * CANVAS_HEIGHT : 0;
+                    this.z = Math.random() * 3 + 1; 
+                    this.size = 1.5 / this.z; this.speed = (5 / this.z) * 0.5; this.alpha = Math.random() * 0.5 + 0.5;
+                }
+                update(speedMultiplier = 1) { this.y += this.speed * speedMultiplier; if (this.y > CANVAS_HEIGHT) this.reset(); }
+                draw(ctx) {
+                    ctx.fillStyle = isLightMode ? `rgba(45, 55, 72, ${this.alpha})` : `rgba(255, 255, 255, ${this.alpha})`;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+
+            class Particle {
+                constructor(x, y, color, speedScale = 1) {
+                    this.x = x; this.y = y; this.color = color;
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 3 * speedScale;
+                    this.vx = Math.cos(angle) * speed; this.vy = Math.sin(angle) * speed;
+                    this.life = 1.0; this.decay = Math.random() * 0.02 + 0.02; this.size = Math.random() * 3 + 1;
+                }
+                update() { this.x += this.vx; this.y += this.vy; this.life -= this.decay; }
+                draw(ctx) {
+                    ctx.globalAlpha = Math.max(0, this.life); ctx.fillStyle = this.color;
+                    ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                    ctx.shadowBlur = 0; ctx.globalAlpha = 1.0;
+                }
+            }
+
+            class Bullet {
+                constructor(x, y, isEnemy, color = '#fff') {
+                    this.x = x; this.y = y; this.isEnemy = isEnemy; this.width = 4; this.height = 15;
+                    this.color = color; this.speed = isEnemy ? ENEMY_BULLET_SPEED : -BULLET_SPEED; this.markedForDeletion = false;
+                }
+                update() { this.y += this.speed; if (this.y < 0 || this.y > CANVAS_HEIGHT) this.markedForDeletion = true; }
+                draw(ctx) {
+                    ctx.fillStyle = this.color; ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+                    ctx.fillRect(this.x - this.width/2, this.y, this.width, this.height); ctx.shadowBlur = 0;
+                }
+            }
+
+            class Player {
+                constructor(game) {
+                    this.game = game; this.width = 30; this.height = 40;
+                    this.x = CANVAS_WIDTH / 2; this.y = CANVAS_HEIGHT - 60;
+                    this.color = '#00ffcc'; this.cooldown = 0; this.invulnerable = 0;
+                }
+                update() {
+                    if ((galagaKeys.ArrowLeft || galagaKeys.KeyA) && this.x > this.width / 2) this.x -= PLAYER_SPEED;
+                    if ((galagaKeys.ArrowRight || galagaKeys.KeyD) && this.x < CANVAS_WIDTH - this.width / 2) this.x += PLAYER_SPEED;
+                    if (this.cooldown > 0) this.cooldown--;
+                    if (galagaKeys.Space && this.cooldown === 0) {
+                        this.game.bullets.push(new Bullet(this.x, this.y - this.height/2, false, this.color));
+                        this.cooldown = PLAYER_SHOOT_COOLDOWN;
+                    }
+                    if (this.invulnerable > 0) this.invulnerable--;
+                }
+                draw(ctx) {
+                    if (this.invulnerable > 0 && Math.floor(Date.now() / 100) % 2 === 0) return;
+                    ctx.strokeStyle = this.color; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = this.color;
+                    ctx.beginPath(); ctx.moveTo(this.x, this.y - this.height / 2); ctx.lineTo(this.x + this.width / 2, this.y + this.height / 2);
+                    ctx.lineTo(this.x, this.y + this.height / 4); ctx.lineTo(this.x - this.width / 2, this.y + this.height / 2);
+                    ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0;
+                }
+                hit() {
+                    if (this.invulnerable > 0) return false;
+                    this.game.createExplosion(this.x, this.y, this.color, 30, 2);
+                    this.game.lives--; this.game.waveFlawless = false; this.invulnerable = 120;
+                    return true;
+                }
+            }
+
+            class Enemy {
+                constructor(game, type, gridX, gridY, levelParams) {
+                    this.game = game; this.type = type;
+                    this.targetX = 100 + gridX * 60; this.targetY = 50 + gridY * 50;
+                    this.x = this.targetX; this.y = -50 - Math.random() * 200;
+                    this.hp = type.hp; this.state = 'enter'; 
+                    this.speedMultiplier = levelParams.speedMulti; this.shootChance = levelParams.shootChance;
+                    this.width = 25; this.height = 25; this.markedForDeletion = false;
+                    this.diveAngle = 0;
+                }
+                update() {
+                    switch (this.state) {
+                        case 'enter': case 'return':
+                            let dx = this.targetX - this.x; let dy = this.targetY - this.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < 5) { this.x = this.targetX; this.y = this.targetY; this.state = 'formation'; } 
+                            else { this.x += (dx / dist) * this.type.speed * this.speedMultiplier; this.y += (dy / dist) * this.type.speed * this.speedMultiplier; }
+                            break;
+                        case 'formation':
+                            this.x = this.targetX + Math.sin(Date.now() / 500 + this.targetY) * 10;
+                            if (Math.random() < 0.002 * this.speedMultiplier) {
+                                this.state = 'dive'; this.diveAngle = Math.atan2(this.game.player.y - this.y, this.game.player.x - this.x);
+                            }
+                            break;
+                        case 'dive':
+                            this.x += Math.cos(this.diveAngle) * this.type.diveSpeed * this.speedMultiplier;
+                            this.y += Math.sin(this.diveAngle) * this.type.diveSpeed * this.speedMultiplier;
+                            this.x += Math.sin(this.y / 30) * 3; 
+                            if (Math.random() < this.shootChance) this.game.bullets.push(new Bullet(this.x, this.y + this.height/2, true, this.type.color));
+                            if (this.y > CANVAS_HEIGHT + 50) { this.y = -50; this.state = 'return'; }
+                            break;
+                    }
+                }
+                draw(ctx) {
+                    ctx.strokeStyle = this.type.color; ctx.lineWidth = 2; ctx.shadowBlur = 10; ctx.shadowColor = this.type.color;
+                    ctx.beginPath();
+                    if (this.type === ENEMY_TYPES.NORMAL) { ctx.moveTo(this.x, this.y + this.height/2); ctx.lineTo(this.x - this.width/2, this.y - this.height/2); ctx.lineTo(this.x + this.width/2, this.y - this.height/2); } 
+                    else if (this.type === ENEMY_TYPES.FAST) { ctx.moveTo(this.x, this.y + this.height/2); ctx.lineTo(this.x - this.width/2, this.y); ctx.lineTo(this.x, this.y - this.height/2); ctx.lineTo(this.x + this.width/2, this.y); } 
+                    else if (this.type === ENEMY_TYPES.TANK) { ctx.rect(this.x - this.width/2, this.y - this.height/2, this.width, this.height); if (this.hp < 2) { ctx.moveTo(this.x - this.width/2, this.y - this.height/2); ctx.lineTo(this.x + this.width/2, this.y + this.height/2); } }
+                    ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0;
+                }
+                hit() {
+                    this.hp--;
+                    if (this.hp <= 0) { this.markedForDeletion = true; this.game.createExplosion(this.x, this.y, this.type.color, 15); return true; }
+                    return false;
+                }
+            }
+
+            class GalagaGame {
+                constructor() {
+                    this.stars = Array.from({ length: 100 }, () => new Star());
+                    this.init();
+                }
+                init() {
+                    this.player = new Player(this);
+                    this.bullets = []; this.enemies = []; this.particles = [];
+                    this.lives = 3; this.level = 1;
+                    this.comboMulti = 1; this.comboTimer = 0; this.comboMaxTime = 120;
+                    this.waveFlawless = true; this.waveMessageTimer = 0; this.waveMessage = "";
+                    this.isSpawningWave = false;
+                    this.spawnWave();
+                }
+                spawnWave() {
+                    this.enemies = []; this.bullets = []; this.waveFlawless = true; this.isSpawningWave = false;
+                    let rows = Math.min(3 + Math.floor(this.level / 2), 6); let cols = Math.min(5 + Math.floor(this.level / 3), 10);
+                    let levelParams = { speedMulti: 1 + (this.level * 0.1), shootChance: 0.005 + (this.level * 0.002) };
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            let type = ENEMY_TYPES.NORMAL; if (r === 0) type = ENEMY_TYPES.TANK; else if (r === 1 || r === 2) type = ENEMY_TYPES.FAST;
+                            this.enemies.push(new Enemy(this, type, c, r, levelParams));
+                        }
+                    }
+                    this.showWaveMessage(`УРОВЕНЬ ${this.level}`);
+                }
+                createExplosion(x, y, color, count, speedScale = 1) { for (let i = 0; i < count; i++) this.particles.push(new Particle(x, y, color, speedScale)); }
+                addScore(points) {
+                    let finalPoints = points * this.comboMulti;
+                    score += finalPoints; 
+                    document.getElementById('score').innerText = score;
+                    spawnFloatingScore(this.player.x, this.player.y - 20, '+' + finalPoints);
+                    
+                    this.comboTimer = this.comboMaxTime;
+                    if (this.comboMulti < 5) this.comboMulti++;
+                }
+                showWaveMessage(msg) { this.waveMessage = msg; this.waveMessageTimer = 120; }
+                checkCollisions() {
+                    this.bullets.forEach(bullet => {
+                        if (bullet.isEnemy || bullet.markedForDeletion) return;
+                        this.enemies.forEach(enemy => {
+                            if (enemy.markedForDeletion) return;
+                            let dx = bullet.x - enemy.x; let dy = bullet.y - enemy.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < enemy.width/2 + bullet.width/2 + 5) {
+                                bullet.markedForDeletion = true;
+                                if (enemy.hit()) this.addScore(enemy.type.points);
+                                else this.createExplosion(bullet.x, bullet.y, '#fff', 5, 0.5);
+                            }
+                        });
+                    });
+                    if (this.player.invulnerable <= 0) {
+                        this.bullets.forEach(bullet => {
+                            if (!bullet.isEnemy || bullet.markedForDeletion) return;
+                            let dx = bullet.x - this.player.x; let dy = bullet.y - this.player.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < this.player.width/2) { bullet.markedForDeletion = true; this.player.hit(); }
+                        });
+                        this.enemies.forEach(enemy => {
+                            let dx = enemy.x - this.player.x; let dy = enemy.y - this.player.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < (this.player.width/2 + enemy.width/2)) { enemy.markedForDeletion = true; this.player.hit(); }
+                        });
+                    }
+                }
+                update() {
+                    this.stars.forEach(s => s.update(this.player.invulnerable > 0 ? 2 : 1));
+                    this.player.update();
+                    this.bullets.forEach(b => b.update()); this.bullets = this.bullets.filter(b => !b.markedForDeletion);
+                    this.enemies.forEach(e => e.update()); this.enemies = this.enemies.filter(e => !e.markedForDeletion);
+                    this.particles.forEach(p => p.update()); this.particles = this.particles.filter(p => p.life > 0);
+                    this.checkCollisions();
+
+                    if (this.comboTimer > 0) { this.comboTimer--; if (this.comboTimer === 0) this.comboMulti = 1; }
+                    if (this.waveMessageTimer > 0) this.waveMessageTimer--;
+
+                    if (this.enemies.length === 0 && !this.isSpawningWave) {
+                        this.isSpawningWave = true;
+                        if (this.waveFlawless) {
+                            let bonus = this.level * 100 * 2;
+                            score += bonus; document.getElementById('score').innerText = score;
+                            spawnFloatingScore(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, '+' + bonus);
+                            this.showWaveMessage("ИДЕАЛЬНАЯ ВОЛНА! БОНУС X2");
+                        }
+                        this.level++;
+                        setTimeout(() => { if (myRun === window.currentRunId && !isGameOver) this.spawnWave(); }, 1500);
+                    }
+
+                    if (this.lives <= 0) { gameOver(false); }
+                }
+                drawText(text, x, y, size, color, align="center", glow=true) {
+                    ctx.fillStyle = color; ctx.font = `bold ${size}px 'Courier New'`; ctx.textAlign = align;
+                    if (glow) { ctx.shadowBlur = 15; ctx.shadowColor = color; }
+                    ctx.fillText(text, x, y); ctx.shadowBlur = 0;
+                }
+                drawHUD() {
+                    this.drawText(`УРОВЕНЬ ${this.level}`, CANVAS_WIDTH / 2, 30, 20, '#00ccff', 'center', true);
+                    for (let i = 0; i < Math.max(0, this.lives); i++) {
+                        ctx.strokeStyle = this.player.color; ctx.lineWidth = 2; ctx.beginPath();
+                        let lx = 30 + i * 25; let ly = 30;
+                        ctx.moveTo(lx, ly - 10); ctx.lineTo(lx + 10, ly + 10); ctx.lineTo(lx, ly + 5); ctx.lineTo(lx - 10, ly + 10); ctx.closePath(); ctx.stroke();
+                    }
+                    if (this.comboMulti > 1) {
+                        this.drawText(`КОМБО x${this.comboMulti}`, 20, 80, 20, '#ff33ff', 'left', true);
+                        ctx.fillStyle = '#ff33ff'; ctx.fillRect(20, 90, (this.comboTimer / this.comboMaxTime) * 100, 5);
+                    }
+                    if (this.waveMessageTimer > 0) this.drawText(this.waveMessage, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 40, '#00ffcc');
+                }
+                draw() {
+                    ctx.fillStyle = isLightMode ? 'rgba(226, 232, 240, 0.3)' : 'rgba(5, 5, 5, 0.3)';
+                    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    this.stars.forEach(s => s.draw(ctx));
+                    this.particles.forEach(p => p.draw(ctx)); this.bullets.forEach(b => b.draw(ctx));
+                    this.enemies.forEach(e => e.draw(ctx));
+                    if (this.lives > 0) this.player.draw(ctx);
+                    this.drawHUD();
+                }
+            }
+
+            let instance = new GalagaGame();
+            let lastTime = 0; let accumulator = 0; const FRAME_TIME = 1000 / 60;
+
+            function loop(timestamp) {
+                if (myRun !== window.currentRunId) return; 
+                requestAnimationFrame(loop);
+                
+                if (isPaused || isGameOver) { lastTime = timestamp; return; }
+                
+                if (!lastTime) lastTime = timestamp;
+                let deltaTime = timestamp - lastTime;
+                lastTime = timestamp;
+                if (deltaTime > 250) deltaTime = 250;
+                accumulator += deltaTime;
+
+                while (accumulator >= FRAME_TIME) {
+                    instance.update();
+                    accumulator -= FRAME_TIME;
+                }
+                instance.draw();
+            }
+            requestAnimationFrame(loop);
         }
     </script>
 </body>
