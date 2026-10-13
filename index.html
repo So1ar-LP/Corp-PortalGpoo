@@ -23,7 +23,7 @@
         /* --- ФОНОВЫЙ КАНВАС ДЛЯ АНИМАЦИИ --- */
         #bg-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0; pointer-events: none; opacity: 0.25; /* Очень легкая прозрачность, не бьет по глазам */
+            z-index: 0; pointer-events: none; opacity: 0.25; 
             transition: opacity 0.5s ease;
         }
 
@@ -154,7 +154,7 @@
     <div id="auth-screen" class="screen active items-center justify-center p-4">
         <div class="panel p-10 max-w-lg w-full text-center fade-in-up">
             <h1 class="text-6xl mb-4 typewriter w-fit pulse-text">SUPPORT.OS</h1>
-            <p class="mb-8 text-xl opacity-80 delay-1 fade-in-up" style="animation-fill-mode: forwards;">v9.0 / SECURE LOGIN</p>
+            <p class="mb-8 text-xl opacity-80 delay-1 fade-in-up" style="animation-fill-mode: forwards;">v9.5 / SECURE LOGIN</p>
             <form id="auth-form" onsubmit="handleAuth(event)" class="delay-2 fade-in-up" style="animation-fill-mode: forwards;">
                 <input type="text" id="username" placeholder="Логин инженера" required>
                 <input type="password" id="password" placeholder="Пароль доступа" required minlength="6">
@@ -220,7 +220,6 @@
                     <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-white" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
                 </div>
                 
-                <!-- Сетка вкладок таблицы 3x2 -->
                 <div class="grid grid-cols-3 gap-2 mb-4" id="lb-tabs">
                     <button class="text-sm py-2 px-2 bg-green-900 !text-white border-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
                     <button class="text-sm py-2 px-2" onclick="loadLeaderboard('tetris')">TETRIS</button>
@@ -269,7 +268,6 @@
                     <div id="next-piece-container" class="mt-6 flex justify-center items-center"></div>
                 </div>
             </div>
-            <!-- Глобальный оверлей паузы -->
             <div id="pause-msg" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl blink z-50 bg-black/90 p-12 border-4 border-yellow-500 rounded-2xl shadow-[0_0_50px_rgba(214,158,46,0.5)]" style="display:none; color: #d69e2e;">SYSTEM PAUSED</div>
         </main>
     </div>
@@ -284,7 +282,7 @@
         </div>
     </div>
 
-    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ (ПЛАВНАЯ) -->
+    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ (ЗАМЕДЛЕННАЯ) -->
     <script>
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
@@ -298,6 +296,7 @@
             bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
             bgCtx.fillStyle = document.body.classList.contains('light-theme') ? '#a0aec0' : '#0f0';
             bgCtx.font = fontSize + 'px monospace';
+            
             for(let i = 0; i < drops.length; i++) {
                 const text = chars[Math.floor(Math.random() * chars.length)];
                 bgCtx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -305,7 +304,7 @@
                 drops[i]++;
             }
         }
-        setInterval(drawBg, 120); // Низкая скорость, чтобы не мельтешило
+        setInterval(drawBg, 120);
         window.addEventListener('resize', () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; });
     </script>
 
@@ -342,7 +341,7 @@
     </script>
 
     <script>
-        // ИДЕАЛЬНАЯ ОЧИСТКА ПАМЯТИ
+        // ИДЕАЛЬНАЯ ОЧИСТКА ПАМЯТИ И ФИКС ФАНТОМНЫХ ИГР
         let activeGameListeners = [];
         window.currentRunId = 0; 
 
@@ -422,7 +421,7 @@
             if (isLightMode) { activeTab.style.background = '#38b2ac'; activeTab.style.borderColor = '#38b2ac'; }
             else { activeTab.style.background = '#14532d'; activeTab.style.borderColor = '#14532d'; } 
 
-            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-xl pt-6">LOADING...</td></tr>';
+            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-2xl pt-10">ОЖИДАНИЕ ДАННЫХ...</td></tr>';
             try {
                 const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), window.firebaseAPI.orderBy("score", "desc"), window.firebaseAPI.limit(20));
                 const querySnapshot = await window.firebaseAPI.getDocs(q);
@@ -432,11 +431,11 @@
                     tbody.innerHTML += `<tr class="border-b border-green-500/30">
                         <td class="font-bold text-yellow-400">#${rank}</td>
                         <td class="font-bold">${data.username}</td>
-                        <td class="text-right font-bold text-xl">${data.score}</td>
+                        <td class="text-right font-bold text-2xl">${data.score}</td>
                     </tr>`; rank++;
                 });
-                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-6">NO DATA FOUND</td></tr>';
-            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-6">ERROR LOADING DB</td></tr>'; }
+                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-10">NO DATA FOUND</td></tr>';
+            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-10">ERROR LOADING DB</td></tr>'; }
         }
 
         async function resetLeaderboard() {
@@ -483,7 +482,7 @@
             if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause(); 
         });
 
-        // Функция gameOver теперь поддерживает параметр победы (для Сапера)
+        // Функция gameOver поддерживает параметр победы
         function gameOver(isWin = false) {
             isGameOver = true; 
             document.getElementById('final-score-display').innerText = score; 
@@ -518,15 +517,13 @@
             let snake = { x: 300, y: 300, dx: grid, dy: 0, cells: [], maxCells: 4 }; let apple = { x: 450, y: 450 };
             const speedDelay = 30; 
             
-            // ИСПРАВЛЕНИЕ: Очередь команд для мгновенной регистрации клавиш без багов самопоедания
+            // ИСПРАВЛЕНИЕ: Очередь команд для мгновенной регистрации клавиш без багов
             let inputQueue = [];
 
             function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
             
             addGameListener('keydown', function snakeController(e) {
                 if(currentGame !== 'snake' || isPaused || isGameOver) return;
-                
-                // Проверяем последнюю заданную команду (или текущее направление)
                 let lastDir = inputQueue.length ? inputQueue[inputQueue.length - 1] : {dx: snake.dx, dy: snake.dy};
                 
                 if (e.which === 37 && lastDir.dx === 0) inputQueue.push({dx: -grid, dy: 0});
@@ -541,7 +538,6 @@
                 if (isPaused || isGameOver) return; if (++count < speedDelay) return; count = 0;
                 ctx.clearRect(0,0,canvas.width,canvas.height);
                 
-                // Берем следующую команду из очереди
                 if (inputQueue.length > 0) {
                     let nextInput = inputQueue.shift();
                     snake.dx = nextInput.dx; snake.dy = nextInput.dy;
@@ -564,7 +560,7 @@
             requestAnimationFrame(loop);
         }
 
-        // --- ТЕТРИС: ПОЛНОСТЬЮ ПЕРЕПИСАН НА CANVAS БЕЗ БАГОВ ---
+        // --- ТЕТРИС: ПОЛНОСТЬЮ ПЕРЕПИСАН НА CANVAS + ИСПРАВЛЕН GAME OVER И СЕТКА ---
         function initTetris(container) {
             const myRun = window.currentRunId;
             const canvas = document.createElement('canvas'); canvas.width = 300; canvas.height = 600; canvas.className = 'game-canvas'; container.appendChild(canvas);
@@ -642,6 +638,11 @@
                 }
 
                 tetromino = nextTetromino; nextTetromino = getRandomPiece();
+                
+                // ИСПРАВЛЕНИЕ: Проверка на GameOver при спавне (если новая фигура сразу врезается в блоки)
+                if (!isValidMove(tetromino.matrix, tetromino.row, tetromino.col)) {
+                    return gameOver(false);
+                }
             }
 
             addGameListener('keydown', function(e) {
@@ -662,6 +663,16 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = isLightMode ? '#cbd5e0' : '#002200'; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
+                // ИСПРАВЛЕНИЕ: Отрисовка сетки
+                ctx.strokeStyle = isLightMode ? 'rgba(45, 55, 72, 0.2)' : 'rgba(0, 255, 0, 0.2)';
+                ctx.lineWidth = 1;
+                for (let r = 0; r <= ROWS; r++) {
+                    ctx.beginPath(); ctx.moveTo(0, r * BLOCK_SIZE); ctx.lineTo(canvas.width, r * BLOCK_SIZE); ctx.stroke();
+                }
+                for (let c = 0; c <= COLS; c++) {
+                    ctx.beginPath(); ctx.moveTo(c * BLOCK_SIZE, 0); ctx.lineTo(c * BLOCK_SIZE, canvas.height); ctx.stroke();
+                }
+
                 for (let r = 0; r < ROWS; r++) {
                     for (let c = 0; c < COLS; c++) {
                         if (playfield[r][c]) drawBlock(ctx, c, r, colors[playfield[r][c]]);
@@ -778,7 +789,7 @@
             }
         }
 
-        // --- BRICKS BREAKER ---
+        // --- УСКОРЯЮЩИЙСЯ BRICKS BREAKER ---
         function initBricks(container) {
             const myRun = window.currentRunId;
             const canvas = document.createElement('canvas'); canvas.width = 600; canvas.height = 650; canvas.className = 'game-canvas w-full h-full'; container.appendChild(canvas);
@@ -851,10 +862,9 @@
             const ctx = canvas.getContext('2d');
             
             // ИДЕАЛЬНАЯ ФИЗИКА: Медленный старт, мощный и плавный прыжок (как в оригинальном хроме).
-            let gameSpeed = 2.0; 
+            let gameSpeed = 5.0; 
             let scoreCounter = 0;
-            // Уменьшаем гравитацию и силу прыжка, чтобы сделать прыжок долгим и плавным
-            let dino = { x: 50, y: 250, w: 40, h: 40, dy: 0, gravity: 0.5, jumpPower: -12, isJumping: false, isDucking: false };
+            let dino = { x: 50, y: 250, w: 40, h: 40, dy: 0, gravity: 0.6, jumpPower: -12, isJumping: false, isDucking: false };
             
             let obstacles = []; const groundY = 290; let spawnTimer = 100;
 
@@ -885,7 +895,7 @@
                 scoreCounter++;
                 if(scoreCounter % 5 === 0) {
                     score++; document.getElementById('score').innerText = score;
-                    if (score % 200 === 0 && gameSpeed < 10) { gameSpeed += 0.2; spawnFloatingScore(dino.x, dino.y - 20, 'SPEED UP!'); }
+                    if (score % 500 === 0 && gameSpeed < 15) { gameSpeed += 0.5; spawnFloatingScore(dino.x, dino.y - 20, 'SPEED UP!'); }
                 }
 
                 ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(canvas.width, groundY); ctx.strokeStyle = isLightMode ? '#718096' : '#0f0'; ctx.lineWidth = 2; ctx.stroke();
@@ -897,12 +907,12 @@
                 // Надежная система спавна на основе дистанции
                 spawnTimer -= gameSpeed;
                 if (spawnTimer <= 0) {
-                    let type = Math.random() > 0.7 && score > 150 ? 'flying' : 'ground';
+                    let type = Math.random() > 0.7 && score > 200 ? 'flying' : 'ground';
                     if (type === 'ground') { let width = Math.random() > 0.6 ? 30 : 60; obstacles.push({ x: canvas.width, y: groundY - 50, w: width, h: 50, type }); } 
                     else { let heights = [groundY - 90, groundY - 60, groundY - 30]; let h = heights[Math.floor(Math.random() * heights.length)]; obstacles.push({ x: canvas.width, y: h, w: 40, h: 15, type }); }
                     
                     // Гарантированный зазор для приземления динозаврика
-                    let minGap = 400 + (gameSpeed * 10); let maxGap = 800 + (gameSpeed * 15);
+                    let minGap = 400 + (gameSpeed * 10); let maxGap = 700 + (gameSpeed * 15);
                     spawnTimer = Math.random() * (maxGap - minGap) + minGap; 
                 }
 
