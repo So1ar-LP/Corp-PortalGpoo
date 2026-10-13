@@ -20,7 +20,12 @@
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; opacity: 0.35; transition: opacity 0.5s ease; }
+        /* --- ФОНОВЫЙ КАНВАС ДЛЯ АНИМАЦИИ --- */
+        #bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0; pointer-events: none; opacity: 0.25; /* Очень легкая прозрачность, не бьет по глазам */
+            transition: opacity 0.5s ease;
+        }
 
         /* --- DARK THEME --- */
         .crt::before {
@@ -40,7 +45,7 @@
         /* --- LIGHT THEME --- */
         body.light-theme { background-color: #cbd5e0; color: #2d3748; text-shadow: none; }
         body.light-theme .crt::before, body.light-theme .scanline { display: none; }
-        body.light-theme #bg-canvas { opacity: 0.15; } 
+        body.light-theme #bg-canvas { opacity: 0.10; } 
         body.light-theme .pulse-text { animation: textPulseLight 3s infinite alternate; }
         @keyframes textPulseLight { 0% { text-shadow: 0 0 2px #38b2ac; } 100% { text-shadow: 0 0 10px #38b2ac, 0 0 20px #38b2ac; } }
 
@@ -54,10 +59,11 @@
         body.light-theme .text-yellow-400 { color: #dd6b20; font-weight: bold;}
         body.light-theme .game-canvas { border-color: #a0aec0; background-color: #1a202c; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-radius: 8px;}
         
-        body.light-theme .minesweeper-grid { background: #a0aec0; border-color: #a0aec0; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+        body.light-theme .minesweeper-grid, body.light-theme .tetris-grid, body.light-theme .next-piece-grid { background: #a0aec0; border-color: #a0aec0; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
         body.light-theme .ms-cell { background: #e2e8f0; box-shadow: inset 0 0 4px rgba(0,0,0,0.1); color: #2d3748; }
         body.light-theme .ms-cell:hover { background: #cbd5e0; }
         body.light-theme .ms-cell.revealed { background: #f7fafc; box-shadow: none; }
+        body.light-theme .tetris-cell { background: #edf2f7; }
         
         body.light-theme #game-over-overlay { background: rgba(226, 232, 240, 0.95); backdrop-filter: blur(5px); box-shadow: inset 0 0 100px rgba(229, 62, 62, 0.15); }
 
@@ -160,77 +166,85 @@
         </div>
     </div>
 
-    <!-- ДАШБОРД -->
-    <div id="dashboard-screen" class="screen h-full w-full">
-        <div class="flex h-full w-full gap-6 p-6 max-w-[1600px] mx-auto">
-            <!-- ЛЕВАЯ ПАНЕЛЬ: НАВИГАЦИЯ -->
-            <aside class="panel w-80 lg:w-96 flex flex-col p-6 shrink-0 fade-in-up">
-                <div class="border-b-2 border-green-500 pb-6 mb-6 text-center">
-                    <h1 class="text-5xl font-bold pulse-text mb-2 typewriter w-fit mx-auto">SUPPORT.OS</h1>
-                    <div class="text-2xl text-yellow-400 mt-4">OP: <span id="user-display-name"></span></div>
-                </div>
-                <h3 class="text-xl opacity-70 mb-4 pl-2">/EXECUTABLES</h3>
-                <nav class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3">
-                    <button onclick="startGame('snake')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
+    <!-- ДАШБОРД (ИГРЫ ПО ЦЕНТРУ, ЛИДЕРЫ СПРАВА) -->
+    <div id="dashboard-screen" class="screen flex-col p-6 h-full w-full max-w-[1600px] mx-auto">
+        
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+        <header class="panel flex justify-between items-center p-4 mb-6 fade-in-up z-10">
+            <div class="text-4xl font-bold pulse-text flex items-center gap-4">
+                SUPPORT.OS
+                <span class="text-2xl text-yellow-400 font-normal mt-1 opacity-90">[ OP: <span id="user-display-name"></span> ]</span>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="toggleTheme()" id="theme-btn" class="text-lg px-6 hover:bg-gray-500 hover:text-white transition-colors">[ THEME: DARK ]</button>
+                <button onclick="logout()" class="text-lg px-6 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors">[ LOGOUT ]</button>
+            </div>
+        </header>
+
+        <div class="flex gap-6 h-full overflow-hidden pb-6 w-full">
+            <!-- ВЫБОР ИГР (ГЛАВНЫЙ ФОКУС, ШИРОКАЯ ПАНЕЛЬ) -->
+            <main class="panel flex-[2] p-8 flex flex-col items-center justify-center relative fade-in-up delay-1">
+                <h2 class="text-6xl mb-12 border-b-2 border-green-500 pb-4 pulse-text">RELAXATION_PROTOCOL</h2>
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl">
+                    <button onclick="startGame('snake')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
                         <span>SNAKE.sh</span>
                     </button>
-                    <button onclick="startGame('tetris')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
+                    <button onclick="startGame('tetris')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
                         <span>TETRIS.bat</span>
                     </button>
-                    <button onclick="startGame('minesweeper')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-none stroke-current shrink-0" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
-                        <span>MINESWEEP.exe</span>
+                    <button onclick="startGame('minesweeper')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-16 h-16 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
+                        <span>MINESWEEP</span>
                     </button>
-                    <button onclick="startGame('bricks')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-none stroke-current shrink-0" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
+                    <button onclick="startGame('bricks')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-16 h-16 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
                         <span>BRICKS.exe</span>
                     </button>
-                    <button onclick="startGame('dino')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
+                    <button onclick="startGame('dino')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
                         <span>DINO.exe</span>
                     </button>
-                    <button onclick="startGame('survivor')" class="game-card flex items-center gap-4 text-2xl py-4 px-4 w-full text-left glitch-hover border border-green-500 transition-colors">
-                        <svg class="w-8 h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
-                        <span>SURVIVOR.app</span>
+                    <button onclick="startGame('survivor')" class="game-card flex flex-col items-center justify-center gap-4 text-3xl py-10 px-6 glitch-hover border border-green-500 transition-colors">
+                        <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
+                        <span>SURVIVOR</span>
                     </button>
-                </nav>
-                <div class="pt-6 border-t-2 border-green-500 mt-4 flex flex-col gap-3">
-                    <button onclick="toggleTheme()" id="theme-btn" class="w-full text-xl py-3 border-gray-500 hover:bg-gray-500 hover:text-white transition-colors">[ THEME: DARK ]</button>
-                    <button onclick="logout()" class="w-full text-xl py-3 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors">[ LOGOUT ]</button>
                 </div>
-            </aside>
+            </main>
 
-            <!-- ПРАВАЯ ПАНЕЛЬ: ТАБЛИЦА ЛИДЕРОВ -->
-            <main class="panel flex-1 flex flex-col p-8 fade-in-up delay-1 overflow-hidden">
-                <div class="flex justify-between items-center mb-8 border-b border-green-500 pb-4">
-                    <h2 class="text-5xl pulse-text font-bold">GLOBAL_LEADERBOARD</h2>
-                    <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
+            <!-- ТАБЛИЦА ЛИДЕРОВ (БОКОВАЯ ПАНЕЛЬ) -->
+            <aside class="panel flex-1 max-w-[450px] p-6 flex flex-col h-full shrink-0 fade-in-up delay-2">
+                <div class="flex justify-between items-center border-b-2 border-green-500 pb-4 mb-4">
+                    <h2 class="text-3xl">LEADERBOARD</h2>
+                    <button id="admin-reset-btn" class="hidden text-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-white" onclick="resetLeaderboard()">[ СБРОСИТЬ БАЗУ ]</button>
                 </div>
-                <div class="flex flex-wrap gap-2 mb-6" id="lb-tabs">
-                    <button class="text-xl py-2 px-6 bg-green-900 !text-white border-green-900 rounded-t-lg" onclick="loadLeaderboard('snake')">SNAKE</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('tetris')">TETRIS</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('minesweeper')">MINES</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('bricks')">BRICKS</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('dino')">DINO</button>
-                    <button class="text-xl py-2 px-6 rounded-t-lg" onclick="loadLeaderboard('survivor')">SURVIVOR</button>
+                
+                <!-- Сетка вкладок таблицы 3x2 -->
+                <div class="grid grid-cols-3 gap-2 mb-4" id="lb-tabs">
+                    <button class="text-sm py-2 px-2 bg-green-900 !text-white border-green-900" onclick="loadLeaderboard('snake')">SNAKE</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('tetris')">TETRIS</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('minesweeper')">MINES</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('bricks')">BRICKS</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('dino')">DINO</button>
+                    <button class="text-sm py-2 px-2" onclick="loadLeaderboard('survivor')">SURVIVOR</button>
                 </div>
-                <div class="overflow-y-auto flex-1 table-wrapper p-6 rounded-b-lg rounded-tr-lg">
+                
+                <div class="overflow-y-auto flex-1 table-wrapper p-4">
                     <table class="leaderboard-table w-full">
                         <thead>
                             <tr>
-                                <th class="w-24">РАНК</th>
-                                <th>ИМЯ ОПЕРАТОРА</th>
-                                <th class="text-right">ЛУЧШИЙ СЧЕТ</th>
+                                <th class="w-16">#</th>
+                                <th>ОПЕРАТОР</th>
+                                <th class="text-right">СЧЕТ</th>
                             </tr>
                         </thead>
                         <tbody id="leaderboard-body">
-                            <tr><td colspan="3" class="text-center blink text-2xl pt-10">ОЖИДАНИЕ ДАННЫХ...</td></tr>
+                            <tr><td colspan="3" class="text-center blink text-xl pt-6">LOADING...</td></tr>
                         </tbody>
                     </table>
                 </div>
-            </main>
+            </aside>
         </div>
     </div>
 
@@ -247,17 +261,15 @@
         
         <main class="flex-1 flex justify-center items-center relative fade-in-up delay-1">
             <div class="flex gap-8 items-start relative z-10">
-                <!-- Контейнер для Canvas -->
                 <div id="game-container" class="relative shadow-2xl rounded-lg overflow-hidden flex justify-center items-center"></div>
                 <div id="floating-scores-layer" class="absolute top-0 left-0 w-full h-full pointer-events-none z-30"></div>
 
-                <!-- Сайдбар для Тетриса -->
                 <div id="tetris-sidebar" style="display: none;" class="panel p-6 text-center shadow-xl">
                     <div class="mb-4 text-2xl border-b border-green-500 pb-2">NEXT PIECE</div>
                     <div id="next-piece-container" class="mt-6 flex justify-center items-center"></div>
                 </div>
             </div>
-            <!-- Оверлей паузы -->
+            <!-- Глобальный оверлей паузы -->
             <div id="pause-msg" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl blink z-50 bg-black/90 p-12 border-4 border-yellow-500 rounded-2xl shadow-[0_0_50px_rgba(214,158,46,0.5)]" style="display:none; color: #d69e2e;">SYSTEM PAUSED</div>
         </main>
     </div>
@@ -272,7 +284,7 @@
         </div>
     </div>
 
-    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ -->
+    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ (ПЛАВНАЯ) -->
     <script>
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
@@ -293,7 +305,7 @@
                 drops[i]++;
             }
         }
-        setInterval(drawBg, 120);
+        setInterval(drawBg, 120); // Низкая скорость, чтобы не мельтешило
         window.addEventListener('resize', () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; });
     </script>
 
@@ -410,7 +422,7 @@
             if (isLightMode) { activeTab.style.background = '#38b2ac'; activeTab.style.borderColor = '#38b2ac'; }
             else { activeTab.style.background = '#14532d'; activeTab.style.borderColor = '#14532d'; } 
 
-            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-2xl pt-10">LOADING...</td></tr>';
+            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = '<tr><td colspan="3" class="text-center blink text-xl pt-6">LOADING...</td></tr>';
             try {
                 const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), window.firebaseAPI.orderBy("score", "desc"), window.firebaseAPI.limit(20));
                 const querySnapshot = await window.firebaseAPI.getDocs(q);
@@ -420,11 +432,11 @@
                     tbody.innerHTML += `<tr class="border-b border-green-500/30">
                         <td class="font-bold text-yellow-400">#${rank}</td>
                         <td class="font-bold">${data.username}</td>
-                        <td class="text-right font-bold text-2xl">${data.score}</td>
+                        <td class="text-right font-bold text-xl">${data.score}</td>
                     </tr>`; rank++;
                 });
-                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-10">NO DATA FOUND</td></tr>';
-            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-10">ERROR LOADING DB</td></tr>'; }
+                if(rank === 1) tbody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50 pt-6">NO DATA FOUND</td></tr>';
+            } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 pt-6">ERROR LOADING DB</td></tr>'; }
         }
 
         async function resetLeaderboard() {
@@ -471,7 +483,7 @@
             if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause(); 
         });
 
-        // ИЗМЕНЕНИЕ: Функция gameOver теперь принимает параметр победы (для Сапера)
+        // Функция gameOver теперь поддерживает параметр победы (для Сапера)
         function gameOver(isWin = false) {
             isGameOver = true; 
             document.getElementById('final-score-display').innerText = score; 
@@ -481,12 +493,12 @@
             
             if (isWin) {
                 titleText.innerHTML = 'СИСТЕМА<br>ОЧИЩЕНА';
-                titleText.style.color = '#38b2ac'; // Бирюзовый цвет для победы
+                titleText.style.color = '#38b2ac'; 
                 titleText.style.borderColor = '#38b2ac';
                 titleText.style.textShadow = '0 0 20px #38b2ac, 2px 2px 0px #fff, -2px -2px 0px #0f0';
             } else {
                 titleText.innerHTML = 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ';
-                titleText.style.color = ''; // Сброс к CSS классу (Красный)
+                titleText.style.color = ''; 
                 titleText.style.borderColor = '';
                 titleText.style.textShadow = '';
             }
@@ -650,14 +662,12 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = isLightMode ? '#cbd5e0' : '#002200'; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Рисуем поле
                 for (let r = 0; r < ROWS; r++) {
                     for (let c = 0; c < COLS; c++) {
                         if (playfield[r][c]) drawBlock(ctx, c, r, colors[playfield[r][c]]);
                     }
                 }
                 
-                // Рисуем текущую фигуру
                 if (tetromino) {
                     for (let r = 0; r < tetromino.matrix.length; r++) {
                         for (let c = 0; c < tetromino.matrix[r].length; c++) {
@@ -666,7 +676,6 @@
                     }
                 }
 
-                // Рисуем следующую фигуру
                 nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
                 if (nextTetromino) {
                     const offset = nextTetromino.name === 'I' || nextTetromino.name === 'O' ? 20 : 30;
@@ -738,7 +747,7 @@
                 }
                 
                 square.classList.add('revealed'); 
-                revealedCount++; // Считаем безопасные клетки
+                revealedCount++; 
                 score += 10; document.getElementById('score').innerText = score; 
 
                 let total = square.getAttribute('data');
@@ -769,7 +778,7 @@
             }
         }
 
-        // --- УСКОРЯЮЩИЙСЯ BRICKS BREAKER ---
+        // --- BRICKS BREAKER ---
         function initBricks(container) {
             const myRun = window.currentRunId;
             const canvas = document.createElement('canvas'); canvas.width = 600; canvas.height = 650; canvas.className = 'game-canvas w-full h-full'; container.appendChild(canvas);
@@ -842,9 +851,10 @@
             const ctx = canvas.getContext('2d');
             
             // ИДЕАЛЬНАЯ ФИЗИКА: Медленный старт, мощный и плавный прыжок (как в оригинальном хроме).
-            let gameSpeed = 5.0; 
+            let gameSpeed = 2.0; 
             let scoreCounter = 0;
-            let dino = { x: 50, y: 250, w: 40, h: 40, dy: 0, gravity: 0.6, jumpPower: -12, isJumping: false, isDucking: false };
+            // Уменьшаем гравитацию и силу прыжка, чтобы сделать прыжок долгим и плавным
+            let dino = { x: 50, y: 250, w: 40, h: 40, dy: 0, gravity: 0.5, jumpPower: -12, isJumping: false, isDucking: false };
             
             let obstacles = []; const groundY = 290; let spawnTimer = 100;
 
@@ -875,7 +885,7 @@
                 scoreCounter++;
                 if(scoreCounter % 5 === 0) {
                     score++; document.getElementById('score').innerText = score;
-                    if (score % 500 === 0 && gameSpeed < 15) { gameSpeed += 0.5; spawnFloatingScore(dino.x, dino.y - 20, 'SPEED UP!'); }
+                    if (score % 200 === 0 && gameSpeed < 10) { gameSpeed += 0.2; spawnFloatingScore(dino.x, dino.y - 20, 'SPEED UP!'); }
                 }
 
                 ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(canvas.width, groundY); ctx.strokeStyle = isLightMode ? '#718096' : '#0f0'; ctx.lineWidth = 2; ctx.stroke();
@@ -887,12 +897,12 @@
                 // Надежная система спавна на основе дистанции
                 spawnTimer -= gameSpeed;
                 if (spawnTimer <= 0) {
-                    let type = Math.random() > 0.7 && score > 200 ? 'flying' : 'ground';
+                    let type = Math.random() > 0.7 && score > 150 ? 'flying' : 'ground';
                     if (type === 'ground') { let width = Math.random() > 0.6 ? 30 : 60; obstacles.push({ x: canvas.width, y: groundY - 50, w: width, h: 50, type }); } 
                     else { let heights = [groundY - 90, groundY - 60, groundY - 30]; let h = heights[Math.floor(Math.random() * heights.length)]; obstacles.push({ x: canvas.width, y: h, w: 40, h: 15, type }); }
                     
                     // Гарантированный зазор для приземления динозаврика
-                    let minGap = 400 + (gameSpeed * 10); let maxGap = 700 + (gameSpeed * 15);
+                    let minGap = 400 + (gameSpeed * 10); let maxGap = 800 + (gameSpeed * 15);
                     spawnTimer = Math.random() * (maxGap - minGap) + minGap; 
                 }
 
