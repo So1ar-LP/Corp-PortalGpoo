@@ -9,15 +9,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
         
         :root {
-            --bg-main: #090d16;
-            --bg-panel: rgba(15, 23, 42, 0.85);
-            --bg-card: rgba(30, 41, 59, 0.6);
+            --bg-main: #070b14;
+            --bg-panel: rgba(15, 23, 42, 0.82);
+            --bg-card: rgba(30, 41, 59, 0.55);
             --bg-card-hover: rgba(16, 185, 129, 0.12);
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
             --accent: #10b981;
             --accent-hover: #059669;
-            --accent-glow: rgba(16, 185, 129, 0.3);
+            --accent-glow: rgba(16, 185, 129, 0.35);
             --border-color: rgba(16, 185, 129, 0.25);
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -48,17 +48,15 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .font-mono-tech {
-            font-family: 'Fira Code', monospace;
-        }
+        .font-mono-tech { font-family: 'Fira Code', monospace; }
 
         /* --- ФОНОВЫЙ КАНВАС И ЭФФЕКТЫ --- */
         #bg-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0; pointer-events: none; opacity: 0.18; 
+            z-index: 0; pointer-events: none; opacity: 0.3; 
             transition: opacity 0.4s ease;
         }
-        body.light-theme #bg-canvas { opacity: 0.08; }
+        body.light-theme #bg-canvas { opacity: 0.12; }
         body.fx-off #bg-canvas, body.fx-off .scanline, body.fx-off.crt::before { display: none !important; }
 
         .crt::before {
@@ -70,35 +68,62 @@
 
         .scanline {
             width: 100%; height: 80px;
-            background: linear-gradient(0deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.04) 50%, rgba(16,185,129,0) 100%);
-            position: fixed; top: -80px; left: 0; animation: scanline 8s linear infinite; z-index: 3; pointer-events: none;
+            background: linear-gradient(0deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.05) 50%, rgba(16,185,129,0) 100%);
+            position: fixed; top: -80px; left: 0; animation: scanline 7s linear infinite; z-index: 3; pointer-events: none;
         }
         body.light-theme .scanline { display: none; }
         @keyframes scanline { 0% { top: -80px; } 100% { top: 100vh; } }
 
-        /* --- ПАНЕЛИ И КАРТОЧКИ --- */
+        /* --- БЕГУЩАЯ СТРОКА (TICKER) --- */
+        .ticker-wrap {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .ticker-move {
+            display: inline-block;
+            animation: ticker 28s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- АНИМАЦИИ ПОЯВЛЕНИЯ И КАРТОЧЕК --- */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .anim-card { animation: fadeInScale 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+        .delay-1 { animation-delay: 0.05s; }
+        .delay-2 { animation-delay: 0.10s; }
+        .delay-3 { animation-delay: 0.15s; }
+        .delay-4 { animation-delay: 0.20s; }
+        .delay-5 { animation-delay: 0.25s; }
+        .delay-6 { animation-delay: 0.30s; }
+        .delay-7 { animation-delay: 0.35s; }
+
         .screen { position: relative; height: 100vh; display: none; flex-direction: column; z-index: 1; width: 100%; }
-        .screen.active { display: flex; }
+        .screen.active { display: flex; animation: fadeInScale 0.3s ease-out; }
 
         .panel {
             background: var(--bg-panel);
             backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3), 0 0 15px var(--accent-glow);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.35), 0 0 15px var(--accent-glow);
             transition: all 0.3s ease;
         }
-        body.light-theme .panel {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
-        }
+        body.light-theme .panel { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06); }
 
         .game-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 20px;
+            padding: 18px 20px;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -110,15 +135,24 @@
             content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
             background: var(--accent); opacity: 0; transition: opacity 0.25s ease;
         }
+        /* Блик при наведении */
+        .game-card::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+            transform: skewX(-25deg); transition: left 0.6s ease; pointer-events: none;
+        }
+        .game-card:hover::after { left: 150%; }
         .game-card:hover {
             background: var(--bg-card-hover);
             border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.25), 0 0 15px var(--accent-glow);
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 14px 28px -6px rgba(0, 0, 0, 0.3), 0 0 20px var(--accent-glow);
         }
         .game-card:hover::before { opacity: 1; }
-        .game-card:hover .card-icon { transform: scale(1.1) rotate(-3deg); color: var(--accent); }
-        .card-icon { transition: all 0.25s ease; color: var(--text-main); }
+        .game-card:hover .card-icon { transform: scale(1.12) rotate(-4deg); color: var(--accent); }
+        .game-card:hover .launch-arrow { transform: translateX(4px); }
+        .card-icon { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); color: var(--text-main); }
+        .launch-arrow { transition: transform 0.25s ease; display: inline-block; }
 
         /* --- КНОПКИ И ИНПУТЫ --- */
         .btn {
@@ -135,19 +169,17 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .btn:hover {
             background: var(--accent);
             color: #fff;
             border-color: var(--accent);
-            box-shadow: 0 0 12px var(--accent-glow);
+            box-shadow: 0 0 14px var(--accent-glow);
+            transform: translateY(-1px);
         }
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
+        .btn:active { transform: translateY(0); }
+        .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
         .btn-primary:hover { background: var(--accent-hover); }
         .btn-danger { border-color: rgba(239, 68, 68, 0.4); color: var(--danger); }
         .btn-danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); box-shadow: 0 0 12px rgba(239, 68, 68, 0.3); }
@@ -171,9 +203,9 @@
         /* --- ТАБЛИЦА ЛИДЕРОВ --- */
         .lb-tab {
             font-family: 'Fira Code', monospace;
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            padding: 7px 10px;
+            padding: 6px 9px;
             border-radius: 8px;
             border: 1px solid transparent;
             color: var(--text-muted);
@@ -188,10 +220,7 @@
             box-shadow: 0 2px 8px var(--accent-glow);
         }
 
-        .lb-row {
-            border-bottom: 1px solid var(--border-color);
-            transition: background 0.15s;
-        }
+        .lb-row { border-bottom: 1px solid var(--border-color); transition: background 0.15s; }
         .lb-row:hover { background: var(--bg-card-hover); }
         .lb-row.current-user { background: rgba(16, 185, 129, 0.15); font-weight: 700; }
 
@@ -204,21 +233,21 @@
             max-height: 68vh;
             width: auto;
             object-fit: contain;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.45);
         }
 
         .minesweeper-grid {
             display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px;
-            background: var(--border-color); padding: 4px; border-radius: 12px;
+            background: var(--border-color); padding: 5px; border-radius: 12px;
             width: fit-content; margin: 0 auto;
         }
         .ms-cell {
             width: 42px; height: 42px; background: #1e293b; border-radius: 6px;
             display: flex; align-items: center; justify-content: center;
             font-family: 'Fira Code', monospace; font-size: 1.25rem; cursor: pointer; font-weight: 700;
-            user-select: none; transition: all 0.1s; color: #f8fafc;
+            user-select: none; transition: all 0.12s; color: #f8fafc;
         }
-        .ms-cell:hover { background: #334155; transform: scale(1.03); }
+        .ms-cell:hover { background: #334155; transform: scale(1.04); }
         .ms-cell.revealed { background: #0f172a; cursor: default; transform: none; }
         body.light-theme .ms-cell { background: #cbd5e1; color: #0f172a; }
         body.light-theme .ms-cell:hover { background: #94a3b8; }
@@ -227,14 +256,14 @@
         /* --- ВСПЛЫВАЮЩИЕ ОЧКИ И ОВЕРЛЕИ --- */
         .floating-score {
             position: absolute; color: var(--accent); font-family: 'Fira Code', monospace;
-            font-size: 1.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            font-size: 1.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.6);
             pointer-events: none; animation: floatUpScore 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; z-index: 100;
         }
         @keyframes floatUpScore { 0% { opacity: 0; transform: translateY(10px) scale(0.7); } 25% { opacity: 1; transform: translateY(-5px) scale(1.1); } 100% { opacity: 0; transform: translateY(-45px) scale(1); } }
 
         #game-over-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(9, 13, 22, 0.92); backdrop-filter: blur(10px); z-index: 100; display: none;
+            background: rgba(7, 11, 20, 0.92); backdrop-filter: blur(10px); z-index: 100; display: none;
             flex-direction: column; justify-content: center; align-items: center;
         }
         body.light-theme #game-over-overlay { background: rgba(241, 245, 249, 0.92); }
@@ -256,14 +285,15 @@
         /* --- SURVIVOR STYLES --- */
         #survivor-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; font-family: 'Fira Code', monospace;}
         .sv-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(9, 13, 22, 0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: auto; backdrop-filter: blur(6px); transition: 0.3s;}
-        .sv-card { background: #1e293b; border: 2px solid #475569; border-radius: 14px; width: 220px; padding: 20px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; text-align: center; color: #fff;}
-        .sv-card:hover { transform: translateY(-6px); border-color: #10b981; box-shadow: 0 12px 24px rgba(16,185,129,0.25);}
-        .sv-card-level { background: #0f172a; padding: 4px 10px; border-radius: 6px; font-size: 12px; color: #38bdf8; margin-top: 12px;}
+        .sv-card { background: #1e293b; border: 2px solid #475569; border-radius: 14px; width: 220px; padding: 20px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; text-align: center; color: #fff; position: relative; overflow: hidden;}
+        .sv-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #3b82f6; }
+        .sv-card:hover { transform: translateY(-6px); border-color: #22d3ee; box-shadow: 0 12px 24px rgba(34,211,238,0.25);}
+        .sv-card-level { background: #0f172a; padding: 4px 10px; border-radius: 6px; font-size: 12px; color: #38bdf8; margin-top: 12px; border: 1px solid #334155;}
         .sv-evo-card { background: #2e1065; border-color: #c084fc; }
+        .sv-evo-card::before { background: #e879f9; }
 
         .hidden { display: none !important; }
 
-        /* Кастомный скроллбар */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 3px; }
@@ -276,12 +306,12 @@
     
     <!-- 1. ЭКРАН ВХОДА -->
     <div id="auth-screen" class="screen active items-center justify-center p-4">
-        <div class="panel p-8 sm:p-10 max-w-md w-full text-center">
-            <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4 text-emerald-400">
+        <div class="panel p-8 sm:p-10 max-w-md w-full text-center anim-card">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4 text-emerald-400 shadow-lg shadow-emerald-500/10">
                 <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
             <h1 class="text-3xl font-extrabold tracking-tight font-mono-tech mb-1">SUPPORT.OS</h1>
-            <p class="mb-6 text-sm font-mono-tech" style="color: var(--text-muted);">v11.0 // ТЕРМИНАЛ РАЗГРУЗКИ</p>
+            <p class="mb-6 text-sm font-mono-tech" style="color: var(--text-muted);">v12.0 // ТЕРМИНАЛ РАЗГРУЗКИ</p>
             
             <form id="auth-form" onsubmit="handleAuth(event)" class="flex flex-col gap-4 text-left">
                 <div>
@@ -299,9 +329,9 @@
     </div>
 
     <!-- 2. ГЛАВНЫЙ ДАШБОРД -->
-    <div id="dashboard-screen" class="screen p-4 sm:p-6 max-w-[1600px] mx-auto gap-5">
+    <div id="dashboard-screen" class="screen p-4 sm:p-6 max-w-[1600px] mx-auto gap-4">
         <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
-        <header class="panel px-6 py-4 flex flex-wrap justify-between items-center gap-4 shrink-0">
+        <header class="panel px-6 py-3.5 flex flex-wrap justify-between items-center gap-4 shrink-0">
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono-tech font-bold text-lg">
                     &gt;_
@@ -309,7 +339,9 @@
                 <div>
                     <div class="flex items-center gap-3">
                         <span class="text-xl font-extrabold tracking-tight font-mono-tech">SUPPORT.OS</span>
-                        <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono-tech">ONLINE</span>
+                        <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono-tech flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>ONLINE
+                        </span>
                     </div>
                     <div class="text-xs font-mono-tech mt-0.5" style="color: var(--text-muted);">
                         Инженер: <span id="user-display-name" class="font-bold text-amber-400"></span>
@@ -317,7 +349,14 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
+            <!-- Живая строка статуса (Ticker) -->
+            <div class="hidden xl:block flex-1 max-w-md mx-4 ticker-wrap border px-3 py-1.5 rounded-lg text-xs font-mono-tech" style="border-color: var(--border-color); background: var(--bg-card); color: var(--text-muted);">
+                <div class="ticker-move">
+                    ⚡ [SYS_LOG]: Пинг до кофемашины: 1.4ms &nbsp;&bull;&nbsp; 🖨️ Принтер в бухгалтерии снова зажевал бумагу &nbsp;&bull;&nbsp; 🛡️ Фаервол отразил 1024 дурацких вопроса &nbsp;&bull;&nbsp; 💾 Бэкап базы рекордов: АКТИВЕН &nbsp;&bull;&nbsp; ⚡ [SYS_LOG]: Пинг до кофемашины: 1.4ms &nbsp;&bull;&nbsp; 🖨️ Принтер в бухгалтерии снова зажевал бумагу
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2.5">
                 <button onclick="toggleFX()" id="fx-btn" class="btn text-xs" title="Включить/выключить анимацию фона">[ FX: ON ]</button>
                 <button onclick="toggleTheme()" id="theme-btn" class="btn text-xs">[ ТЕМА: ТЕМНАЯ ]</button>
                 <button onclick="logout()" class="btn btn-danger text-xs">[ ВЫХОД ]</button>
@@ -334,12 +373,12 @@
                         <h2 class="text-2xl font-bold tracking-tight">Протоколы разгрузки</h2>
                         <p class="text-sm mt-0.5" style="color: var(--text-muted);">Выберите симуляцию для перерыва между тикетами</p>
                     </div>
-                    <span class="text-xs font-mono-tech hidden sm:inline" style="color: var(--text-muted);">ДОСТУПНО МОДУЛЕЙ: 7</span>
+                    <span class="text-xs font-mono-tech hidden sm:inline" style="color: var(--text-muted);">МОДУЛЕЙ АКТИВНО: 7</span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 flex-1">
                     <!-- SNAKE -->
-                    <div onclick="startGame('snake')" class="game-card">
+                    <div onclick="startGame('snake')" class="game-card anim-card delay-1">
                         <div>
                             <div class="flex justify-between items-start mb-3">
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
@@ -348,16 +387,16 @@
                                 <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАДА</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">SNAKE.sh</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Классическая змейка с буферизацией клавиш для быстрых маневров.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Классическая змейка с очередью нажатий для мгновенных разворотов.</p>
                         </div>
                         <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>⌨️ Стрелки</span>
-                            <span style="color: var(--accent);">ЗАПУСК →</span>
+                            <span>⌨️ Стрелки / WASD</span>
+                            <span class="font-bold" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
                     <!-- TETRIS -->
-                    <div onclick="startGame('tetris')" class="game-card">
+                    <div onclick="startGame('tetris')" class="game-card anim-card delay-2">
                         <div>
                             <div class="flex justify-between items-start mb-3">
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
@@ -366,34 +405,34 @@
                                 <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">ГОЛОВОЛОМКА</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">TETRIS.bat</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Укладка блоков с разметкой стакана и мгновенным сбросом.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Укладка блоков с сеткой, тенью падения (Ghost Piece) и быстрым сбросом.</p>
                         </div>
                         <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
                             <span>⌨️ Стрелки + Пробел</span>
-                            <span style="color: var(--accent);">ЗАПУСК →</span>
+                            <span class="font-bold" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
                     <!-- MINESWEEPER -->
-                    <div onclick="startGame('minesweeper')" class="game-card">
+                    <div onclick="startGame('minesweeper')" class="game-card anim-card delay-3">
                         <div>
                             <div class="flex justify-between items-start mb-3">
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
                                 </div>
-                                <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">ЛОГ-АНАЛИЗ</span>
+                                <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">САПЕР</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">MINESWEEP.exe</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Поиск сбоев на сервере. +1000 бонусных очков за полную зачистку.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Безопасный первый клик. Победа при открытии поля или установке всех 10 флагов.</p>
                         </div>
                         <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
                             <span>🖱️ ЛКМ / ПКМ (Флаг)</span>
-                            <span style="color: var(--accent);">ЗАПУСК →</span>
+                            <span class="font-bold" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
                     <!-- BRICKS -->
-                    <div onclick="startGame('bricks')" class="game-card">
+                    <div onclick="startGame('bricks')" class="game-card anim-card delay-4">
                         <div>
                             <div class="flex justify-between items-start mb-3">
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
@@ -402,52 +441,52 @@
                                 <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАНОИД</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">BRICKS.exe</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Разбивайте многослойные фаерволы с плавным нарастанием скорости.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Разбивайте фаерволы с переходом на новые волны. Управление стрелками или мышью.</p>
                         </div>
                         <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>⌨️ Стрелки ◄ ►</span>
-                            <span style="color: var(--accent);">ЗАПУСК →</span>
+                            <span>⌨️ Стрелки / Мышь</span>
+                            <span class="font-bold" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
                     <!-- DINO -->
-                    <div onclick="startGame('dino')" class="game-card">
+                    <div onclick="startGame('dino')" class="game-card anim-card delay-5">
                         <div>
                             <div class="flex justify-between items-start mb-3">
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
                                 </div>
-                                <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">РАННЕР</span>
+                                <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">ОБНОВЛЕНО</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">DINO.exe</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Прыжки через серверные стойки и уклонение от летящих багов.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Отзывчивый прыжок с контролем высоты. Перепрыгивайте серверные стойки и баги.</p>
                         </div>
                         <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
                             <span>⌨️ Пробел / Вниз</span>
-                            <span style="color: var(--accent);">ЗАПУСК →</span>
+                            <span class="font-bold" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
                     <!-- SURVIVOR -->
-                    <div onclick="startGame('survivor')" class="game-card">
+                    <div onclick="startGame('survivor')" class="game-card anim-card delay-6">
                         <div>
                             <div class="flex justify-between items-start mb-3">
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
                                 </div>
-                                <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">ЭКШЕН / RPG</span>
+                                <span class="text-[11px] font-mono-tech px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">50 УРОВНЕЙ</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">SURVIVOR.app</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Выживание сисадмина в взбунтовавшемся офисе. Прокачка оружия.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Выживание сисадмина в стиле Vampire Survivors: 50 уровней, эволюции и боссы.</p>
                         </div>
                         <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
                             <span>⌨️ WASD / Стрелки</span>
-                            <span style="color: var(--accent);">ЗАПУСК →</span>
+                            <span class="font-bold" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
                     <!-- GALAGA -->
-                    <div onclick="startGame('galaga')" class="game-card sm:col-span-2 xl:col-span-3 flex-col sm:flex-row sm:items-center gap-4">
+                    <div onclick="startGame('galaga')" class="game-card anim-card delay-7 sm:col-span-2 xl:col-span-3 flex-col sm:flex-row sm:items-center gap-4">
                         <div class="flex items-center gap-4">
                             <div class="p-3.5 rounded-xl bg-emerald-500/10 card-icon shrink-0">
                                 <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 2L4 14l3 2 1-4h8l1 4 3-2-8-12z"/></svg>
@@ -462,7 +501,7 @@
                         </div>
                         <div class="flex sm:flex-col items-end justify-between shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0" style="border-color: var(--border-color);">
                             <span class="text-xs font-mono-tech mb-1" style="color: var(--text-muted);">⌨️ A/D + Пробел</span>
-                            <span class="text-xs font-mono-tech font-bold" style="color: var(--accent);">ЗАПУСК →</span>
+                            <span class="text-xs font-mono-tech font-bold" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
                 </div>
@@ -478,7 +517,6 @@
                     <button id="admin-reset-btn" class="hidden btn btn-danger text-xs py-1 px-2.5" onclick="resetLeaderboard()">СБРОС</button>
                 </div>
                 
-                <!-- Вкладки игр -->
                 <div class="flex flex-wrap gap-1.5 mb-4 p-1.5 rounded-xl" style="background: var(--bg-card);" id="lb-tabs">
                     <button data-game="snake" class="lb-tab active flex-1" onclick="loadLeaderboard('snake')">SNAKE</button>
                     <button data-game="tetris" class="lb-tab flex-1" onclick="loadLeaderboard('tetris')">TETRIS</button>
@@ -509,7 +547,6 @@
 
     <!-- 3. ЭКРАН ИГРЫ -->
     <div id="game-screen" class="screen p-4 sm:p-6 max-w-[1600px] mx-auto gap-4">
-        <!-- Компактная шапка игры -->
         <header class="panel px-6 py-3 flex flex-wrap justify-between items-center gap-4 shrink-0 z-20">
             <div class="flex items-center gap-4">
                 <button onclick="exitGame()" class="btn text-xs py-1.5 px-3">← В МЕНЮ</button>
@@ -517,9 +554,15 @@
                 <div class="text-xl font-extrabold font-mono-tech tracking-wide" id="game-title" style="color: var(--accent);">GAME</div>
             </div>
 
-            <div class="flex items-center gap-2 font-mono-tech text-lg bg-slate-500/10 px-4 py-1.5 rounded-xl border" style="border-color: var(--border-color);">
-                <span class="text-xs uppercase" style="color: var(--text-muted);">СЧЕТ:</span>
-                <span id="score" class="font-bold text-amber-400 text-xl">0</span>
+            <div class="flex items-center gap-4">
+                <div id="mines-counter-box" class="hidden items-center gap-2 font-mono-tech text-sm bg-slate-500/10 px-3 py-1.5 rounded-xl border" style="border-color: var(--border-color);">
+                    <span>🚩 ФЛАГИ:</span>
+                    <span id="mines-flags-val" class="font-bold text-emerald-400">0 / 10</span>
+                </div>
+                <div class="flex items-center gap-2 font-mono-tech text-lg bg-slate-500/10 px-4 py-1.5 rounded-xl border" style="border-color: var(--border-color);">
+                    <span class="text-xs uppercase" style="color: var(--text-muted);">СЧЕТ:</span>
+                    <span id="score" class="font-bold text-amber-400 text-xl">0</span>
+                </div>
             </div>
 
             <div class="flex gap-2.5">
@@ -528,7 +571,6 @@
             </div>
         </header>
         
-        <!-- Игровое поле -->
         <main class="flex-1 flex flex-col justify-center items-center relative min-h-0">
             <div class="flex gap-6 items-start justify-center relative z-10 max-h-full">
                 <div id="game-container" class="relative rounded-xl overflow-hidden flex justify-center items-center"></div>
@@ -541,7 +583,6 @@
                 </div>
             </div>
 
-            <!-- Подсказка по управлению внизу экрана -->
             <div id="game-controls-hint" class="mt-3 px-4 py-1.5 rounded-full text-xs font-mono-tech border" style="background: var(--bg-panel); border-color: var(--border-color); color: var(--text-muted);">
                 Управление: Стрелки
             </div>
@@ -576,15 +617,25 @@
         </div>
     </div>
 
-    <!-- ФОНОВАЯ МАТРИЧНАЯ АНИМАЦИЯ -->
+    <!-- ФОНОВАЯ АНИМАЦИЯ (МАТРИЦА + КИБЕР-СЕТЬ) -->
     <script>
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
-        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ'.split('');
-        const fontSize = 16; const columns = bgCanvas.width / fontSize;
-        const drops = []; for(let x = 0; x < columns; x++) drops[x] = 1;
+        const chars = '0123456789ABCDEFｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ'.split('');
+        const fontSize = 16; let columns = Math.floor(bgCanvas.width / fontSize);
+        let drops = Array.from({length: columns}, () => Math.random() * -50);
         
+        // Интерактивные узлы кибер-сети
+        let nodes = Array.from({length: 28}, () => ({
+            x: Math.random() * bgCanvas.width,
+            y: Math.random() * bgCanvas.height,
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: (Math.random() - 0.5) * 0.8
+        }));
+        let mousePos = { x: -1000, y: -1000 };
+        window.addEventListener('mousemove', e => { mousePos.x = e.clientX; mousePos.y = e.clientY; });
+
         let fxEnabled = true;
         function toggleFX() {
             fxEnabled = !fxEnabled;
@@ -594,19 +645,51 @@
 
         function drawBg() {
             if (!fxEnabled) return;
-            bgCtx.fillStyle = document.body.classList.contains('light-theme') ? 'rgba(226, 232, 240, 0.2)' : 'rgba(9, 13, 22, 0.2)';
+            const isLight = document.body.classList.contains('light-theme');
+            bgCtx.fillStyle = isLight ? 'rgba(226, 232, 240, 0.22)' : 'rgba(7, 11, 20, 0.22)';
             bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-            bgCtx.fillStyle = document.body.classList.contains('light-theme') ? '#64748b' : '#10b981';
+            
+            // Матричные капли
+            bgCtx.fillStyle = isLight ? '#64748b' : '#10b981';
             bgCtx.font = fontSize + 'px monospace';
             for(let i = 0; i < drops.length; i++) {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                bgCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (i % 2 === 0) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    bgCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+                }
                 if(drops[i] * fontSize > bgCanvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
+                drops[i] += 0.5;
+            }
+
+            // Парящие сетевые узлы
+            bgCtx.strokeStyle = isLight ? 'rgba(13, 148, 136, 0.2)' : 'rgba(16, 185, 129, 0.25)';
+            bgCtx.lineWidth = 1;
+            for (let i = 0; i < nodes.length; i++) {
+                let n = nodes[i];
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 0 || n.x > bgCanvas.width) n.vx *= -1;
+                if (n.y < 0 || n.y > bgCanvas.height) n.vy *= -1;
+
+                bgCtx.beginPath(); bgCtx.arc(n.x, n.y, 2, 0, Math.PI*2); bgCtx.fill();
+
+                for (let j = i + 1; j < nodes.length; j++) {
+                    let n2 = nodes[j];
+                    let d = Math.hypot(n.x - n2.x, n.y - n2.y);
+                    if (d < 150) {
+                        bgCtx.beginPath(); bgCtx.moveTo(n.x, n.y); bgCtx.lineTo(n2.x, n2.y); bgCtx.stroke();
+                    }
+                }
+                let dm = Math.hypot(n.x - mousePos.x, n.y - mousePos.y);
+                if (dm < 180) {
+                    bgCtx.beginPath(); bgCtx.moveTo(n.x, n.y); bgCtx.lineTo(mousePos.x, mousePos.y); bgCtx.stroke();
+                }
             }
         }
-        setInterval(drawBg, 120);
-        window.addEventListener('resize', () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; });
+        setInterval(drawBg, 50);
+        window.addEventListener('resize', () => {
+            bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
+            columns = Math.floor(bgCanvas.width / fontSize);
+        });
     </script>
 
     <!-- Firebase SDK -->
@@ -753,12 +836,12 @@
         }
 
         const GAME_HINTS = {
-            snake: '⌨️ Управление: Стрелки (▲ ▼ ◄ ►) — поворот змейки | P — Пауза',
-            tetris: '⌨️ Управление: ◄ ► — сдвиг | ▲ — поворот | ▼ — ускорить | Пробел — мгновенный сброс',
-            minesweeper: '🖱️ Управление: Левый клик — открыть ячейку | Правый клик — поставить флажок 🚩',
-            bricks: '⌨️ Управление: Стрелки (◄ ►) — движение платформы | P — Пауза',
-            dino: '⌨️ Управление: Пробел или ▲ — прыжок | ▼ — пригнуться / быстрый спуск',
-            survivor: '⌨️ Управление: WASD или Стрелки — перемещение (атака автоматическая)',
+            snake: '⌨️ Управление: Стрелки или WASD — поворот змейки | P — Пауза',
+            tetris: '⌨️ Управление: ◄ ► — сдвиг | ▲ — поворот | ▼ — ускорить | Пробел — мгновенный сброс по тени',
+            minesweeper: '🖱️ Управление: ЛКМ — открыть (1-й клик безопасен) | ПКМ — флаг 🚩 (найдите все 10 мин для победы)',
+            bricks: '⌨️ Управление: Стрелки ◄ ► или Мышь — движение платформы | P — Пауза',
+            dino: '⌨️ Управление: Пробел / ▲ — прыжок (удержание = выше) | ▼ — пригнуться / быстрый спуск',
+            survivor: '⌨️ Управление: WASD или Стрелки — бег | Цель: Достичь 50 уровня доступа (боссы каждые 10 ур.)',
             galaga: '⌨️ Управление: A / D или ◄ ► — движение корабля | Пробел — стрельба'
         };
 
@@ -775,8 +858,12 @@
             document.getElementById('game-over-overlay').style.display = 'none'; 
             document.getElementById('pause-msg').style.display = 'none';
             document.getElementById('tetris-sidebar').style.display = game === 'tetris' ? 'block' : 'none';
-            document.getElementById('floating-scores-layer').innerHTML = ''; 
             
+            const minesBox = document.getElementById('mines-counter-box');
+            if (game === 'minesweeper') { minesBox.classList.remove('hidden'); minesBox.classList.add('flex'); }
+            else { minesBox.classList.add('hidden'); minesBox.classList.remove('flex'); }
+
+            document.getElementById('floating-scores-layer').innerHTML = ''; 
             loadLeaderboard(game);
 
             const container = document.getElementById('game-container'); container.innerHTML = ''; switchScreen('game-screen');
@@ -799,7 +886,7 @@
             if (e.key.toLowerCase() === 'p' && document.getElementById('game-screen').classList.contains('active')) togglePause(); 
         });
 
-        function gameOver(isWin = false) {
+        function gameOver(isWin = false, customMsg = null) {
             if (isGameOver) return;
             isGameOver = true; 
             document.getElementById('final-score-display').innerText = score; 
@@ -808,12 +895,12 @@
             const titleText = document.getElementById('game-over-huge-text');
             
             if (isWin) {
-                titleText.innerHTML = 'СИСТЕМА<br>ОЧИЩЕНА';
+                titleText.innerHTML = customMsg || 'СИСТЕМА<br>ОЧИЩЕНА';
                 box.style.borderColor = '#10b981';
                 box.style.color = '#10b981';
                 box.style.background = 'rgba(16, 185, 129, 0.1)';
             } else {
-                titleText.innerHTML = 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ';
+                titleText.innerHTML = customMsg || 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ';
                 box.style.borderColor = '';
                 box.style.color = '';
                 box.style.background = '';
@@ -826,7 +913,7 @@
         function exitGame() { window.currentRunId = Date.now(); clearGameListeners(); document.getElementById('game-over-overlay').style.display = 'none'; switchScreen('dashboard-screen'); }
 
         // ==========================================
-        // 1. SNAKE (С БУФЕРИЗАЦИЕЙ ВВОДА)
+        // 1. SNAKE (С БУФЕРИЗАЦИЕЙ ВВОДА И WASD)
         // ==========================================
         function initSnake(container) {
             const myRun = window.currentRunId;
@@ -834,7 +921,7 @@
             const ctx = canvas.getContext('2d'); const grid = 27; let count = 0;
             let snake = { x: 270, y: 270, dx: grid, dy: 0, cells: [], maxCells: 4 };
             let apple = { x: 405, y: 405 };
-            const speedDelay = 26; 
+            const speedDelay = 16; 
             let inputQueue = [];
 
             function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
@@ -842,10 +929,11 @@
             addGameListener('keydown', function snakeController(e) {
                 if(currentGame !== 'snake' || isPaused || isGameOver) return;
                 let lastDir = inputQueue.length ? inputQueue[inputQueue.length - 1] : {dx: snake.dx, dy: snake.dy};
-                if (e.which === 37 && lastDir.dx === 0) inputQueue.push({dx: -grid, dy: 0});
-                else if (e.which === 38 && lastDir.dy === 0) inputQueue.push({dx: 0, dy: -grid});
-                else if (e.which === 39 && lastDir.dx === 0) inputQueue.push({dx: grid, dy: 0});
-                else if (e.which === 40 && lastDir.dy === 0) inputQueue.push({dx: 0, dy: grid});
+                const k = e.key.toLowerCase();
+                if ((e.which === 37 || k === 'a') && lastDir.dx === 0) inputQueue.push({dx: -grid, dy: 0});
+                else if ((e.which === 38 || k === 'w') && lastDir.dy === 0) inputQueue.push({dx: 0, dy: -grid});
+                else if ((e.which === 39 || k === 'd') && lastDir.dx === 0) inputQueue.push({dx: grid, dy: 0});
+                else if ((e.which === 40 || k === 's') && lastDir.dy === 0) inputQueue.push({dx: 0, dy: grid});
             });
 
             function loop() {
@@ -854,7 +942,6 @@
                 if (isPaused || isGameOver) return; if (++count < speedDelay) return; count = 0;
                 ctx.clearRect(0,0,canvas.width,canvas.height);
                 
-                // Сетка
                 ctx.strokeStyle = 'rgba(255,255,255,0.03)';
                 for(let i=0; i<canvas.width; i+=grid) {
                     ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke();
@@ -870,10 +957,10 @@
                 if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) { gameOver(false); return; }
                 snake.cells.unshift({x: snake.x, y: snake.y}); if (snake.cells.length > snake.maxCells) snake.cells.pop();
                 
-                ctx.fillStyle = '#ef4444'; ctx.fillRect(apple.x+2, apple.y+2, grid-4, grid-4); 
-                ctx.fillStyle = '#10b981';
+                ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.roundRect(apple.x+2, apple.y+2, grid-4, grid-4, 6); ctx.fill();
                 snake.cells.forEach(function(cell, index) {
-                    ctx.fillRect(cell.x+1, cell.y+1, grid-2, grid-2);
+                    ctx.fillStyle = index === 0 ? '#34d399' : '#10b981';
+                    ctx.beginPath(); ctx.roundRect(cell.x+1, cell.y+1, grid-2, grid-2, 4); ctx.fill();
                     if (cell.x === apple.x && cell.y === apple.y) {
                         snake.maxCells++; score += 10; document.getElementById('score').innerText = score; spawnFloatingScore(apple.x, apple.y, '+10');
                         apple.x = getRandomInt(0, 20) * grid; apple.y = getRandomInt(0, 20) * grid;
@@ -885,7 +972,7 @@
         }
 
         // ==========================================
-        // 2. TETRIS (С РАЗМЕТКОЙ ПОЛЯ И ПРОВЕРКОЙ ПОТОЛКА)
+        // 2. TETRIS (СЕТКА + GHOST PIECE + ПОТОЛОК)
         // ==========================================
         function initTetris(container) {
             const myRun = window.currentRunId;
@@ -920,8 +1007,12 @@
             let tetromino = getRandomPiece();
             let nextTetromino = getRandomPiece();
 
-            function drawBlock(context, x, y, color) {
-                context.fillStyle = color; context.fillRect(x * BLOCK_SIZE + 1, y * BLOCK_SIZE + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
+            function drawBlock(context, x, y, color, alpha = 1) {
+                context.save();
+                context.globalAlpha = alpha;
+                context.fillStyle = color;
+                context.fillRect(x * BLOCK_SIZE + 1, y * BLOCK_SIZE + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
+                context.restore();
             }
 
             function rotate(matrix) {
@@ -983,8 +1074,8 @@
             function draw() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Четкая разметка поля по клеткам
-                ctx.strokeStyle = 'rgba(148, 163, 184, 0.14)';
+                // Разметка поля по клеткам
+                ctx.strokeStyle = 'rgba(148, 163, 184, 0.16)';
                 ctx.lineWidth = 1;
                 for (let r = 0; r < ROWS; r++) {
                     for (let c = 0; c < COLS; c++) {
@@ -994,6 +1085,16 @@
                 }
                 
                 if (tetromino) {
+                    // Ghost Piece (Тень падения)
+                    let ghostRow = tetromino.row;
+                    while (isValidMove(tetromino.matrix, ghostRow + 1, tetromino.col)) ghostRow++;
+                    for (let r = 0; r < tetromino.matrix.length; r++) {
+                        for (let c = 0; c < tetromino.matrix[r].length; c++) {
+                            if (tetromino.matrix[r][c]) drawBlock(ctx, tetromino.col + c, ghostRow + r, colors[tetromino.name], 0.22);
+                        }
+                    }
+
+                    // Активная фигура
                     for (let r = 0; r < tetromino.matrix.length; r++) {
                         for (let c = 0; c < tetromino.matrix[r].length; c++) {
                             if (tetromino.matrix[r][c]) drawBlock(ctx, tetromino.col + c, tetromino.row + r, colors[tetromino.name]);
@@ -1033,13 +1134,17 @@
         }
 
         // ==========================================
-        // 3. MINESWEEPER (С ПОБЕДОЙ)
+        // 3. MINESWEEPER (БЕЗОПАСНЫЙ 1-Й КЛИК + ПОБЕДА ПО ФЛАГАМ)
         // ==========================================
         function initMinesweeper(container) {
             const grid = document.createElement('div'); grid.className = 'minesweeper-grid'; container.appendChild(grid);
             const width = 10; const bombAmount = 10; let squares = [];
             const TOTAL_SAFE = width * width - bombAmount;
-            let revealedCount = 0; 
+            let revealedCount = 0;
+            let flagsPlaced = 0;
+            let firstClick = true;
+
+            document.getElementById('mines-flags-val').innerText = `0 / ${bombAmount}`;
 
             const gameArray = Array(TOTAL_SAFE).fill('valid').concat(Array(bombAmount).fill('bomb')).sort(() => Math.random() - 0.5);
             for(let i=0; i<width*width; i++) {
@@ -1047,26 +1152,59 @@
                 square.addEventListener('click', function() { if(isPaused || isGameOver || square.classList.contains('flagged')) return; click(square); });
                 square.addEventListener('contextmenu', function(e) {
                     e.preventDefault(); if(isPaused || isGameOver || square.classList.contains('revealed')) return;
-                    if(!square.classList.contains('flagged')) { square.classList.add('flagged'); square.innerText = '🚩'; } else { square.classList.remove('flagged'); square.innerText = ''; }
+                    if(!square.classList.contains('flagged')) {
+                        square.classList.add('flagged'); square.innerText = '🚩'; flagsPlaced++;
+                    } else {
+                        square.classList.remove('flagged'); square.innerText = ''; flagsPlaced--;
+                    }
+                    document.getElementById('mines-flags-val').innerText = `${flagsPlaced} / ${bombAmount}`;
+                    checkWinCondition();
                 });
             }
-            for(let i=0; i<squares.length; i++) {
-                let total = 0; const isLeftEdge = (i % width === 0); const isRightEdge = (i % width === width - 1);
-                if(squares[i].classList.contains('valid')) {
-                    if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('bomb')) total++;
-                    if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('bomb')) total++;
-                    if (i > 10 && squares[i -width].classList.contains('bomb')) total++;
-                    if (i > 11 && !isLeftEdge && squares[i -1 -width].classList.contains('bomb')) total++;
-                    if (i < 98 && !isRightEdge && squares[i +1].classList.contains('bomb')) total++;
-                    if (i < 90 && !isLeftEdge && squares[i -1 +width].classList.contains('bomb')) total++;
-                    if (i < 88 && !isRightEdge && squares[i +1 +width].classList.contains('bomb')) total++;
-                    if (i < 89 && squares[i +width].classList.contains('bomb')) total++;
-                    squares[i].setAttribute('data', total);
+
+            function computeNeighborNumbers() {
+                for(let i=0; i<squares.length; i++) {
+                    let total = 0; const isLeftEdge = (i % width === 0); const isRightEdge = (i % width === width - 1);
+                    if(squares[i].classList.contains('valid')) {
+                        if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('bomb')) total++;
+                        if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('bomb')) total++;
+                        if (i >= 10 && squares[i -width].classList.contains('bomb')) total++;
+                        if (i > 10 && !isLeftEdge && squares[i -1 -width].classList.contains('bomb')) total++;
+                        if (i < 99 && !isRightEdge && squares[i +1].classList.contains('bomb')) total++;
+                        if (i < 90 && !isLeftEdge && squares[i -1 +width].classList.contains('bomb')) total++;
+                        if (i < 89 && !isRightEdge && squares[i +1 +width].classList.contains('bomb')) total++;
+                        if (i < 90 && squares[i +width].classList.contains('bomb')) total++;
+                        squares[i].setAttribute('data', total);
+                    }
                 }
             }
+            computeNeighborNumbers();
+
+            function checkWinCondition() {
+                // Победа либо когда открыты все безопасные клетки, либо когда ровно все 10 бомб помечены флагами
+                const allBombsFlagged = flagsPlaced === bombAmount && squares.filter(s => s.classList.contains('bomb')).every(s => s.classList.contains('flagged'));
+                if (revealedCount === TOTAL_SAFE || allBombsFlagged) {
+                    score += 1000; document.getElementById('score').innerText = score; 
+                    gameOver(true, 'ВСЕ УГРОЗЫ<br>НЕЙТРАЛИЗОВАНЫ');
+                }
+            }
+
             function click(square) {
                 if (!square || square.classList.contains('revealed') || square.classList.contains('flagged')) return;
+                
+                // Защита первого клика: если первая клетка — бомба, переносим её
+                if (firstClick) {
+                    firstClick = false;
+                    if (square.classList.contains('bomb')) {
+                        const safeSquare = squares.find(s => s.classList.contains('valid') && s !== square);
+                        square.classList.remove('bomb'); square.classList.add('valid');
+                        safeSquare.classList.remove('valid'); safeSquare.classList.add('bomb');
+                        computeNeighborNumbers();
+                    }
+                }
+
                 if (square.classList.contains('bomb')) { 
+                    squares.forEach(s => { if (s.classList.contains('bomb')) { s.innerText = '💣'; s.style.backgroundColor = '#7f1d1d'; } });
                     square.style.backgroundColor = '#ef4444'; square.innerText = '💥';
                     gameOver(false); return; 
                 }
@@ -1083,12 +1221,9 @@
                 } else {
                     checkSquare(square.id);
                 }
-
-                if (revealedCount === TOTAL_SAFE) {
-                    score += 1000; document.getElementById('score').innerText = score; 
-                    gameOver(true); 
-                }
+                checkWinCondition();
             }
+
             function checkSquare(currentId) {
                 const id = parseInt(currentId);
                 const isLeft = (id % width === 0); const isRight = (id % width === width - 1);
@@ -1106,37 +1241,51 @@
         }
 
         // ==========================================
-        // 4. BRICKS BREAKER
+        // 4. BRICKS BREAKER (МЫШЬ + НОВЫЕ ВОЛНЫ)
         // ==========================================
         function initBricks(container) {
             const myRun = window.currentRunId;
             const canvas = document.createElement('canvas'); canvas.width = 580; canvas.height = 580; canvas.className = 'game-canvas'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
-            let baseSpeed = 1.6; let maxSpeed = 6.5;
+            let baseSpeed = 2.2; let maxSpeed = 6.5;
             let ballRadius = 8; let x = canvas.width/2; let y = canvas.height-50;
             let dx = baseSpeed; let dy = -baseSpeed;
             
-            let paddleHeight = 14; let paddleWidth = 115; let paddleX = (canvas.width-paddleWidth)/2;
+            let paddleHeight = 14; let paddleWidth = 120; let paddleX = (canvas.width-paddleWidth)/2;
             let rightPressed = false; let leftPressed = false;
             let brickRowCount = 6; let brickColumnCount = 7;
             let brickWidth = 68; let brickHeight = 26; let brickPadding = 10; let brickOffsetTop = 45; let brickOffsetLeft = 22;
             let bricks = [];
-            for(let c=0; c<brickColumnCount; c++) {
-                bricks[c] = [];
-                for(let r=0; r<brickRowCount; r++) bricks[c][r] = { x: 0, y: 0, status: Math.floor(Math.random() * 5) + 1 };
+
+            function generateBricks() {
+                for(let c=0; c<brickColumnCount; c++) {
+                    bricks[c] = [];
+                    for(let r=0; r<brickRowCount; r++) bricks[c][r] = { x: 0, y: 0, status: Math.floor(Math.random() * 4) + 1 };
+                }
             }
+            generateBricks();
+
             addGameListener("keydown", (e) => { if(e.key == "Right" || e.key == "ArrowRight") rightPressed = true; else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = true; }, false);
             addGameListener("keyup", (e) => { if(e.key == "Right" || e.key == "ArrowRight") rightPressed = false; else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = false; }, false);
-            function getBrickColor(h) { if(h===1) return "#10b981"; if(h===2) return "#facc15"; if(h===3) return "#f97316"; if(h===4) return "#ef4444"; return "#38bdf8"; }
+            canvas.addEventListener("mousemove", (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const relX = (e.clientX - rect.left) * (canvas.width / rect.width);
+                if (relX > 0 && relX < canvas.width) paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, relX - paddleWidth / 2));
+            });
+
+            function getBrickColor(h) { if(h===1) return "#10b981"; if(h===2) return "#facc15"; if(h===3) return "#f97316"; return "#ef4444"; }
             
             function draw() {
                 if (myRun !== window.currentRunId) return;
                 requestAnimationFrame(draw);
                 if (isPaused || isGameOver) return; ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                let activeBricks = 0;
                 for(let c=0; c<brickColumnCount; c++) {
                     for(let r=0; r<brickRowCount; r++) {
                         let b = bricks[c][r];
                         if(b.status > 0) {
+                            activeBricks++;
                             let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft; let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop; b.x = brickX; b.y = brickY;
                             ctx.beginPath(); ctx.roundRect(brickX, brickY, brickWidth, brickHeight, 5); 
                             ctx.fillStyle = getBrickColor(b.status); ctx.fill(); ctx.closePath();
@@ -1144,6 +1293,14 @@
                         }
                     }
                 }
+
+                if (activeBricks === 0) {
+                    score += 500; document.getElementById('score').innerText = score;
+                    spawnFloatingScore(canvas.width/2 - 40, canvas.height/2, 'ВОЛНА +500!');
+                    generateBricks();
+                    x = canvas.width/2; y = canvas.height-50; dy = -Math.abs(dy);
+                }
+
                 ctx.beginPath(); ctx.arc(x, y, ballRadius, 0, Math.PI*2); ctx.fillStyle = "#fff"; ctx.fill(); ctx.closePath();
                 ctx.beginPath(); ctx.roundRect(paddleX, canvas.height-paddleHeight-8, paddleWidth, paddleHeight, 6); ctx.fillStyle = "#10b981"; ctx.fill(); ctx.closePath();
                 
@@ -1153,8 +1310,7 @@
                         if(b.status > 0 && x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
                             dy = -dy; b.status--; score += 5; document.getElementById('score').innerText = score; spawnFloatingScore(x, y, '+5'); 
                             if (baseSpeed < maxSpeed) {
-                                baseSpeed += 0.04; 
-                                dx = dx > 0 ? Math.max(dx, baseSpeed/2) : Math.min(dx, -baseSpeed/2);
+                                baseSpeed += 0.03; 
                                 dy = dy > 0 ? baseSpeed : -baseSpeed;
                             }
                         }
@@ -1163,37 +1319,79 @@
                 if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) dx = -dx;
                 if(y + dy < ballRadius) dy = -dy;
                 else if(y + dy > canvas.height-ballRadius-8) {
-                    if(x > paddleX && x < paddleX + paddleWidth) { dx = baseSpeed * 1.4 * ((x - (paddleX + paddleWidth/2)) / (paddleWidth/2)); dy = -baseSpeed; }
-                    else { gameOver(false); return; }
+                    if(x >= paddleX - ballRadius && x <= paddleX + paddleWidth + ballRadius) {
+                        let hitPoint = (x - (paddleX + paddleWidth/2)) / (paddleWidth/2);
+                        dx = baseSpeed * 1.35 * hitPoint;
+                        dy = -baseSpeed;
+                    } else { gameOver(false); return; }
                 }
-                if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 5; else if(leftPressed && paddleX > 0) paddleX -= 5;
+                if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 6; else if(leftPressed && paddleX > 0) paddleX -= 6;
                 x += dx; y += dy;
             }
             requestAnimationFrame(draw);
         }
 
         // ==========================================
-        // 5. DINO (КОМФОРТНЫЙ МЕДЛЕННЫЙ СТАРТ И ПРЫЖОК)
+        // 5. DINO (ОТЗЫВЧИВЫЙ ПРЫЖОК + СПРАЙТЫ)
         // ==========================================
         function initDino(container) {
             const myRun = window.currentRunId; 
-            const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 350; canvas.className = 'game-canvas'; container.appendChild(canvas);
+            const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 360; canvas.className = 'game-canvas'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
             
-            let gameSpeed = 2.6; 
+            // Сбалансированная скорость и отзывчивая дуга прыжка
+            let gameSpeed = 4.2; 
             let scoreCounter = 0;
-            let dino = { x: 60, y: 250, w: 36, h: 42, dy: 0, gravity: 0.42, jumpPower: -11.5, isJumping: false, isDucking: false };
-            let obstacles = []; const groundY = 292; let spawnTimer = 150;
+            const groundY = 300;
+            let dino = { x: 75, y: groundY - 44, w: 38, h: 44, dy: 0, gravity: 0.58, jumpPower: -12.2, isJumping: false, isDucking: false, jumpBuffer: 0 };
+            let obstacles = [];
+            let clouds = Array.from({length: 5}, (_, i) => ({ x: i * 180 + 50, y: 50 + Math.random() * 80, s: 0.5 + Math.random() * 0.5 }));
+            let nextSpawnDist = 350;
 
             addGameListener('keydown', (e) => {
                 if(currentGame !== 'dino' || isPaused || isGameOver) return;
-                if ((e.code === 'Space' || e.code === 'ArrowUp') && !dino.isJumping) { dino.dy = dino.jumpPower; dino.isJumping = true; }
-                if (e.code === 'ArrowDown') { dino.isDucking = true; dino.h = 22; if(!dino.isJumping) dino.y = groundY - dino.h; }
+                if (e.code === 'Space' || e.code === 'ArrowUp' || e.key.toLowerCase() === 'w') {
+                    dino.jumpBuffer = 10; // Буферизация прыжка перед приземлением
+                }
+                if (e.code === 'ArrowDown' || e.key.toLowerCase() === 's') {
+                    dino.isDucking = true; dino.h = 26;
+                    if(!dino.isJumping) dino.y = groundY - dino.h;
+                }
             });
             addGameListener('keyup', (e) => {
                 if(currentGame !== 'dino' || isPaused || isGameOver) return;
-                if (e.code === 'ArrowDown') { dino.isDucking = false; dino.h = 42; if(!dino.isJumping) dino.y = groundY - dino.h; }
+                // Короткое нажатие делает прыжок ниже и точнее
+                if ((e.code === 'Space' || e.code === 'ArrowUp' || e.key.toLowerCase() === 'w') && dino.dy < -4) {
+                    dino.dy *= 0.55;
+                }
+                if (e.code === 'ArrowDown' || e.key.toLowerCase() === 's') {
+                    dino.isDucking = false; dino.h = 44;
+                    if(!dino.isJumping) dino.y = groundY - dino.h;
+                }
             });
+
+            function drawDinoSprite(x, y, w, h, ducking, frame) {
+                ctx.save();
+                ctx.fillStyle = '#10b981';
+                if (ducking) {
+                    // Пригнувшийся кибер-динозавр
+                    ctx.fillRect(x, y + 4, w + 8, h - 10);
+                    ctx.fillStyle = '#050811'; ctx.fillRect(x + w - 2, y + 7, 5, 5);
+                } else {
+                    // Голова и тело
+                    ctx.fillRect(x + 10, y, w - 10, 18); // голова
+                    ctx.fillRect(x + 4, y + 14, w - 12, 18); // тело
+                    ctx.fillRect(x, y + 18, 6, 10); // хвост
+                    ctx.fillStyle = '#050811'; ctx.fillRect(x + 26, y + 4, 5, 5); // глаз
+                    ctx.fillStyle = '#34d399'; ctx.fillRect(x + 20, y + 10, 14, 3); // кибер-визор
+                }
+                // Анимированные лапы
+                ctx.fillStyle = '#059669';
+                const legOffset = dino.isJumping ? 0 : (Math.floor(frame / 6) % 2 === 0 ? 4 : -4);
+                ctx.fillRect(x + 8, y + h - 8, 6, 8 + (legOffset > 0 ? -3 : 0));
+                ctx.fillRect(x + 20, y + h - 8, 6, 8 + (legOffset < 0 ? -3 : 0));
+                ctx.restore();
+            }
 
             function loop() {
                 if (myRun !== window.currentRunId) return; 
@@ -1201,53 +1399,98 @@
                 if (isPaused || isGameOver) return;
                 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                dino.dy += dino.gravity; 
-                if(dino.isDucking && dino.isJumping) dino.dy += 1.5; 
-                dino.y += dino.dy;
-
-                if(dino.y + dino.h >= groundY) { dino.y = groundY - dino.h; dino.dy = 0; dino.isJumping = false; } 
-
                 scoreCounter++;
-                if(scoreCounter % 8 === 0) {
-                    score++; document.getElementById('score').innerText = score;
-                    if (score % 200 === 0 && gameSpeed < 9) { gameSpeed += 0.3; spawnFloatingScore(dino.x, dino.y - 20, 'SPEED UP!'); }
+
+                // Облака/фоновые узлы
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.12)';
+                clouds.forEach(c => {
+                    c.x -= c.s; if (c.x < -60) c.x = canvas.width + 40;
+                    ctx.beginPath(); ctx.roundRect(c.x, c.y, 48, 14, 7); ctx.fill();
+                });
+
+                // Обработка буфера прыжка
+                if (dino.jumpBuffer > 0) dino.jumpBuffer--;
+                if (dino.jumpBuffer > 0 && !dino.isJumping) {
+                    dino.dy = dino.jumpPower;
+                    dino.isJumping = true;
+                    dino.jumpBuffer = 0;
                 }
 
+                // Физика прыжка
+                dino.dy += dino.gravity; 
+                if(dino.isDucking && dino.isJumping) dino.dy += 1.4; // Быстрый спуск
+                dino.y += dino.dy;
+
+                if(dino.y + dino.h >= groundY) {
+                    dino.y = groundY - dino.h;
+                    dino.dy = 0;
+                    dino.isJumping = false;
+                } 
+
+                if(scoreCounter % 6 === 0) {
+                    score++; document.getElementById('score').innerText = score;
+                    if (score % 150 === 0 && gameSpeed < 8.5) { gameSpeed += 0.35; spawnFloatingScore(dino.x, dino.y - 20, 'УСКОРЕНИЕ!'); }
+                }
+
+                // Земля и дорожка
                 ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(canvas.width, groundY); ctx.strokeStyle = '#10b981'; ctx.lineWidth = 2; ctx.stroke();
+                for(let i = 0; i < canvas.width; i+=40) {
+                    let dotX = (i - (scoreCounter * gameSpeed) % 40 + 40) % canvas.width;
+                    ctx.fillStyle = 'rgba(16, 185, 129, 0.35)'; ctx.fillRect(dotX, groundY + 6, 8, 2);
+                }
 
-                ctx.fillStyle = '#10b981'; ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
-                ctx.fillStyle = '#050811'; ctx.fillRect(dino.x + 24, dino.y + 8, 5, 5); 
+                drawDinoSprite(dino.x, dino.y, dino.w, dino.h, dino.isDucking, scoreCounter);
 
-                spawnTimer -= gameSpeed;
-                if (spawnTimer <= 0) {
-                    let type = Math.random() > 0.72 && score > 100 ? 'flying' : 'ground';
-                    if (type === 'ground') { let width = Math.random() > 0.65 ? 25 : 46; obstacles.push({ x: canvas.width, y: groundY - 44, w: width, h: 44, type }); } 
-                    else { let heights = [groundY - 85, groundY - 55, groundY - 30]; let h = heights[Math.floor(Math.random() * heights.length)]; obstacles.push({ x: canvas.width, y: h, w: 38, h: 16, type }); }
-                    
-                    let minGap = 340 + (gameSpeed * 18); let maxGap = 620 + (gameSpeed * 22);
-                    spawnTimer = Math.random() * (maxGap - minGap) + minGap; 
+                // Генерация препятствий по честной дистанции
+                nextSpawnDist -= gameSpeed;
+                if (nextSpawnDist <= 0) {
+                    let type = Math.random() > 0.72 && score > 80 ? 'flying' : 'ground';
+                    if (type === 'ground') {
+                        let w = Math.random() > 0.65 ? 44 : 26;
+                        let h = Math.random() > 0.5 ? 46 : 36;
+                        obstacles.push({ x: canvas.width + 20, y: groundY - h, w: w, h: h, type });
+                    } else {
+                        // Два уровня высоты: либо нужно пригнуться, либо можно перепрыгнуть
+                        let hLevel = Math.random() > 0.5 ? groundY - 62 : groundY - 34;
+                        obstacles.push({ x: canvas.width + 20, y: hLevel, w: 38, h: 18, type });
+                    }
+                    // Гарантированный безопасный интервал (минимум 280px + запас на скорость)
+                    let minGap = 280 + gameSpeed * 28;
+                    let maxGap = 480 + gameSpeed * 35;
+                    nextSpawnDist = minGap + Math.random() * (maxGap - minGap);
                 }
 
                 for (let i = 0; i < obstacles.length; i++) {
                     let obs = obstacles[i]; obs.x -= gameSpeed;
                     if (obs.type === 'ground') {
-                        ctx.fillStyle = '#38bdf8'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-                        ctx.strokeStyle = '#050811'; ctx.lineWidth = 2;
-                        ctx.strokeRect(obs.x, obs.y, obs.w, obs.h);
-                    } else { ctx.fillStyle = '#ef4444'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h); }
+                        // Серверная стойка
+                        ctx.fillStyle = '#1e293b'; ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+                        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.strokeRect(obs.x, obs.y, obs.w, obs.h);
+                        ctx.fillStyle = (Math.floor(scoreCounter / 10) % 2 === 0) ? '#22c55e' : '#ef4444';
+                        ctx.fillRect(obs.x + 5, obs.y + 6, 4, 4);
+                        ctx.fillStyle = '#38bdf8'; ctx.fillRect(obs.x + 5, obs.y + 14, obs.w - 10, 2);
+                    } else {
+                        // Летающий красный баг-дрон
+                        ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.roundRect(obs.x, obs.y, obs.w, obs.h, 4); ctx.fill();
+                        const wingY = (Math.floor(scoreCounter / 5) % 2 === 0) ? -6 : 6;
+                        ctx.strokeStyle = '#fca5a5'; ctx.lineWidth = 2;
+                        ctx.beginPath(); ctx.moveTo(obs.x + 12, obs.y + 4); ctx.lineTo(obs.x + 22, obs.y + wingY); ctx.stroke();
+                    }
                     
-                    let hitMargin = 6; 
-                    if (dino.x + hitMargin < obs.x + obs.w - hitMargin && dino.x + dino.w - hitMargin > obs.x + hitMargin && 
-                        dino.y + hitMargin < obs.y + obs.h - hitMargin && dino.y + dino.h - hitMargin > obs.y + hitMargin) { gameOver(false); return; }
+                    // Честный хитбокс с допуском 7px
+                    let m = 7; 
+                    if (dino.x + m < obs.x + obs.w - m && dino.x + dino.w - m > obs.x + m && 
+                        dino.y + m < obs.y + obs.h - m && dino.y + dino.h - m > obs.y + m) {
+                        gameOver(false); return;
+                    }
                 }
-                obstacles = obstacles.filter(obs => obs.x + obs.w > 0);
+                obstacles = obstacles.filter(obs => obs.x + obs.w > -20);
             }
             requestAnimationFrame(loop);
         }
 
         // ==========================================
-        // 6. SYSADMIN SURVIVOR
+        // 6. SYSADMIN SURVIVOR (ВСЕ МОДЕЛИ + 50 УРОВНЕЙ)
         // ==========================================
         function initSurvivor(container) {
             const myRun = window.currentRunId; 
@@ -1255,21 +1498,32 @@
             canvas.className = 'game-canvas'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d', { alpha: false });
             let cw = canvas.width, ch = canvas.height;
+            const MAX_GAME_LEVEL = 50;
 
             const uiLayer = document.createElement('div');
             uiLayer.id = 'survivor-ui';
             uiLayer.innerHTML = `
                 <div id="sv-hud" class="w-full p-4 box-border relative z-40">
-                    <div class="w-full h-3 bg-slate-800 border border-slate-700 rounded-full overflow-hidden"><div id="sv-xp-bar" class="h-full w-0 bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-100"></div></div>
-                    <div class="flex justify-between mt-2 font-bold text-sm text-slate-200">
-                        <div id="sv-time">00:00</div>
-                        <div id="sv-lvl">Lvl: 1</div>
-                        <div id="sv-kills">Tickets: 0</div>
+                    <div class="w-full h-3.5 bg-slate-900/90 border border-slate-700 rounded-full overflow-hidden shadow-md">
+                        <div id="sv-xp-bar" class="h-full w-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 transition-all duration-100"></div>
                     </div>
-                    <div class="w-48 h-5 bg-slate-800 border border-slate-700 rounded-md mt-1 relative overflow-hidden"><div id="sv-hp-bar" class="h-full w-full bg-gradient-to-r from-red-500 to-rose-500 transition-all duration-100"></div><div id="sv-hp-val" class="absolute inset-0 text-center text-xs leading-5 text-white font-bold">100/100</div></div>
+                    <div class="flex justify-between items-center mt-2 font-bold text-sm sm:text-base text-slate-100" style="text-shadow: 1px 1px 3px #000;">
+                        <div class="flex items-center gap-3">
+                            <span id="sv-time" class="px-2.5 py-0.5 rounded bg-slate-900/80 border border-slate-700">00:00</span>
+                            <span id="sv-wave-info" class="text-xs text-cyan-400">Волна 1 (Врагов: 0)</span>
+                        </div>
+                        <div id="sv-lvl" class="text-amber-400 text-lg">Уровень: 1 / 50</div>
+                        <div id="sv-kills" class="px-2.5 py-0.5 rounded bg-slate-900/80 border border-slate-700">Тикетов: 0</div>
+                    </div>
+                    <div class="w-52 h-5 bg-slate-900/90 border border-slate-700 rounded-md mt-2 relative overflow-hidden shadow-md">
+                        <div id="sv-hp-bar" class="h-full w-full bg-gradient-to-r from-red-600 to-rose-500 transition-all duration-100"></div>
+                        <div id="sv-hp-val" class="absolute inset-0 text-center text-xs leading-5 text-white font-bold" style="text-shadow: 1px 1px 2px #000;">100 / 100</div>
+                    </div>
+                    <div id="sv-buff-indicator" class="text-amber-400 font-bold text-sm mt-1 hidden" style="text-shadow: 0 0 8px rgba(250,204,21,0.8);">⚡ OVERCLOCK АКТИВЕН ⚡</div>
                 </div>
                 <div id="sv-screen-levelup" class="sv-overlay hidden z-50">
-                    <h2 class="text-3xl text-amber-400 mb-6 font-bold text-center">ПОВЫШЕНИЕ ДОСТУПА!</h2>
+                    <h2 class="text-3xl text-amber-400 mb-2 font-bold text-center">ПОВЫШЕНИЕ ДОСТУПА!</h2>
+                    <p id="sv-lvlup-sub" class="text-xs text-slate-400 mb-6">Выберите модуль модернизации (Цель: 50 уровень)</p>
                     <div id="sv-cards-container" class="flex gap-5 flex-wrap justify-center max-w-4xl"></div>
                 </div>
             `;
@@ -1277,28 +1531,29 @@
 
             const DB = {
                 weapons: {
-                    usb: { id: 'usb', name: 'Флешки', icon: '💾', maxLvl: 8, dmg: 15, cd: 0.8, desc: 'Бросает загрузочные флешки в ближайших врагов.', evoReq: 'dmg', evoId: 'evo_usb' },
-                    cable: { id: 'cable', name: 'Cat5 Кабель', icon: '🔌', maxLvl: 8, dmg: 22, cd: 1.2, desc: 'Бьет по дуге в направлении движения (Хлыст).', evoReq: 'area', evoId: 'evo_cable' },
-                    wifi: { id: 'wifi', name: 'Wi-Fi Аура', icon: '🛜', maxLvl: 8, dmg: 7, cd: 1.0, desc: 'Раздает смертельный пинг врагам вокруг.', evoReq: 'haste', evoId: 'evo_wifi' },
-                    firewall: { id: 'firewall', name: 'Фаервол', icon: '🧱', maxLvl: 8, dmg: 20, cd: 0, desc: 'Кирпичные блоки вращаются вокруг вас.', evoReq: 'speed', evoId: 'evo_firewall' },
-                    evo_usb: { id: 'evo_usb', name: 'DDoS Атака', icon: '🚀', maxLvl: 1, dmg: 35, cd: 0.4, desc: 'Непрерывный поток флешек с пробиванием.', isEvo: true },
-                    evo_cable: { id: 'evo_cable', name: 'Оптоволокно', icon: '⚡', maxLvl: 1, dmg: 50, cd: 0.8, desc: 'Бьет огромным световым хлыстом вокруг вас.', isEvo: true },
-                    evo_wifi: { id: 'evo_wifi', name: '5G Излучатель', icon: '☢️', maxLvl: 1, dmg: 18, cd: 0.5, desc: 'Огромная аура, плавящая микросхемы.', isEvo: true },
-                    evo_firewall: { id: 'evo_firewall', name: 'VPN Туннель', icon: '🛡️', maxLvl: 1, dmg: 40, cd: 0, desc: 'Непробиваемое кольцо шифрования.', isEvo: true }
+                    usb: { id: 'usb', name: 'Флешки', icon: '💾', maxLvl: 8, dmg: 16, cd: 0.75, desc: 'Бросает загрузочные флешки в ближайших врагов.', evoReq: 'dmg', evoId: 'evo_usb' },
+                    cable: { id: 'cable', name: 'Cat5 Кабель', icon: '🔌', maxLvl: 8, dmg: 24, cd: 1.1, desc: 'Бьет по дуге в направлении движения (Хлыст).', evoReq: 'area', evoId: 'evo_cable' },
+                    wifi: { id: 'wifi', name: 'Wi-Fi Аура', icon: '🛜', maxLvl: 8, dmg: 8, cd: 0.9, desc: 'Раздает смертельный пинг врагам вокруг.', evoReq: 'haste', evoId: 'evo_wifi' },
+                    firewall: { id: 'firewall', name: 'Фаервол', icon: '🧱', maxLvl: 8, dmg: 22, cd: 0, desc: 'Кирпичные блоки вращаются вокруг вас.', evoReq: 'speed', evoId: 'evo_firewall' },
+                    evo_usb: { id: 'evo_usb', name: 'DDoS Атака', icon: '🚀', maxLvl: 1, dmg: 40, cd: 0.35, desc: 'Непрерывный поток флешек с пробиванием.', isEvo: true },
+                    evo_cable: { id: 'evo_cable', name: 'Оптоволокно', icon: '⚡', maxLvl: 1, dmg: 55, cd: 0.7, desc: 'Бьет огромным световым хлыстом вокруг вас.', isEvo: true },
+                    evo_wifi: { id: 'evo_wifi', name: '5G Излучатель', icon: '☢️', maxLvl: 1, dmg: 22, cd: 0.45, desc: 'Огромная аура, плавящая микросхемы.', isEvo: true },
+                    evo_firewall: { id: 'evo_firewall', name: 'VPN Туннель', icon: '🛡️', maxLvl: 1, dmg: 45, cd: 0, desc: 'Непробиваемое кольцо шифрования.', isEvo: true }
                 },
                 passives: {
-                    hp: { id: 'hp', name: 'Облачный Бэкап', icon: '☁️', maxLvl: 5, desc: '+20% Макс Здоровья' },
-                    speed: { id: 'speed', name: 'Кресло Маркуса', icon: '💺', maxLvl: 5, desc: '+15% Скорость' },
-                    dmg: { id: 'dmg', name: 'Root Доступ', icon: 'sudo', maxLvl: 5, desc: '+20% Урон' },
-                    area: { id: 'area', name: 'Мощный Роутер', icon: '📡', maxLvl: 5, desc: '+25% Радиус оружия и подбора' },
-                    haste: { id: 'haste', name: 'Двойной Эспрессо', icon: '☕', maxLvl: 5, desc: '+15% Скорость атаки' }
+                    hp: { id: 'hp', name: 'Облачный Бэкап', icon: '☁️', maxLvl: 5, desc: '+20% Макс Здоровья и лечение' },
+                    speed: { id: 'speed', name: 'Кресло Маркуса', icon: '💺', maxLvl: 5, desc: '+15% Скорость передвижения' },
+                    dmg: { id: 'dmg', name: 'Root Доступ', icon: '🔑', maxLvl: 5, desc: '+20% Урон всех систем' },
+                    area: { id: 'area', name: 'Мощный Роутер', icon: '📡', maxLvl: 5, desc: '+25% Радиус оружия и магнита XP' },
+                    haste: { id: 'haste', name: 'Двойной Эспрессо', icon: '☕', maxLvl: 5, desc: '+15% Скорость перезарядки атак' }
                 }
             };
 
             let svGame = { state: 'PLAY', time: 0, kills: 0, lvl: 1, xp: 0, xpReq: 5, lastTime: 0, shake: 0 };
             const svKeys = {}; let camera = { x: 0, y: 0 };
             let svPlayer, svEnemies = [], svProjectiles = [], svItems = [], svPowerups = [], svParticles = [], svDamageTexts = [];
-            const director = { budget: 0, maxEnemies: 200 }; const CHUNK_SIZE = 1000; const chunks = new Map();
+            let spawnedBossLevels = new Set();
+            const director = { budget: 0, maxEnemies: 40 }; const CHUNK_SIZE = 1000; const chunks = new Map();
 
             function hash(x, y) { let h = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453; return h - Math.floor(h); }
 
@@ -1315,6 +1570,7 @@
             }
             const enemyGrid = new SpatialGrid(100);
 
+            // ПОЛНЫЕ МОДЕЛИ УСИЛЕНИЙ (Powerups)
             class Powerup {
                 constructor(x, y, type) { this.x = x; this.y = y; this.type = type; this.r = 18; this.bob = Math.random() * Math.PI; }
                 update() {
@@ -1322,37 +1578,66 @@
                     if (dx*dx + dy*dy < (svPlayer.r + this.r)**2) { this.applyEffect(); return true; } return false;
                 }
                 applyEffect() {
-                    if (this.type === 'heal') { svPlayer.hp = Math.min(svPlayer.hp + svPlayer.stats.maxHp * 0.3, svPlayer.stats.maxHp); svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "+30% HP", '#10b981', true)); spawnParticles(this.x, this.y, '#10b981', 15); } 
-                    else if (this.type === 'overclock') { svPlayer.buffTimer = 10; svPlayer.updateStats(); svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "OVERCLOCK!", '#facc15', true)); spawnParticles(this.x, this.y, '#facc15', 15); } 
-                    else if (this.type === 'nuke') { svEnemies.forEach(e => { if(!e.isBoss) e.hp = 0; }); svGame.shake = 0.5; svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "SYSTEM NUKE!", '#ef4444', true)); spawnParticles(svPlayer.x, svPlayer.y, '#ef4444', 50); } 
-                    else if (this.type === 'magnet') { svItems.forEach(i => i.state = 1); svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "MAGNET!", '#38bdf8', true)); spawnParticles(this.x, this.y, '#38bdf8', 15); }
+                    if (this.type === 'heal') {
+                        svPlayer.hp = Math.min(svPlayer.hp + svPlayer.stats.maxHp * 0.35, svPlayer.stats.maxHp);
+                        svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "+35% HP", '#10b981', true));
+                        spawnParticles(this.x, this.y, '#10b981', 15);
+                    } else if (this.type === 'overclock') {
+                        svPlayer.buffTimer = 10; svPlayer.updateStats();
+                        document.getElementById('sv-buff-indicator').classList.remove('hidden');
+                        svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "OVERCLOCK!", '#facc15', true));
+                        spawnParticles(this.x, this.y, '#facc15', 15);
+                    } else if (this.type === 'nuke') {
+                        svEnemies.forEach(e => { if(!e.isBoss) e.hit(9999, 0, 0); });
+                        svGame.shake = 0.4;
+                        svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "SYSTEM NUKE!", '#ef4444', true));
+                        spawnParticles(svPlayer.x, svPlayer.y, '#ef4444', 40);
+                    } else if (this.type === 'magnet') {
+                        svItems.forEach(i => i.state = 1);
+                        svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "MAGNET XP!", '#38bdf8', true));
+                        spawnParticles(this.x, this.y, '#38bdf8', 15);
+                    }
                     updateHUD();
                 }
                 draw(ctx) {
                     ctx.save(); ctx.translate(this.x, this.y + Math.sin(svGame.time*5 + this.bob)*5);
-                    if (this.type === 'heal') { ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillRect(-8,-2,16,4); ctx.fillRect(-2,-8,4,16); } 
-                    else if (this.type === 'overclock') { ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill(); } 
-                    else if (this.type === 'nuke') { ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill(); } 
-                    else if (this.type === 'magnet') { ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill(); }
+                    if (this.type === 'heal') {
+                        ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#fff'; ctx.fillRect(-8,-2,16,4); ctx.fillRect(-2,-8,4,16);
+                    } else if (this.type === 'overclock') {
+                        ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.moveTo(2,-10); ctx.lineTo(-6,2); ctx.lineTo(0,2); ctx.lineTo(-2,10); ctx.lineTo(6,-2); ctx.lineTo(0,-2); ctx.fill();
+                    } else if (this.type === 'nuke') {
+                        ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(0,0,6,0,Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(0,0,3,0,Math.PI*2); ctx.fill();
+                    } else if (this.type === 'magnet') {
+                        ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
+                        ctx.strokeStyle = '#fff'; ctx.lineWidth=5; ctx.lineCap='round';
+                        ctx.beginPath(); ctx.arc(0,2,7, Math.PI, 0); ctx.stroke();
+                        ctx.fillStyle='#ef4444'; ctx.fillRect(-10,2,5,4); ctx.fillRect(5,2,5,4);
+                    }
                     ctx.restore();
                 }
             }
 
+            // ПОЛНЫЕ МОДЕЛИ ОФИСНОГО ФОНА И ДЕКОРАЦИЙ (Chunk)
             class Chunk {
                 constructor(cx, cy) {
                     this.cx = cx; this.cy = cy; this.x = cx * CHUNK_SIZE; this.y = cy * CHUNK_SIZE;
                     const h = hash(cx, cy);
-                    if (h < 0.5) this.type = 'OPEN_SPACE'; else if (h < 0.75) this.type = 'SERVER_ROOM'; else this.type = 'CAFETERIA';
+                    if (h < 0.5) this.type = 'OPEN_SPACE'; else if (h < 0.78) this.type = 'SERVER_ROOM'; else this.type = 'CAFETERIA';
                     this.props = []; this.generate();
                 }
                 generate() {
                     if (this.type === 'OPEN_SPACE') {
                         for (let i = 150; i < CHUNK_SIZE-100; i += 300) for (let j = 150; j < CHUNK_SIZE-100; j += 250) {
-                            if (hash(this.cx+i, this.cy+j) > 0.2) this.props.push({ t: 'cubicle', x: this.x+i, y: this.y+j }); else if (hash(this.cx+i, this.cy+j) < 0.1) this.props.push({ t: 'plant', x: this.x+i, y: this.y+j });
+                            if (hash(this.cx+i, this.cy+j) > 0.25) this.props.push({ t: 'cubicle', x: this.x+i, y: this.y+j });
+                            else if (hash(this.cx+i, this.cy+j) < 0.12) this.props.push({ t: 'plant', x: this.x+i, y: this.y+j });
                         }
                     } else if (this.type === 'SERVER_ROOM') {
-                        for (let i = 200; i < CHUNK_SIZE-100; i += 400) for (let j = 100; j < CHUNK_SIZE-100; j += 150) {
-                            if (hash(this.cx+i, this.cy+j) > 0.1) this.props.push({ t: 'server', x: this.x+i, y: this.y+j, seed: hash(i,j)*100 });
+                        for (let i = 200; i < CHUNK_SIZE-100; i += 400) for (let j = 120; j < CHUNK_SIZE-100; j += 160) {
+                            if (hash(this.cx+i, this.cy+j) > 0.15) this.props.push({ t: 'server', x: this.x+i, y: this.y+j, seed: hash(i,j)*100 });
                         }
                     } else if (this.type === 'CAFETERIA') {
                         for (let i = 250; i < CHUNK_SIZE-100; i += 400) for (let j = 250; j < CHUNK_SIZE-100; j += 400) {
@@ -1360,54 +1645,106 @@
                         }
                     }
                     const pHash = hash(this.cx*3, this.cy*3);
-                    if (pHash > 0.6) {
+                    if (pHash > 0.55) {
                         const px = this.x + 200 + (hash(this.cx, this.cy*2) * (CHUNK_SIZE-400)), py = this.y + 200 + (hash(this.cx*2, this.cy) * (CHUNK_SIZE-400));
-                        let pType = this.type === 'CAFETERIA' ? 'heal' : (this.type === 'SERVER_ROOM' ? 'overclock' : (pHash > 0.9 ? 'nuke' : 'magnet'));
+                        let pType = this.type === 'CAFETERIA' ? 'heal' : (this.type === 'SERVER_ROOM' ? 'overclock' : (pHash > 0.88 ? 'nuke' : 'magnet'));
                         svPowerups.push(new Powerup(px, py, pType));
                     }
                 }
                 draw(ctx) {
                     ctx.save();
-                    ctx.fillStyle = this.type === 'SERVER_ROOM' ? '#0f172a' : '#1e293b';
-                    ctx.fillRect(this.x, this.y, CHUNK_SIZE, CHUNK_SIZE);
-                    ctx.strokeStyle = '#334155'; ctx.lineWidth = 2;
-                    for(let i=0; i<CHUNK_SIZE; i+=100) { ctx.strokeRect(this.x+i, this.y, 100, CHUNK_SIZE); }
+                    if (this.type === 'OPEN_SPACE') {
+                        ctx.fillStyle = '#334155'; ctx.fillRect(this.x, this.y, CHUNK_SIZE, CHUNK_SIZE);
+                        ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2;
+                        for(let i=0; i<CHUNK_SIZE; i+=100) { ctx.strokeRect(this.x+i, this.y, 100, CHUNK_SIZE); ctx.strokeRect(this.x, this.y+i, CHUNK_SIZE, 100); }
+                    } else if (this.type === 'CAFETERIA') {
+                        for(let i=0; i<CHUNK_SIZE; i+=100) for(let j=0; j<CHUNK_SIZE; j+=100) {
+                            ctx.fillStyle = ((i/100 + j/100)%2 === 0) ? '#94a3b8' : '#64748b';
+                            ctx.fillRect(this.x+i, this.y+j, 100, 100);
+                        }
+                    } else if (this.type === 'SERVER_ROOM') {
+                        ctx.fillStyle = '#0f172a'; ctx.fillRect(this.x, this.y, CHUNK_SIZE, CHUNK_SIZE);
+                        ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3;
+                        for(let i=0; i<CHUNK_SIZE; i+=100) ctx.strokeRect(this.x+i+5, this.y+5, 90, 90);
+                    }
+                    ctx.strokeStyle = '#020617'; ctx.lineWidth = 6; ctx.strokeRect(this.x, this.y, CHUNK_SIZE, CHUNK_SIZE);
+
                     for (const p of this.props) {
                         ctx.translate(p.x, p.y);
-                        if (p.t === 'cubicle') { ctx.fillStyle = '#475569'; ctx.fillRect(-50, -30, 100, 50); }
-                        else if (p.t === 'server') { ctx.fillStyle = '#090d16'; ctx.fillRect(-30, -20, 60, 40); }
-                        else if (p.t === 'table') { ctx.fillStyle = '#64748b'; ctx.beginPath(); ctx.arc(0, 0, 35, 0, Math.PI*2); ctx.fill(); }
-                        else if (p.t === 'plant') { ctx.fillStyle = '#16a34a'; ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI*2); ctx.fill(); }
+                        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+                        if (p.t === 'cubicle') ctx.fillRect(-65, -45, 140, 100);
+                        else if (p.t === 'server') ctx.fillRect(-35, -25, 70, 50);
+                        else if (p.t === 'table') { ctx.beginPath(); ctx.ellipse(0, 0, 65, 65, 0, 0, Math.PI*2); ctx.fill(); }
+                        else if (p.t === 'plant') { ctx.beginPath(); ctx.ellipse(0, 5, 20, 10, 0, 0, Math.PI*2); ctx.fill(); }
+
+                        if (p.t === 'cubicle') {
+                            ctx.fillStyle = '#94a3b8'; ctx.fillRect(-60, -40, 120, 60);
+                            ctx.fillStyle = '#3b82f6'; ctx.fillRect(-65, -45, 130, 8); ctx.fillRect(-65, -45, 8, 90);
+                            ctx.fillStyle = '#1e293b'; ctx.fillRect(-15, -35, 30, 10);
+                            ctx.fillStyle = '#0f172a'; ctx.fillRect(-13, -33, 26, 6);
+                            ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(0, 30, 12, 0, Math.PI*2); ctx.fill(); ctx.fillRect(-10, 25, 20, 8);
+                        } else if (p.t === 'server') {
+                            ctx.fillStyle = '#1e293b'; ctx.fillRect(-30, -20, 60, 40);
+                            ctx.fillStyle = '#0f172a'; ctx.fillRect(-25, -15, 50, 30);
+                            const blink = Math.sin(svGame.time * 5 + p.seed) > 0;
+                            ctx.fillStyle = blink ? '#22c55e' : '#ef4444'; ctx.fillRect(-20, -10, 6, 6);
+                            ctx.fillStyle = !blink ? '#3b82f6' : '#1e293b'; ctx.fillRect(-20, 0, 6, 6);
+                        } else if (p.t === 'table') {
+                            ctx.fillStyle = '#334155';
+                            ctx.beginPath(); ctx.arc(-48, 0, 11, 0, Math.PI*2); ctx.fill();
+                            ctx.beginPath(); ctx.arc(48, 0, 11, 0, Math.PI*2); ctx.fill();
+                            ctx.beginPath(); ctx.arc(0, -48, 11, 0, Math.PI*2); ctx.fill();
+                            ctx.beginPath(); ctx.arc(0, 48, 11, 0, Math.PI*2); ctx.fill();
+                            ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.arc(0, 0, 38, 0, Math.PI*2); ctx.fill();
+                            ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 3; ctx.stroke();
+                        } else if (p.t === 'plant') {
+                            ctx.fillStyle = '#b45309'; ctx.fillRect(-12, -10, 24, 20);
+                            ctx.fillStyle = '#16a34a';
+                            ctx.beginPath(); ctx.arc(-5, -15, 10, 0, Math.PI*2); ctx.fill();
+                            ctx.beginPath(); ctx.arc(5, -15, 10, 0, Math.PI*2); ctx.fill();
+                            ctx.beginPath(); ctx.arc(0, -22, 12, 0, Math.PI*2); ctx.fill();
+                        }
                         ctx.translate(-p.x, -p.y);
                     }
                     ctx.restore();
                 }
             }
 
+            // ПОЛНАЯ МОДЕЛЬ СИСАДМИНА (Player)
             class Player {
                 constructor() {
                     this.x = 0; this.y = 0; this.r = 16; this.hp = 100; this.invuln = 0;
                     this.weapons = { usb: 1 }; this.cds = { usb: 0 }; this.passives = {};
-                    this.stats = { maxHp: 100, speed: 200, pickup: 100, dmgM: 1, hasteM: 1, areaM: 1 };
+                    this.stats = { maxHp: 100, speed: 210, pickup: 110, dmgM: 1, hasteM: 1, areaM: 1 };
                     this.vx = 0; this.vy = 0; this.facing = 1; this.animTime = 0; this.buffTimer = 0;
                 }
                 updateStats() {
                     const p = this.passives;
-                    this.stats.maxHp = 100 * (1 + (p.hp||0)*0.2); this.stats.speed = 200 * (1 + (p.speed||0)*0.15);
-                    this.stats.dmgM = 1 + (p.dmg||0)*0.2; this.stats.areaM = 1 + (p.area||0)*0.25; this.stats.hasteM = 1 + (p.haste||0)*0.15; this.stats.pickup = 100 * this.stats.areaM;
+                    this.stats.maxHp = 100 * (1 + (p.hp||0)*0.2); this.stats.speed = 210 * (1 + (p.speed||0)*0.15);
+                    this.stats.dmgM = 1 + (p.dmg||0)*0.2; this.stats.areaM = 1 + (p.area||0)*0.25; this.stats.hasteM = 1 + (p.haste||0)*0.15; this.stats.pickup = 110 * this.stats.areaM;
                     if (this.buffTimer > 0) { this.stats.speed *= 1.5; this.stats.hasteM *= 2.0; }
                     if(this.hp > this.stats.maxHp) this.hp = this.stats.maxHp;
                 }
                 hit(dmg) {
-                    if (this.invuln > 0) return; this.hp -= dmg; this.invuln = 0.5; svGame.shake = 0.2; spawnParticles(this.x, this.y, '#ef4444', 10); updateHUD();
+                    if (this.invuln > 0) return; this.hp -= dmg; this.invuln = 0.45; svGame.shake = 0.2; spawnParticles(this.x, this.y, '#ef4444', 10); updateHUD();
                     if (this.hp <= 0) { gameOver(false); } 
                 }
                 update(dt) {
                     if (this.invuln > 0) this.invuln -= dt;
-                    if (this.buffTimer > 0) { this.buffTimer -= dt; if (this.buffTimer <= 0) this.updateStats(); }
+                    if (this.buffTimer > 0) {
+                        this.buffTimer -= dt;
+                        if (this.buffTimer <= 0) {
+                            this.updateStats();
+                            document.getElementById('sv-buff-indicator').classList.add('hidden');
+                        }
+                    }
                     let dx = (svKeys['d']||svKeys['arrowright']?1:0) - (svKeys['a']||svKeys['arrowleft']?1:0);
                     let dy = (svKeys['s']||svKeys['arrowdown']?1:0) - (svKeys['w']||svKeys['arrowup']?1:0);
-                    if (dx!==0 || dy!==0) { const l = Math.hypot(dx,dy); dx/=l; dy/=l; this.vx = dx; this.vy = dy; this.facing = dx < 0 ? -1 : 1; this.animTime += dt * 15; } else { this.animTime = 0; }
+                    if (dx!==0 || dy!==0) {
+                        const l = Math.hypot(dx,dy); dx/=l; dy/=l;
+                        this.vx = dx; this.vy = dy; this.facing = dx < 0 ? -1 : 1;
+                        this.animTime += dt * (this.buffTimer>0 ? 25 : 15);
+                    } else { this.animTime = 0; }
                     if(this.vx === 0 && this.vy === 0) this.vx = 1; 
                     this.x += dx * this.stats.speed * dt; this.y += dy * this.stats.speed * dt; camera.x = this.x - cw/2; camera.y = this.y - ch/2;
                     for (const [w, lvl] of Object.entries(this.weapons)) { if (this.cds[w] > 0) this.cds[w] -= dt; else fire(w, lvl); }
@@ -1416,31 +1753,89 @@
                     ctx.save(); ctx.translate(this.x, this.y);
                     if (this.weapons.wifi || this.weapons.evo_wifi) {
                         const isEvo = !!this.weapons.evo_wifi; const r = (isEvo ? 180 : 100 + (this.weapons.wifi||0)*15) * this.stats.areaM;
-                        ctx.beginPath(); ctx.arc(0,0, r, 0, Math.PI*2); ctx.fillStyle = 'rgba(56, 189, 248, 0.08)'; ctx.fill();
-                        ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)'; ctx.lineWidth = 2; ctx.stroke();
+                        const pulse = (svGame.time * (isEvo?8:4)) % (Math.PI*2);
+                        ctx.beginPath(); ctx.arc(0,0, r, 0, Math.PI*2);
+                        ctx.fillStyle = isEvo ? 'rgba(34, 211, 238, 0.1)' : 'rgba(56, 189, 248, 0.06)'; ctx.fill();
+                        ctx.strokeStyle = isEvo ? `rgba(34, 211, 238, ${Math.max(0, 1 - pulse/(Math.PI*2))})` : 'rgba(56, 189, 248, 0.35)';
+                        ctx.lineWidth = isEvo ? 4 : 2;
+                        ctx.beginPath(); ctx.arc(0,0, r * (pulse/(Math.PI*2)), 0, Math.PI*2); ctx.stroke();
                     }
-                    ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.arc(0, 0, this.r, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(this.facing*5, -3, 4, 0, Math.PI*2); ctx.fill();
+
+                    ctx.scale(this.facing, 1);
+                    const bob = Math.sin(this.animTime)*2;
+                    ctx.translate(0, bob);
+
+                    if (this.buffTimer > 0) {
+                        ctx.beginPath(); ctx.arc(0, 0, this.r+6, 0, Math.PI*2);
+                        ctx.fillStyle = 'rgba(250, 204, 21, 0.35)'; ctx.fill();
+                    }
+
+                    // Тень, ноги, тело, голова и очки сисадмина
+                    ctx.fillStyle = '#334155'; ctx.fillRect(-8, -5, 16, 15);
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fillRect(-6, 10, 4, 8 + (Math.sin(this.animTime)*3));
+                    ctx.fillRect(2, 10, 4, 8 - (Math.sin(this.animTime)*3));
+                    ctx.fillStyle = '#fcd34d'; ctx.beginPath(); ctx.arc(0, -12, 9, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#451a03'; ctx.beginPath(); ctx.arc(0, -14, 9.5, Math.PI, 0); ctx.fill(); ctx.fillRect(-9.5, -14, 19, 4);
+                    ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
+                    ctx.strokeRect(-2, -15, 6, 4); ctx.strokeRect(4, -15, 6, 4);
+
+                    if (this.invuln > 0) {
+                        ctx.beginPath(); ctx.arc(0, 0, this.r+8, 0, Math.PI*2);
+                        ctx.strokeStyle = 'rgba(239, 68, 68, 0.8)'; ctx.lineWidth = 3; ctx.stroke();
+                    }
                     ctx.restore();
                 }
             }
 
+            // ПОЛНЫЕ МОДЕЛИ ВРАГОВ С АНИМАЦИЕЙ ЛАП И ПРОГРЕССИЕЙ 1-50 УРОВНЕЙ
             class Enemy {
                 constructor(x, y, isBoss) {
-                    this.x = x; this.y = y; this.isBoss = isBoss; const types = ['pc', 'router', 'printer']; this.type = isBoss ? 'boss' : types[Math.floor(Math.random() * types.length)];
-                    const s = svGame.time / 300; 
-                    if (this.type === 'boss') { this.r = 35; this.maxHp = this.hp = 1000 + (s * 1500); this.speed = 45 + (s * 25); this.dmg = 30; this.xp = 30; } 
-                    else if (this.type === 'pc') { this.r = 16; this.maxHp = this.hp = 20 + (s * 30); this.speed = 80 + (s * 50); this.dmg = 10; this.xp = 1; } 
-                    else if (this.type === 'router') { this.r = 12; this.maxHp = this.hp = 10 + (s * 15); this.speed = 120 + (s * 60); this.dmg = 5; this.xp = 1; } 
-                    else { this.r = 22; this.maxHp = this.hp = 50 + (s * 75); this.speed = 45 + (s * 35); this.dmg = 20; this.xp = 2; }
+                    this.x = x; this.y = y; this.isBoss = isBoss;
+                    const types = ['pc', 'router', 'printer'];
+                    this.type = isBoss ? 'boss' : types[Math.floor(Math.random() * types.length)];
+                    
+                    // Масштабирование характеристик от текущего уровня игрока (1..50)
+                    const lvlScale = (svGame.lvl - 1) / 25; 
+                    if (this.type === 'boss') {
+                        this.r = 35;
+                        this.maxHp = this.hp = 600 + (lvlScale * 1800);
+                        this.speed = 50 + (lvlScale * 25); this.dmg = 25 + (lvlScale * 20);
+                        this.xp = 40;
+                    } else if (this.type === 'pc') {
+                        this.r = 16;
+                        this.maxHp = this.hp = 18 + (lvlScale * 45);
+                        this.speed = 75 + (lvlScale * 50) + (Math.random()*16-8); this.dmg = 8 + (lvlScale * 12);
+                        this.xp = svGame.lvl >= 15 ? 2 : 1;
+                    } else if (this.type === 'router') {
+                        this.r = 12;
+                        this.maxHp = this.hp = 10 + (lvlScale * 25);
+                        this.speed = 120 + (lvlScale * 65) + (Math.random()*20-10); this.dmg = 5 + (lvlScale * 8);
+                        this.xp = svGame.lvl >= 25 ? 2 : 1;
+                    } else if (this.type === 'printer') {
+                        this.r = 22;
+                        this.maxHp = this.hp = 45 + (lvlScale * 90);
+                        this.speed = 45 + (lvlScale * 35); this.dmg = 16 + (lvlScale * 16);
+                        this.xp = svGame.lvl >= 10 ? 5 : 3;
+                    }
                     this.vx = 0; this.vy = 0; this.kbT = 0; this.kbX = 0; this.kbY = 0;
+                    this.anim = Math.random()*100;
                 }
                 hit(dmg, kx, ky) {
-                    this.hp -= dmg; this.kbT = 0.15; this.kbX = kx*150; this.kbY = ky*150; const crit = Math.random() < 0.2; const fdmg = crit ? dmg*1.5 : dmg;
-                    svDamageTexts.push(new DmgText(this.x, this.y-20, Math.ceil(fdmg), crit?'#facc15':'#fff', crit));
+                    this.hp -= dmg; this.kbT = 0.14; this.kbX = kx*150; this.kbY = ky*150;
+                    const crit = Math.random() < 0.2; const fdmg = crit ? dmg*1.5 : dmg;
+                    svDamageTexts.push(new DmgText(this.x+(Math.random()*16-8), this.y-20, Math.ceil(fdmg), crit?'#facc15':'#fff', crit));
+                    spawnParticles(this.x, this.y, '#cbd5e1', 3);
                     if (this.hp <= 0) {
-                        svGame.kills++; svItems.push(new Item(this.x, this.y, this.xp));
-                        score += 10; document.getElementById('score').innerText = score;
+                        svGame.kills++;
+                        spawnParticles(this.x, this.y, '#f59e0b', this.type==='boss'?25:8);
+                        svItems.push(new Item(this.x, this.y, this.xp));
+                        score += this.type === 'boss' ? 200 : 10;
+                        document.getElementById('score').innerText = score;
+                        if (Math.random() < 0.025) {
+                            const pType = ['heal', 'overclock', 'magnet', 'nuke'][Math.floor(Math.random()*4)];
+                            svPowerups.push(new Powerup(this.x, this.y, pType));
+                        }
                         return true;
                     }
                     return false;
@@ -1450,71 +1845,180 @@
                     else {
                         const dx = svPlayer.x - this.x, dy = svPlayer.y - this.y; const dist = Math.hypot(dx, dy); let sx = 0, sy = 0;
                         const nearby = enemyGrid.getNearby(this.x, this.y);
-                        for(let i=0; i<nearby.length; i++) { const e = nearby[i]; if(e !== this) { const odx = this.x - e.x, ody = this.y - e.y; if (odx*odx + ody*ody < (this.r+e.r)**2) { sx += odx; sy += ody; } } }
+                        for(let i=0; i<nearby.length; i++) { const e = nearby[i]; if(e !== this) { const odx = this.x - e.x, ody = this.y - e.y; if (odx*odx + ody*ody < (this.r+e.r)**2 * 1.4) { sx += odx; sy += ody; } } }
                         if (dist > 0) { const nx = (dx/dist) + sx*0.1, ny = (dy/dist) + sy*0.1; const nlen = Math.hypot(nx,ny); this.vx = (nx/nlen)*this.speed; this.vy = (ny/nlen)*this.speed; }
                         this.x += this.vx * dt; this.y += this.vy * dt;
                     }
                 }
                 draw(ctx) {
                     ctx.save(); ctx.translate(this.x, this.y);
-                    ctx.fillStyle = this.type === 'boss' ? '#ef4444' : (this.type === 'printer' ? '#f97316' : '#cbd5e1');
-                    ctx.fillRect(-this.r, -this.r, this.r*2, this.r*2);
-                    ctx.fillStyle = '#090d16'; ctx.fillRect(-this.r+4, -this.r+4, this.r*2-8, this.r-2);
+                    ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.beginPath(); ctx.ellipse(0, this.r, this.r+4, this.r/2, 0, 0, Math.PI*2); ctx.fill();
+
+                    const isMoving = this.vx !== 0 || this.vy !== 0;
+                    const walkCycle = isMoving ? (svGame.time * 15 + this.anim) : 0;
+                    const facing = this.vx < 0 ? -1 : 1;
+                    ctx.scale(facing, 1);
+
+                    if (this.type === 'boss') {
+                        ctx.strokeStyle = '#475569'; ctx.lineWidth = 6;
+                        for(let i=0; i<4; i++) {
+                            const legAnim = Math.sin(walkCycle * 0.5 + i*Math.PI/2) * 14;
+                            ctx.beginPath();
+                            if(i%2===0) { ctx.moveTo(-15, 10); ctx.lineTo(-25, 20 + Math.max(0, legAnim)); ctx.lineTo(-30, 35); }
+                            else { ctx.moveTo(15, 10); ctx.lineTo(25, 20 + Math.max(0, legAnim)); ctx.lineTo(30, 35); }
+                            ctx.stroke();
+                        }
+                        ctx.fillStyle = '#0f172a'; ctx.fillRect(-30, -45, 60, 60);
+                        ctx.fillStyle = '#1e293b'; ctx.fillRect(-25, -40, 50, 50);
+                        ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 4;
+                        ctx.beginPath(); ctx.moveTo(-15, -25); ctx.lineTo(-5, -15); ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(15, -25); ctx.lineTo(5, -15); ctx.stroke();
+                        ctx.fillStyle = '#ef4444'; ctx.fillRect(-15, -5, 30, 10);
+                        ctx.scale(facing, 1);
+                        ctx.fillStyle = '#000'; ctx.fillRect(-30, -60, 60, 8);
+                        ctx.fillStyle = '#ef4444'; ctx.fillRect(-29, -59, 58*Math.max(0, this.hp/this.maxHp), 6);
+                    } else if (this.type === 'pc') {
+                        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 3;
+                        for(let i=0; i<4; i++) {
+                            const legAnim = Math.sin(walkCycle + i*Math.PI/2) * 6;
+                            ctx.beginPath();
+                            if(i%2===0) { ctx.moveTo(-5, 5); ctx.lineTo(-12, 10 + legAnim); ctx.lineTo(-15, 18); }
+                            else { ctx.moveTo(5, 5); ctx.lineTo(12, 10 + legAnim); ctx.lineTo(15, 18); }
+                            ctx.stroke();
+                        }
+                        ctx.translate(0, Math.sin(walkCycle*2)*2);
+                        ctx.fillStyle = '#cbd5e1'; ctx.fillRect(-14, -14, 28, 22);
+                        ctx.fillStyle = '#1e293b'; ctx.fillRect(-11, -11, 22, 16);
+                        ctx.fillStyle = '#ef4444'; ctx.fillRect(-7, -7, 4, 4); ctx.fillRect(3, -7, 4, 4);
+                    } else if (this.type === 'router') {
+                        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
+                        for(let i=0; i<4; i++) {
+                            const legAnim = Math.sin(walkCycle*1.5 + i*Math.PI/2) * 4;
+                            ctx.beginPath();
+                            if(i%2===0) { ctx.moveTo(-5, 0); ctx.lineTo(-10, 5 + legAnim); ctx.lineTo(-12, 12); }
+                            else { ctx.moveTo(5, 0); ctx.lineTo(10, 5 + legAnim); ctx.lineTo(12, 12); }
+                            ctx.stroke();
+                        }
+                        ctx.translate(0, Math.sin(walkCycle*3)*3);
+                        ctx.fillStyle = '#1e293b'; ctx.fillRect(-12, -8, 24, 12);
+                        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
+                        ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(-12, -18); ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(8, -8); ctx.lineTo(12, -18); ctx.stroke();
+                        ctx.fillStyle = (Math.floor(svGame.time*10)%2===0) ? '#22c55e' : '#1e293b';
+                        ctx.fillRect(0, -4, 4, 4);
+                    } else if (this.type === 'printer') {
+                        ctx.strokeStyle = '#475569'; ctx.lineWidth = 4;
+                        for(let i=0; i<4; i++) {
+                            const legAnim = Math.sin(walkCycle*0.5 + i*Math.PI/2) * 8;
+                            ctx.beginPath();
+                            if(i%2===0) { ctx.moveTo(-10, 5); ctx.lineTo(-18, 15 + legAnim); ctx.lineTo(-22, 22); }
+                            else { ctx.moveTo(10, 5); ctx.lineTo(18, 15 + legAnim); ctx.lineTo(22, 22); }
+                            ctx.stroke();
+                        }
+                        ctx.translate(0, Math.sin(walkCycle)*1);
+                        ctx.fillStyle = '#e2e8f0'; ctx.fillRect(-18, -18, 36, 30);
+                        ctx.fillStyle = '#94a3b8'; ctx.fillRect(-18, -18, 36, 10);
+                        ctx.fillStyle = '#ffffff'; ctx.fillRect(-12, 5, 24, 15);
+                        ctx.fillStyle = '#cbd5e1'; ctx.fillRect(-8, 8, 16, 2); ctx.fillRect(-8, 12, 16, 2);
+                        ctx.fillStyle = '#ef4444'; ctx.fillRect(10, -14, 4, 4);
+                    }
                     ctx.restore();
                 }
             }
 
+            // ПОЛНЫЕ МОДЕЛИ СНАРЯДОВ (Флешки, Фаервол, Кабель)
             class Projectile {
                 constructor(x, y, vx, vy, wId, dmg, pierce, life, extra={}) { this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.wId = wId; this.dmg = dmg; this.pierce = pierce; this.life = life; this.extra = extra; this.hits = new Set(); }
                 update(dt) {
-                    if(this.wId.includes('firewall')) { this.extra.angle += dt * 3; const r = 80 * svPlayer.stats.areaM; this.x = svPlayer.x + Math.cos(this.extra.angle) * r; this.y = svPlayer.y + Math.sin(this.extra.angle) * r; this.hits.clear(); } 
+                    if(this.wId.includes('firewall')) { this.extra.angle += dt * 3.2; const r = 82 * svPlayer.stats.areaM; this.x = svPlayer.x + Math.cos(this.extra.angle) * r; this.y = svPlayer.y + Math.sin(this.extra.angle) * r; this.hits.clear(); } 
                     else { this.x += this.vx * dt; this.y += this.vy * dt; } this.life -= dt;
                 }
                 draw(ctx) {
                     ctx.save(); ctx.translate(this.x, this.y);
-                    ctx.fillStyle = this.wId.includes('usb') ? '#38bdf8' : '#ef4444';
-                    ctx.beginPath(); ctx.arc(0, 0, this.extra.r || 8, 0, Math.PI*2); ctx.fill();
+                    if (this.wId.includes('usb')) {
+                        ctx.rotate(Math.atan2(this.vy, this.vx));
+                        ctx.fillStyle = '#0ea5e9'; ctx.fillRect(-10, -5, 15, 10);
+                        ctx.fillStyle = '#cbd5e1'; ctx.fillRect(5, -3, 8, 6);
+                        ctx.fillStyle = 'rgba(56, 189, 248, 0.5)'; ctx.fillRect(-24, -2, 14, 4);
+                    } else if (this.wId.includes('firewall')) {
+                        ctx.rotate(this.extra.angle);
+                        ctx.fillStyle = '#ef4444'; ctx.fillRect(-15, -10, 30, 20);
+                        ctx.strokeStyle = '#fca5a5'; ctx.lineWidth = 2; ctx.strokeRect(-15, -10, 30, 20);
+                        ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(15, 0); ctx.moveTo(0, -10); ctx.lineTo(0, 0); ctx.stroke();
+                    } else if (this.wId.includes('cable')) {
+                        ctx.beginPath(); ctx.arc(0,0, this.extra.r, 0, Math.PI*2);
+                        ctx.fillStyle = this.wId === 'evo_cable' ? 'rgba(234, 179, 8, 0.7)' : 'rgba(239, 68, 68, 0.7)'; ctx.fill();
+                    }
                     ctx.restore();
                 }
             }
 
             class Item {
-                constructor(x, y, val) { this.x = x; this.y = y; this.val = val; this.state = 0; }
+                constructor(x, y, val) { this.x = x+(Math.random()*16-8); this.y = y+(Math.random()*16-8); this.val = val; this.state = 0; }
                 update(dt) {
                     const dx = svPlayer.x - this.x, dy = svPlayer.y - this.y; const dSq = dx*dx + dy*dy, pR = svPlayer.stats.pickup;
-                    if (dSq < pR*pR) this.state = 1; if (this.state === 1) { const d = Math.sqrt(dSq); this.x += (dx/d) * 600 * dt; this.y += (dy/d) * 600 * dt; }
+                    if (dSq < pR*pR) this.state = 1; if (this.state === 1) { const d = Math.sqrt(dSq); this.x += (dx/d) * 620 * dt; this.y += (dy/d) * 620 * dt; }
                 }
                 draw(ctx) {
-                    ctx.fillStyle = '#38bdf8'; ctx.fillRect(this.x-4, this.y-4, 8, 8);
+                    ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(svGame.time * 2.5);
+                    if (this.val >= 5) {
+                        ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.arc(0,0, 9, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.arc(0,0, 5, 0, Math.PI*2); ctx.fill();
+                    } else if (this.val >= 2) {
+                        ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.moveTo(0, -9); ctx.lineTo(9, 0); ctx.lineTo(0, 9); ctx.lineTo(-9, 0); ctx.fill();
+                    } else {
+                        ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.moveTo(0, -7); ctx.lineTo(7, 0); ctx.lineTo(0, 7); ctx.lineTo(-7, 0); ctx.fill();
+                    }
+                    ctx.restore();
                 }
             }
 
-            class DmgText { constructor(x, y, txt, c, isCrit) { this.x=x; this.y=y; this.txt=txt; this.c=c; this.crit=isCrit; this.l=0.7; } }
-            function spawnParticles(x, y, c, count) { for(let i=0; i<count; i++) svParticles.push({ x:x, y:y, vx:(Math.random()-0.5)*200, vy:(Math.random()-0.5)*200, l:0.3, c:c }); }
+            class DmgText { constructor(x, y, txt, c, isCrit) { this.x=x; this.y=y; this.txt=txt; this.c=c; this.crit=isCrit; this.l=0.75; } }
+            function spawnParticles(x, y, c, count) { for(let i=0; i<count; i++) svParticles.push({ x:x, y:y, vx:(Math.random()-0.5)*200, vy:(Math.random()-0.5)*200, l:0.25+Math.random()*0.15, c:c }); }
 
             function getNearest(range) { let n = null, m = range*range; for (const e of svEnemies) { const d = (e.x-svPlayer.x)**2 + (e.y-svPlayer.y)**2; if (d < m) { m = d; n = e; } } return n; }
             function fire(wId, lvl) {
                 const s = svPlayer.stats; const isEvo = wId.startsWith('evo_'); const d = DB.weapons[wId];
-                svPlayer.cds[wId] = (d.cd - (lvl * 0.04)) / s.hasteM; let dmg = d.dmg * s.dmgM * (1 + lvl * 0.2);
-                if (wId === 'usb') { const t = getNearest(600); if (t) { let count = 1 + Math.floor(lvl/3); const dist = Math.hypot(t.x-svPlayer.x, t.y-svPlayer.y); const nx = (t.x-svPlayer.x)/dist, ny = (t.y-svPlayer.y)/dist; for(let i=0; i<count; i++) { const a = Math.atan2(ny,nx) + (i-(count-1)/2)*0.2; svProjectiles.push(new Projectile(svPlayer.x, svPlayer.y, Math.cos(a)*500, Math.sin(a)*500, wId, dmg, 1+Math.floor(lvl/4), 1.5)); } } } 
+                svPlayer.cds[wId] = Math.max(0.15, (d.cd - (lvl * 0.04)) / s.hasteM);
+                let dmg = d.dmg * s.dmgM * (1 + lvl * 0.22);
+                if (wId === 'usb') { const t = getNearest(600); if (t) { let count = 1 + Math.floor(lvl/2); const dist = Math.hypot(t.x-svPlayer.x, t.y-svPlayer.y); const nx = (t.x-svPlayer.x)/dist, ny = (t.y-svPlayer.y)/dist; for(let i=0; i<count; i++) { const a = Math.atan2(ny,nx) + (i-(count-1)/2)*0.18; svProjectiles.push(new Projectile(svPlayer.x, svPlayer.y, Math.cos(a)*520, Math.sin(a)*520, wId, dmg, 1+Math.floor(lvl/3), 1.5)); } } } 
                 else if (wId === 'evo_usb') { for(let i=0; i<8; i++) { const a = (i/8)*Math.PI*2 + (svGame.time*5); svProjectiles.push(new Projectile(svPlayer.x, svPlayer.y, Math.cos(a)*600, Math.sin(a)*600, wId, dmg, 999, 2.0)); } } 
-                else if (wId === 'wifi' || wId === 'evo_wifi') { const r = (isEvo ? 180 : 100 + lvl*15) * s.areaM; for (const e of svEnemies) { if ((e.x-svPlayer.x)**2 + (e.y-svPlayer.y)**2 <= r*r) { e.hit(dmg, 0, 0); } } } 
-                else if (wId === 'firewall' || wId === 'evo_firewall') { let count = svProjectiles.filter(p => p.wId === wId).length; let max = isEvo ? 4 : (1 + Math.floor(lvl/3)); if (count < max) { for(let i=0; i<max; i++) { if (!svProjectiles.some(p => p.wId===wId && p.extra.id===i)) svProjectiles.push(new Projectile(svPlayer.x, svPlayer.y, 0, 0, wId, dmg, 999, 9999, {angle: (i/max)*Math.PI*2, id: i})); } } } 
-                else if (wId === 'cable' || wId === 'evo_cable') { const a = Math.atan2(svPlayer.vy, svPlayer.vx); const r = isEvo ? 200 : 120 + (lvl*10); const spread = isEvo ? Math.PI : Math.PI/2; const count = isEvo ? 12 : 6; for(let i=0; i<=count; i++) { const curA = a - spread/2 + (i/count)*spread; svProjectiles.push(new Projectile(svPlayer.x + Math.cos(curA)*r, svPlayer.y + Math.sin(curA)*r, 0, 0, wId, dmg, 999, 0.15, { r: isEvo?28:18 })); } }
+                else if (wId === 'wifi' || wId === 'evo_wifi') { const r = (isEvo ? 180 : 100 + lvl*15) * s.areaM; for (const e of svEnemies) { if ((e.x-svPlayer.x)**2 + (e.y-svPlayer.y)**2 <= r*r) { if (isEvo) e.kbT = 0.15; e.hit(dmg, 0, 0); } } } 
+                else if (wId === 'firewall' || wId === 'evo_firewall') { let count = svProjectiles.filter(p => p.wId === wId).length; let max = isEvo ? 5 : (1 + Math.floor(lvl/2)); if (count < max) { for(let i=0; i<max; i++) { if (!svProjectiles.some(p => p.wId===wId && p.extra.id===i)) svProjectiles.push(new Projectile(svPlayer.x, svPlayer.y, 0, 0, wId, dmg, 999, 9999, {angle: (i/max)*Math.PI*2, id: i})); } } else { svProjectiles.forEach(p => { if(p.wId===wId) p.dmg = dmg; }); } } 
+                else if (wId === 'cable' || wId === 'evo_cable') { const a = Math.atan2(svPlayer.vy, svPlayer.vx); const r = isEvo ? 200 : 120 + (lvl*10); const spread = isEvo ? Math.PI : Math.PI/2; const count = isEvo ? 14 : 7; for(let i=0; i<=count; i++) { const curA = a - spread/2 + (i/count)*spread; svProjectiles.push(new Projectile(svPlayer.x + Math.cos(curA)*r, svPlayer.y + Math.sin(curA)*r, 0, 0, wId, dmg, 999, 0.15, { r: isEvo?30:20 })); } }
             }
 
+            // ПРОГРЕССИЯ ВОЛН ОТ 1 ДО 50 УРОВНЯ (В СТИЛЕ VAMPIRE SURVIVORS)
             function runDirector(dt) {
-                const s = svGame.time / 300; director.maxEnemies = Math.floor(150 + (s * 300));
+                director.maxEnemies = Math.floor(35 + (svGame.lvl * 8.5));
+                
+                // Спавн босса каждые 10 уровней (10, 20, 30, 40)
+                if (svGame.lvl % 10 === 0 && !spawnedBossLevels.has(svGame.lvl)) {
+                    spawnedBossLevels.add(svGame.lvl);
+                    const a = Math.random() * Math.PI * 2;
+                    svEnemies.push(new Enemy(svPlayer.x + Math.cos(a)*(cw/2+150), svPlayer.y + Math.sin(a)*(ch/2+150), true));
+                    svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y - 50, `⚠️ БОСС ${svGame.lvl} УРОВНЯ!`, '#ef4444', true));
+                }
+
                 if (svEnemies.length >= director.maxEnemies) return;
-                director.budget += (3 + s * 25) * dt;
-                while(director.budget > 1 && svEnemies.length < director.maxEnemies) { director.budget -= 1; const a = Math.random() * Math.PI * 2; const r = cw/2 + 200; svEnemies.push(new Enemy(svPlayer.x + Math.cos(a)*r, svPlayer.y + Math.sin(a)*r, false)); }
+                
+                const hordePulse = Math.abs(Math.sin(svGame.time * Math.PI / 25));
+                const spawnRate = 2.8 + (svGame.lvl * 1.15) + (hordePulse * svGame.lvl * 0.6);
+                director.budget += spawnRate * dt;
+                
+                while(director.budget > 1 && svEnemies.length < director.maxEnemies) {
+                    director.budget -= 1;
+                    const a = Math.random() * Math.PI * 2;
+                    const r = cw/2 + 220;
+                    svEnemies.push(new Enemy(svPlayer.x + Math.cos(a)*r, svPlayer.y + Math.sin(a)*r, false));
+                }
             }
 
             function checkColls(dt) {
                 const pR2 = svPlayer.r * svPlayer.r;
                 for (const e of svEnemies) { if ((e.x-svPlayer.x)**2 + (e.y-svPlayer.y)**2 < pR2 + e.r*e.r) svPlayer.hit(e.dmg); }
                 for (let i=svProjectiles.length-1; i>=0; i--) {
-                    const p = svProjectiles[i]; let dead = false; const r2 = (p.extra.r || 12)**2; const nearby = enemyGrid.getNearby(p.x, p.y);
+                    const p = svProjectiles[i]; let dead = false; const r2 = (p.extra.r || 15)**2; const nearby = enemyGrid.getNearby(p.x, p.y);
                     for (let j=0; j<nearby.length; j++) {
                         const e = nearby[j]; if (p.hits.has(e)) continue;
                         const dx = p.x-e.x, dy = p.y-e.y;
@@ -1522,23 +2026,40 @@
                     }
                     if (dead) svProjectiles.splice(i,1);
                 }
-                for (let i=svItems.length-1; i>=0; i--) { const it = svItems[i]; if ((it.x-svPlayer.x)**2 + (it.y-svPlayer.y)**2 < svPlayer.r*svPlayer.r) { svGame.xp += it.val; svItems.splice(i,1); updateHUD(); if (svGame.xp >= svGame.xpReq) lvlUp(); } }
+                for (let i=svItems.length-1; i>=0; i--) { const it = svItems[i]; if ((it.x-svPlayer.x)**2 + (it.y-svPlayer.y)**2 < (svPlayer.r+6)**2) { svGame.xp += it.val; svItems.splice(i,1); updateHUD(); if (svGame.xp >= svGame.xpReq) lvlUp(); } }
                 for (let i=svPowerups.length-1; i>=0; i--) { if (svPowerups[i].update(dt)) svPowerups.splice(i, 1); }
             }
 
             function updateHUD() {
                 if (!svPlayer) return; 
                 const m = Math.floor(svGame.time/60), s = Math.floor(svGame.time%60);
+                const waveNum = Math.min(10, Math.ceil(svGame.lvl / 5));
                 document.getElementById('sv-time').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                document.getElementById('sv-lvl').innerText = `Lvl: ${svGame.lvl}`;
-                document.getElementById('sv-kills').innerText = `Tickets: ${svGame.kills}`;
+                document.getElementById('sv-wave-info').innerText = `Волна ${waveNum}/10 (Врагов: ${svEnemies.length}/${director.maxEnemies})`;
+                document.getElementById('sv-lvl').innerText = `Уровень: ${svGame.lvl} / ${MAX_GAME_LEVEL}`;
+                document.getElementById('sv-kills').innerText = `Тикетов: ${svGame.kills}`;
                 document.getElementById('sv-xp-bar').style.width = `${Math.min(100, (svGame.xp/svGame.xpReq)*100)}%`;
                 document.getElementById('sv-hp-bar').style.width = `${Math.max(0, (svPlayer.hp/svPlayer.stats.maxHp)*100)}%`;
                 document.getElementById('sv-hp-val').innerText = `${Math.ceil(svPlayer.hp)} / ${Math.ceil(svPlayer.stats.maxHp)}`;
             }
 
             function lvlUp() {
-                svGame.state = 'LVLUP'; svGame.xp -= svGame.xpReq; svGame.lvl++; svGame.xpReq = 5 + (svGame.lvl * 5) + Math.floor(svGame.lvl**1.5); svPlayer.updateStats();
+                svGame.xp -= svGame.xpReq;
+                svGame.lvl++;
+                
+                // ПОБЕДА ПРИ ДОСТИЖЕНИИ 50 УРОВНЯ!
+                if (svGame.lvl >= MAX_GAME_LEVEL) {
+                    updateHUD();
+                    score += 5000;
+                    document.getElementById('score').innerText = score;
+                    gameOver(true, '50 УРОВЕНЬ ДОСТИГНУТ!<br>ОФИС СПАСЕН');
+                    return;
+                }
+
+                svGame.state = 'LVLUP';
+                svGame.xpReq = Math.floor(5 + (svGame.lvl * 3.5));
+                svPlayer.updateStats();
+                
                 const pool = [];
                 for (const [id, d] of Object.entries(DB.weapons)) {
                     if(d.isEvo) continue; const cur = svPlayer.weapons[id]||0;
@@ -1548,18 +2069,26 @@
                 for (const [id, d] of Object.entries(DB.passives)) { const cur = svPlayer.passives[id]||0; if(cur < d.maxLvl && (cur > 0 || Object.keys(svPlayer.passives).length < 4)) pool.push('p_'+id); }
                 const choices = []; for(let i=0; i<3 && pool.length>0; i++) { const idx = Math.floor(Math.random()*pool.length); choices.push(pool[idx]); pool.splice(idx,1); }
                 
-                if (choices.length === 0) { svPlayer.hp = Math.min(svPlayer.hp+30, svPlayer.stats.maxHp); svGame.state = 'PLAY'; svGame.lastTime = 0; requestAnimationFrame(survivorLoop); return; }
+                if (choices.length === 0) {
+                    svPlayer.hp = Math.min(svPlayer.hp+35, svPlayer.stats.maxHp);
+                    svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "УРОВЕНЬ " + svGame.lvl + " (+HP)", '#10b981', true));
+                    svGame.state = 'PLAY'; svGame.lastTime = 0; updateHUD(); requestAnimationFrame(survivorLoop); return;
+                }
                 
                 const c = document.getElementById('sv-cards-container'); c.innerHTML = '';
                 choices.forEach(ch => {
                     const isW = ch.startsWith('w_'), isE = ch.startsWith('e_'), id = ch.substring(2); const data = isW||isE ? DB.weapons[id] : DB.passives[id]; const cur = (isW ? svPlayer.weapons[id] : svPlayer.passives[id]) || 0;
                     const el = document.createElement('div'); el.className = `sv-card ${isE?'sv-evo-card':''}`;
                     el.innerHTML = `<div class="text-4xl mb-2">${data.icon}</div><div class="font-bold text-base mb-1">${data.name}</div>
-                                    <div class="text-xs opacity-80 mb-2 flex-grow">${data.desc}</div>
-                                    <div class="sv-card-level">${cur===0?'Новый модуль':'Ур. '+(isE?'MAX':cur+1)}</div>`;
+                                    <div class="text-xs opacity-80 mb-2 flex-grow">${isE?'<b class="text-fuchsia-400">СЛИЯНИЕ СИСТЕМ!</b><br>':''}${data.desc}</div>
+                                    <div class="sv-card-level">${cur===0?'Новый доступ':'Ур. '+(isE?'MAX':cur+1)}</div>`;
                     el.onclick = () => {
                         if(isE) { for(let k in DB.weapons) if(DB.weapons[k].evoId===id) delete svPlayer.weapons[k]; svPlayer.weapons[id]=1; }
-                        else if(isW) svPlayer.weapons[id] = cur+1; else { svPlayer.passives[id] = cur+1; svPlayer.updateStats(); }
+                        else if(isW) svPlayer.weapons[id] = cur+1;
+                        else {
+                            svPlayer.passives[id] = cur+1; svPlayer.updateStats();
+                            if (id === 'hp') svPlayer.hp = Math.min(svPlayer.hp + 25, svPlayer.stats.maxHp);
+                        }
                         document.getElementById('sv-screen-levelup').classList.add('hidden'); svGame.state = 'PLAY'; svGame.lastTime = 0; updateHUD(); requestAnimationFrame(survivorLoop);
                     };
                     c.appendChild(el);
@@ -1591,8 +2120,9 @@
                 for(let i=svDamageTexts.length-1; i>=0; i--) { svDamageTexts[i].y-=40*dt; svDamageTexts[i].l-=dt; if(svDamageTexts[i].l<=0) svDamageTexts.splice(i,1); }
                 checkColls(dt);
 
-                ctx.fillStyle = '#090d16'; ctx.fillRect(0,0,cw,ch); 
+                ctx.fillStyle = '#020617'; ctx.fillRect(0,0,cw,ch); 
                 ctx.save();
+                if(svGame.shake > 0) { ctx.translate((Math.random()-0.5)*10, (Math.random()-0.5)*10); svGame.shake -= dt; }
                 ctx.translate(-camera.x, -camera.y);
                 
                 const startCX = Math.floor(camera.x / CHUNK_SIZE), endCX = Math.floor((camera.x+cw) / CHUNK_SIZE);
@@ -1600,8 +2130,16 @@
                 for(let cx = startCX; cx <= endCX; cx++) for(let cy = startCY; cy <= endCY; cy++) { const key = `${cx},${cy}`; if (!chunks.has(key)) chunks.set(key, new Chunk(cx, cy)); chunks.get(key).draw(ctx); }
                 
                 svItems.forEach(i => i.draw(ctx)); svPowerups.forEach(p => p.draw(ctx)); svProjectiles.forEach(p => p.draw(ctx));
-                svEnemies.forEach(e => e.draw(ctx)); svPlayer.draw(ctx);
-                for(const d of svDamageTexts) { ctx.font = 'bold 14px monospace'; ctx.fillStyle = d.c; ctx.fillText(d.txt, d.x, d.y); }
+                const drawables = [...svEnemies, svPlayer].sort((a,b) => a.y - b.y);
+                drawables.forEach(d => d.draw(ctx));
+
+                for(const p of svParticles) { ctx.fillStyle=p.c; ctx.globalAlpha=Math.max(0, p.l/0.4); ctx.fillRect(p.x-2,p.y-2,4,4); }
+                ctx.globalAlpha = 1;
+                for(const d of svDamageTexts) {
+                    ctx.font = d.crit ? '900 20px Arial' : 'bold 14px Arial';
+                    ctx.fillStyle = d.c; ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
+                    ctx.strokeText(d.txt, d.x, d.y); ctx.fillText(d.txt, d.x, d.y);
+                }
                 ctx.restore();
 
                 if(Math.floor(svGame.time) !== Math.floor(svGame.time-dt)) updateHUD();
@@ -1623,8 +2161,8 @@
 
             const CANVAS_WIDTH = canvas.width;
             const CANVAS_HEIGHT = canvas.height;
-            const PLAYER_SPEED = 5; const PLAYER_SHOOT_COOLDOWN = 15; 
-            const BULLET_SPEED = 10; const ENEMY_BULLET_SPEED = 5;
+            const PLAYER_SPEED = 5.5; const PLAYER_SHOOT_COOLDOWN = 14; 
+            const BULLET_SPEED = 10; const ENEMY_BULLET_SPEED = 4.8;
 
             const ENEMY_TYPES = {
                 NORMAL: { color: '#facc15', points: 10, hp: 1, speed: 2, diveSpeed: 4 }, 
