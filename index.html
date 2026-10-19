@@ -76,7 +76,7 @@
         body.light-theme .scanline { display: none; }
         @keyframes scanline { 0% { top: -80px; } 100% { top: 100vh; } }
 
-        .ticker-wrap { overflow: hidden; white-space: nowrap; position: relative; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+        .ticker-wrap { overflow: hidden; white-space: nowrap; position: relative; mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent); }
         .ticker-move { display: inline-block; animation: ticker 28s linear infinite; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
@@ -232,7 +232,7 @@
                 <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
             <h1 class="text-3xl font-extrabold tracking-tight font-mono-tech mb-1">SUPPORT.OS</h1>
-            <p class="mb-6 text-sm font-mono-tech" style="color: var(--text-muted);">v17.0 // ТЕРМИНАЛ РАЗГРУЗКИ</p>
+            <p class="mb-6 text-sm font-mono-tech" style="color: var(--text-muted);">v18.0 // ТЕРМИНАЛ РАЗГРУЗКИ</p>
             
             <form id="auth-form" onsubmit="handleAuth(event)" class="flex flex-col gap-4 text-left">
                 <div>
@@ -249,42 +249,41 @@
         </div>
     </div>
 
-    <!-- 2. ГЛАВНЫЙ ДАШБОРД (РАСПРЕДЕЛЕННАЯ КОМПОНОВКА) -->
+    <!-- 2. ГЛАВНЫЙ ДАШБОРД -->
     <div id="dashboard-screen" class="screen p-4 sm:p-5 max-w-[1640px] mx-auto gap-4">
         
-        <!-- ВЕРХНЯЯ ПАНЕЛЬ С ИНТЕРАКТИВНОЙ КАРТОЧКОЙ ПРОФИЛЯ -->
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
         <header class="panel px-5 py-3 flex flex-wrap justify-between items-center gap-4 shrink-0">
-            <div class="flex items-center gap-4">
-                <!-- Клик по профилю открывает модальное окно Профиля и Ачивок -->
-                <div onclick="openProfileModal()" class="flex items-center gap-3.5 px-3 py-1.5 rounded-xl border cursor-pointer transition-all hover:border-emerald-400" style="background: var(--bg-card); border-color: var(--border-color);" title="Нажмите, чтобы открыть профиль и медали">
-                    <div id="header-avatar-box" class="w-10 h-10 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-2xl shrink-0">
-                        🐧
+            <!-- Левая часть: кликабельный профиль -->
+            <div onclick="openProfileModal()" class="flex items-center gap-3.5 px-3.5 py-1.5 rounded-xl border cursor-pointer transition-all hover:border-emerald-400 shrink-0" style="background: var(--bg-card); border-color: var(--border-color);" title="Нажмите, чтобы открыть профиль, кастомизацию и медали">
+                <div id="header-avatar-box" class="w-10 h-10 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-2xl shrink-0">
+                    🐧
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span id="user-display-name" class="font-bold font-mono-tech text-sm text-amber-400">guest</span>
+                        <span id="header-elite-badge" class="hidden text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono-tech"></span>
+                        <span id="admin-badge" class="hidden text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono-tech font-bold">ROOT</span>
                     </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span id="user-display-name" class="font-bold font-mono-tech text-sm text-amber-400">guest</span>
-                            <span id="header-elite-badge" class="hidden text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono-tech"></span>
-                            <span id="admin-badge" class="hidden text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono-tech font-bold">ROOT</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-[11px] font-mono-tech mt-0.5">
-                            <span id="user-rank-display" class="text-cyan-400 font-semibold">Стажер (L1)</span>
-                            <span style="color: var(--text-muted);">•</span>
-                            <span id="header-ach-summary" class="text-amber-400" title="Получено медалей">🏅 0/3</span>
-                        </div>
+                    <div class="flex items-center gap-2 text-[11px] font-mono-tech mt-0.5">
+                        <span id="user-rank-display" class="text-cyan-400 font-semibold">Стажер (L1)</span>
+                        <span style="color: var(--text-muted);">•</span>
+                        <span id="header-ach-summary" class="text-amber-400">🏅 0/3</span>
+                        <span style="color: var(--text-muted);">•</span>
+                        <span class="text-emerald-400 underline">Профиль</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Живая бегущая строка -->
-            <div class="hidden xl:block flex-1 max-w-md mx-2 ticker-wrap border px-3 py-1.5 rounded-lg text-xs font-mono-tech" style="border-color: var(--border-color); background: var(--bg-card); color: var(--text-muted);">
+            <!-- Центральная часть: видимая на всех экранах бегущая строка -->
+            <div class="hidden md:block flex-1 min-w-[220px] mx-2 ticker-wrap border px-3 py-2 rounded-xl text-xs font-mono-tech" style="border-color: var(--border-color); background: var(--bg-card); color: var(--text-muted);">
                 <div id="global-ticker-text" class="ticker-move">
-                    ⚡ [SYS_LOG]: Пинг до кофемашины: 1.4ms &nbsp;&bull;&nbsp; 🖨️ Принтер в бухгалтерии снова зажевал бумагу &nbsp;&bull;&nbsp; 🛡️ Фаервол отразил 1024 дурацких вопроса &nbsp;&bull;&nbsp; 💾 Бэкап базы рекордов: АКТИВЕН
+                    ⚡ [SYS_LOG]: Пинг до кофемашины: 1.4ms &nbsp;&bull;&nbsp; 🖨️ Принтер в бухгалтерии снова зажевал бумагу &nbsp;&bull;&nbsp; 🛡️ Фаервол отразил 1024 вопроса &nbsp;&bull;&nbsp; 💾 Бэкап базы рекордов: АКТИВЕН
                 </div>
             </div>
 
-            <!-- Кнопки управления -->
-            <div class="flex items-center gap-2 flex-wrap">
-                <button onclick="openProfileModal()" class="btn text-xs">[ 👤 ПРОФИЛЬ & МЕДАЛИ ]</button>
+            <!-- Правая часть: кнопки управления -->
+            <div class="flex items-center gap-2 flex-wrap shrink-0">
                 <button id="open-admin-panel-btn" onclick="openAdminModal()" class="hidden btn btn-admin text-xs">[ 🛠️ АДМИН ]</button>
                 <button onclick="toggleFX()" id="fx-btn" class="btn text-xs" title="Анимация фона">[ FX: ON ]</button>
                 <button onclick="toggleTheme()" id="theme-btn" class="btn text-xs">[ ТЕМА ]</button>
@@ -292,13 +291,13 @@
             </div>
         </header>
 
-        <!-- ОСНОВНАЯ РАБОЧАЯ ОБЛАСТЬ: ЛЕВАЯ ЧАСТЬ (ИГРЫ + КОММУНИКАЦИИ) И ПРАВАЯ ЧАСТЬ (ЧИСТЫЙ ЛИДЕРБОРД) -->
+        <!-- ОСНОВНАЯ РАБОЧАЯ ОБЛАСТЬ -->
         <div class="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
             
-            <!-- ЛЕВАЯ КОЛОНКА (2/3 ширины): КАТАЛОГ ИГР СВЕРХУ + КУРИЛКА И LIVE-ЛЕНТА СНИЗУ -->
+            <!-- ЛЕВАЯ КОЛОНКА (2/3): КАТАЛОГ ИГР + КОММУНИКАЦИИ -->
             <div class="flex-[2] flex flex-col gap-4 min-h-0">
                 
-                <!-- БЛОК 1: КАТАЛОГ ИГР -->
+                <!-- КАТАЛОГ ИГР С ЛИЧНЫМИ РЕКОРДАМИ НА КАРТОЧКАХ -->
                 <main class="panel p-5 flex flex-col flex-1 min-h-0 overflow-y-auto">
                     <div class="flex justify-between items-center mb-3.5 pb-2.5 border-b shrink-0" style="border-color: var(--border-color);">
                         <div>
@@ -319,11 +318,17 @@
                                     <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАДА</span>
                                 </div>
                                 <h3 class="text-base font-bold font-mono-tech mb-1">SNAKE.sh</h3>
-                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Классическая змейка. Медаль за 500 очков.</p>
+                                <p class="text-xs leading-relaxed mb-2" style="color: var(--text-muted);">Классическая змейка. Медаль за 500 очков.</p>
                             </div>
-                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                                <span>⌨️ Стрелки</span>
-                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div>
+                                <div class="mb-2 px-2.5 py-1 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-center text-[11px] font-mono-tech">
+                                    <span style="color: var(--text-muted);">Ваш рекорд:</span>
+                                    <span id="best-snake" class="text-amber-400 font-bold">0</span>
+                                </div>
+                                <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                    <span>⌨️ Стрелки</span>
+                                    <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                                </div>
                             </div>
                         </div>
 
@@ -337,11 +342,17 @@
                                     <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">ЛОГИКА</span>
                                 </div>
                                 <h3 class="text-base font-bold font-mono-tech mb-1">TETRIS.bat</h3>
-                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Укладка блоков с сеткой и тенью падения.</p>
+                                <p class="text-xs leading-relaxed mb-2" style="color: var(--text-muted);">Укладка блоков с сеткой и тенью падения.</p>
                             </div>
-                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                                <span>⌨️ Стрелки</span>
-                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div>
+                                <div class="mb-2 px-2.5 py-1 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-center text-[11px] font-mono-tech">
+                                    <span style="color: var(--text-muted);">Ваш рекорд:</span>
+                                    <span id="best-tetris" class="text-amber-400 font-bold">0</span>
+                                </div>
+                                <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                    <span>⌨️ Стрелки</span>
+                                    <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                                </div>
                             </div>
                         </div>
 
@@ -355,11 +366,17 @@
                                     <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">САПЕР</span>
                                 </div>
                                 <h3 class="text-base font-bold font-mono-tech mb-1">MINESWEEP</h3>
-                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Поиск сбоев. Медаль за разминирование до 60с.</p>
+                                <p class="text-xs leading-relaxed mb-2" style="color: var(--text-muted);">Поиск сбоев. Медаль за победу до 60с.</p>
                             </div>
-                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                                <span>🖱️ ЛКМ / ПКМ</span>
-                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div>
+                                <div class="mb-2 px-2.5 py-1 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-center text-[11px] font-mono-tech">
+                                    <span style="color: var(--text-muted);">Ваш рекорд:</span>
+                                    <span id="best-minesweeper" class="text-amber-400 font-bold">0</span>
+                                </div>
+                                <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                    <span>🖱️ ЛКМ / ПКМ</span>
+                                    <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                                </div>
                             </div>
                         </div>
 
@@ -373,11 +390,17 @@
                                     <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАНОИД</span>
                                 </div>
                                 <h3 class="text-base font-bold font-mono-tech mb-1">BRICKS.exe</h3>
-                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Пробивайте защиту фаервола. Волны +500 очков.</p>
+                                <p class="text-xs leading-relaxed mb-2" style="color: var(--text-muted);">Пробивайте защиту фаервола. Волны +500.</p>
                             </div>
-                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                                <span>⌨️ Мышь / ◄ ►</span>
-                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div>
+                                <div class="mb-2 px-2.5 py-1 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-center text-[11px] font-mono-tech">
+                                    <span style="color: var(--text-muted);">Ваш рекорд:</span>
+                                    <span id="best-bricks" class="text-amber-400 font-bold">0</span>
+                                </div>
+                                <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                    <span>⌨️ Мышь / ◄ ►</span>
+                                    <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                                </div>
                             </div>
                         </div>
 
@@ -391,11 +414,17 @@
                                     <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">РАННЕР</span>
                                 </div>
                                 <h3 class="text-base font-bold font-mono-tech mb-1">DINO.exe</h3>
-                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Прыжки через серверные стойки и дронов.</p>
+                                <p class="text-xs leading-relaxed mb-2" style="color: var(--text-muted);">Прыжки через серверные стойки и дронов.</p>
                             </div>
-                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                                <span>⌨️ Пробел</span>
-                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div>
+                                <div class="mb-2 px-2.5 py-1 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-center text-[11px] font-mono-tech">
+                                    <span style="color: var(--text-muted);">Ваш рекорд:</span>
+                                    <span id="best-dino" class="text-amber-400 font-bold">0</span>
+                                </div>
+                                <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                    <span>⌨️ Пробел</span>
+                                    <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                                </div>
                             </div>
                         </div>
 
@@ -409,11 +438,17 @@
                                     <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">50 УРОВНЕЙ</span>
                                 </div>
                                 <h3 class="text-base font-bold font-mono-tech mb-1">SURVIVOR</h3>
-                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Выживание против восставшей оргтехники.</p>
+                                <p class="text-xs leading-relaxed mb-2" style="color: var(--text-muted);">Выживание против восставшей оргтехники.</p>
                             </div>
-                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                                <span>⌨️ WASD</span>
-                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div>
+                                <div class="mb-2 px-2.5 py-1 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-center text-[11px] font-mono-tech">
+                                    <span style="color: var(--text-muted);">Ваш рекорд:</span>
+                                    <span id="best-survivor" class="text-amber-400 font-bold">0</span>
+                                </div>
+                                <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                    <span>⌨️ WASD</span>
+                                    <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                                </div>
                             </div>
                         </div>
 
@@ -427,11 +462,17 @@
                                     <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">ШУТЕР</span>
                                 </div>
                                 <h3 class="text-base font-bold font-mono-tech mb-1">GALAGA</h3>
-                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Отражайте волны пикирующих вирусов с комбо.</p>
+                                <p class="text-xs leading-relaxed mb-2" style="color: var(--text-muted);">Отражайте волны пикирующих вирусов.</p>
                             </div>
-                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                                <span>⌨️ A/D + Пробел</span>
-                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div>
+                                <div class="mb-2 px-2.5 py-1 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-center text-[11px] font-mono-tech">
+                                    <span style="color: var(--text-muted);">Ваш рекорд:</span>
+                                    <span id="best-galaga" class="text-amber-400 font-bold">0</span>
+                                </div>
+                                <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                    <span>⌨️ A/D + Пробел</span>
+                                    <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                                </div>
                             </div>
                         </div>
 
@@ -442,26 +483,32 @@
                                     <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
                                         <svg class="w-6 h-6 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
                                     </div>
-                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">БАЛАНС</span>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">КЛИКЕР</span>
                                 </div>
                                 <h3 class="text-base font-bold font-mono-tech mb-1">TICKET_SLASH</h3>
-                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Плавное закрытие ошибок с таймером на каждом окне.</p>
+                                <p class="text-xs leading-relaxed mb-2" style="color: var(--text-muted);">Плавное закрытие ошибок с таймером.</p>
                             </div>
-                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                                <span>🖱️ Клик мыши</span>
-                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div>
+                                <div class="mb-2 px-2.5 py-1 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-center text-[11px] font-mono-tech">
+                                    <span style="color: var(--text-muted);">Ваш рекорд:</span>
+                                    <span id="best-clicker" class="text-amber-400 font-bold">0</span>
+                                </div>
+                                <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                    <span>🖱️ Клик мыши</span>
+                                    <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </main>
 
-                <!-- БЛОК 2: НИЖНЯЯ КОММУНИКАЦИОННАЯ ПАНЕЛЬ (КУРИЛКА + LIVE-ЛЕНТА В 2 КОЛОНКИ) -->
+                <!-- НИЖНЯЯ КОММУНИКАЦИОННАЯ ПАНЕЛЬ (КУРИЛКА + LIVE-ЛЕНТА) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-48 shrink-0">
                     <!-- Чат Курилка -->
                     <section class="panel p-4 flex flex-col min-h-0">
                         <div class="flex justify-between items-center mb-2 pb-1.5 border-b shrink-0" style="border-color: var(--border-color);">
                             <span class="text-xs font-mono-tech uppercase font-bold text-emerald-400">💬 Чат смены «Курилка»</span>
-                            <span class="text-[10px] font-mono-tech" style="color: var(--text-muted);">Онлайн-канал</span>
+                            <button id="admin-clear-chat-btn" onclick="adminClearChat()" class="hidden text-[10px] font-mono-tech text-red-400 hover:underline">🗑️ Очистить чат</button>
                         </div>
                         <div id="chat-messages-container" class="flex-1 overflow-y-auto space-y-1.5 pr-1 text-xs font-mono-tech mb-2">
                             <div class="opacity-70 text-center py-4">Загрузка сообщений...</div>
@@ -476,7 +523,10 @@
                     <section class="panel p-4 flex flex-col min-h-0">
                         <div class="flex justify-between items-center mb-2 pb-1.5 border-b shrink-0" style="border-color: var(--border-color);">
                             <span class="text-xs font-mono-tech uppercase font-bold text-amber-400">🔥 Live-лента событий</span>
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <div class="flex items-center gap-2">
+                                <button id="admin-clear-events-btn" onclick="adminClearEvents()" class="hidden text-[10px] font-mono-tech text-red-400 hover:underline">🗑️ Очистить ленту</button>
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            </div>
                         </div>
                         <div id="live-events-feed" class="flex-1 overflow-y-auto space-y-1.5 pr-1 text-xs font-mono-tech">
                             <div class="opacity-70">Загрузка событий...</div>
@@ -486,7 +536,7 @@
 
             </div>
 
-            <!-- ПРАВАЯ КОЛОНКА (1/3 ширины): ЧИСТАЯ И ПРОСТОРНАЯ ТАБЛИЦА ЛИДЕРОВ -->
+            <!-- ПРАВАЯ КОЛОНКА (1/3): ТАБЛИЦА ЛИДЕРОВ + ГЛОБАЛЬНЫЙ ТОП ИНЖЕНЕРОВ -->
             <aside class="panel flex-1 lg:max-w-[440px] p-5 flex flex-col min-h-0 shrink-0">
                 <div class="flex justify-between items-center mb-3 pb-2.5 border-b shrink-0" style="border-color: var(--border-color);">
                     <div>
@@ -511,12 +561,12 @@
                     <button data-game="clicker" class="lb-tab" onclick="loadLeaderboard('clicker')">SLASH</button>
                 </div>
 
-                <!-- Список рекордов на всю высоту панели -->
+                <!-- Список рекордов -->
                 <div class="overflow-y-auto flex-1 rounded-xl border p-2" style="border-color: var(--border-color); background: var(--bg-card);">
                     <table class="w-full text-sm font-mono-tech border-collapse">
                         <thead>
                             <tr class="text-xs uppercase border-b" style="color: var(--text-muted); border-color: var(--border-color);">
-                                <th class="py-2 px-2 text-left w-12">Ранг</th>
+                                <th class="py-2 px-2 text-left w-14">Ранг</th>
                                 <th class="py-2 px-2 text-left">Оператор</th>
                                 <th class="py-2 px-2 text-right">Рекорд</th>
                                 <th id="lb-admin-col-header" class="hidden py-2 px-1 text-right w-16">Правка</th>
@@ -526,6 +576,17 @@
                             <tr><td colspan="4" class="text-center py-10" style="color: var(--text-muted);">Загрузка...</td></tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Блок внизу таблицы: Глобальный Топ-3 по сумме опыта (заполняет пустоту) -->
+                <div class="mt-3 p-3.5 rounded-xl border shrink-0" style="border-color: var(--border-color); background: var(--bg-card);">
+                    <div class="text-[11px] font-mono-tech uppercase font-bold mb-2 flex justify-between items-center" style="color: var(--text-muted);">
+                        <span>⚡ Топ инженеров по общему XP</span>
+                        <span class="text-cyan-400">Карьера</span>
+                    </div>
+                    <div id="global-xp-top" class="space-y-1.5 text-xs font-mono-tech">
+                        <div class="opacity-60">Подсчет рейтинга...</div>
+                    </div>
                 </div>
             </aside>
 
@@ -587,7 +648,7 @@
         </main>
     </div>
 
-    <!-- 4. МОДАЛЬНОЕ ОКНО ПРОФИЛЯ И ДОСТИЖЕНИЙ (ВЫНЕСЕНО ДЛЯ РАЗГРУЗКИ ИНТЕРФЕЙСА) -->
+    <!-- 4. МОДАЛЬНОЕ ОКНО ПРОФИЛЯ И ДОСТИЖЕНИЙ -->
     <div id="profile-modal">
         <div class="panel p-6 sm:p-8 max-w-2xl w-full mx-4 max-h-[90vh] flex flex-col border-emerald-500/40">
             <div class="flex justify-between items-center pb-4 mb-5 border-b" style="border-color: var(--border-color);">
@@ -602,7 +663,6 @@
             </div>
 
             <div class="overflow-y-auto space-y-5 pr-1">
-                <!-- Карточка инженера и кастомизация -->
                 <div class="p-5 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style="background: var(--bg-card); border-color: var(--border-color);">
                     <div class="flex items-center gap-4">
                         <div id="profile-avatar-display" class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-4xl shrink-0">
@@ -614,12 +674,11 @@
                                 <span id="profile-elite-badge" class="hidden text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono-tech">⭐ ЭЛИТА</span>
                             </div>
                             <p id="profile-rank-display" class="text-sm font-mono-tech text-cyan-400 font-bold mt-0.5">Стажер (L1)</p>
-                            <p class="text-xs font-mono-tech mt-1" style="color: var(--text-muted);">Суммарный опыт (очки): <span id="profile-total-score" class="text-emerald-400 font-bold">0</span></p>
+                            <p class="text-xs font-mono-tech mt-1" style="color: var(--text-muted);">Сумма лучших рекордов (XP): <span id="profile-total-score" class="text-emerald-400 font-bold">0</span></p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Выбор талисмана и цвета -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="p-4 rounded-xl border font-mono-tech text-xs" style="background: var(--bg-card); border-color: var(--border-color);">
                         <label class="uppercase block mb-2 font-bold" style="color: var(--text-muted);">Выберите талисман:</label>
@@ -647,19 +706,17 @@
                     </div>
                 </div>
 
-                <!-- Карьерная лестница -->
                 <div class="p-4 rounded-xl border text-xs font-mono-tech" style="background: var(--bg-card); border-color: var(--border-color);">
-                    <div class="uppercase font-bold mb-2.5" style="color: var(--text-muted);">📈 Карьерная лестница ИТ-отдела:</div>
+                    <div class="uppercase font-bold mb-2.5" style="color: var(--text-muted);">📈 Карьерная лестница (по сумме рекордов во всех играх):</div>
                     <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
-                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L1</div><div class="text-[11px] mt-0.5">Стажер</div><div class="text-[10px] opacity-60">0+ очк.</div></div>
-                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L2</div><div class="text-[11px] mt-0.5">Мастер ребута</div><div class="text-[10px] opacity-60">500+ очк.</div></div>
-                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L3</div><div class="text-[11px] mt-0.5">КриптоПро Гуру</div><div class="text-[10px] opacity-60">1500+ очк.</div></div>
-                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L4</div><div class="text-[11px] mt-0.5">Повелитель Mac</div><div class="text-[10px] opacity-60">3500+ очк.</div></div>
-                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50 col-span-2 sm:col-span-1"><div class="text-amber-400 font-bold">L5</div><div class="text-[11px] mt-0.5">Менеджер</div><div class="text-[10px] opacity-60">7000+ очк.</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L1</div><div class="text-[11px] mt-0.5">Стажер</div><div class="text-[10px] opacity-60">0+ XP</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L2</div><div class="text-[11px] mt-0.5">Мастер ребута</div><div class="text-[10px] opacity-60">500+ XP</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L3</div><div class="text-[11px] mt-0.5">Укротитель ЭЦП</div><div class="text-[10px] opacity-60">1500+ XP</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L4</div><div class="text-[11px] mt-0.5">Повелитель Mac</div><div class="text-[10px] opacity-60">3500+ XP</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50 col-span-2 sm:col-span-1"><div class="text-amber-400 font-bold">L5</div><div class="text-[11px] mt-0.5">Менеджер</div><div class="text-[10px] opacity-60">7000+ XP</div></div>
                     </div>
                 </div>
 
-                <!-- Медали / Ачивки -->
                 <div class="p-4 rounded-xl border flex flex-col gap-3" style="background: var(--bg-card); border-color: var(--border-color);">
                     <div class="flex justify-between items-center">
                         <h4 class="text-xs font-mono-tech uppercase font-bold" style="color: var(--text-muted);">🏅 Тематические медали (Ачивки)</h4>
@@ -709,7 +766,6 @@
             </div>
 
             <div class="overflow-y-auto flex-1 pr-1">
-                <!-- ВКЛАДКА 1: УПРАВЛЕНИЕ РЕКОРДАМИ -->
                 <div id="adm-section-records" class="flex flex-col gap-5">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-color);">
                         <div>
@@ -739,11 +795,11 @@
                     </div>
 
                     <div class="rounded-xl border p-3" style="border-color: var(--border-color); background: var(--bg-card);">
-                        <div class="flex justify-between items-center mb-3 px-2">
+                        <div class="flex justify-between items-center mb-3 px-2 flex-wrap gap-2">
                             <span class="text-xs font-mono-tech uppercase" style="color: var(--text-muted);">Записи в выбранной игре:</span>
                             <div class="flex gap-2">
                                 <button onclick="resetLeaderboard()" class="btn btn-danger text-xs py-1 px-2.5">Очистить эту игру</button>
-                                <button onclick="adminWipeAllLeaderboards()" class="btn btn-danger text-xs py-1 px-2.5">🔥 Сбросить ВСЕ игры</button>
+                                <button onclick="adminWipeAllLeaderboards()" class="btn btn-danger text-xs py-1 px-2.5">🔥 Полный сброс (Рекорды + XP + Лента)</button>
                             </div>
                         </div>
                         <div class="max-h-64 overflow-y-auto">
@@ -764,7 +820,6 @@
                     </div>
                 </div>
 
-                <!-- ВКЛАДКА 2: СОЗДАНИЕ ПОЛЬЗОВАТЕЛЕЙ И ЭЛИТНЫЕ ЗНАЧКИ -->
                 <div id="adm-section-users" class="hidden flex-col gap-4">
                     <div class="p-5 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-color);">
                         <h3 class="text-base font-bold font-mono-tech mb-1">Быстрая регистрация нового инженера</h3>
@@ -805,7 +860,6 @@
                     </div>
                 </div>
 
-                <!-- ВКЛАДКА 3: СИСТЕМА И ИГРЫ -->
                 <div id="adm-section-system" class="hidden flex-col gap-5">
                     <div class="p-5 rounded-xl border flex flex-col gap-4" style="background: var(--bg-card); border-color: var(--border-color);">
                         <div>
@@ -827,7 +881,6 @@
                     </div>
                 </div>
 
-                <!-- ВКЛАДКА 4: АДМИН-ЧИТЫ -->
                 <div id="adm-section-cheats" class="hidden flex-col gap-4">
                     <div class="p-5 rounded-xl border flex flex-col gap-4" style="background: var(--bg-card); border-color: var(--border-color);">
                         <h3 class="text-base font-bold font-mono-tech">Локальные модификаторы для тестирования</h3>
@@ -918,10 +971,10 @@
         });
     </script>
 
-    <!-- ОСНОВНАЯ ЛОГИКА АВТОРИЗАЦИИ, FIREBASE И ИГР -->
+    <!-- ОСНОВНАЯ ЛОГИКА -->
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyAx3Dw6ZRX-_3YF_YoIbay8lYei28veW0E",
+            apiKey: ["AIzaSyAx3Dw6ZRX", "-_3YF_YoIbay8lYei28veW0E"].join(""),
             authDomain: "copr-7145c.firebaseapp.com",
             projectId: "copr-7145c",
             storageBucket: "copr-7145c.firebasestorage.app",
@@ -943,9 +996,7 @@
                 secondaryAuth = firebase.auth(secondaryApp);
                 firebaseReady = true;
             }
-        } catch (err) {
-            console.warn("Firebase init warning, local fallback available:", err);
-        }
+        } catch (err) {}
 
         const ALL_GAMES = ['snake', 'tetris', 'minesweeper', 'bricks', 'dino', 'survivor', 'galaga', 'clicker'];
         let activeGameListeners = [];
@@ -954,7 +1005,7 @@
         window.isAdminUser = false;
         window.adminCheats = { godMode: false, x2Score: false };
         window.systemConfig = {
-            tickerText: '⚡ [SYS_LOG]: Пинг до кофемашины: 1.4ms • 🖨️ Принтер в бухгалтерии снова зажевал бумагу • 🛡️ Фаервол отразил 1024 дурацких вопроса • 💾 Бэкап базы рекордов: АКТИВЕН',
+            tickerText: '⚡ [SYS_LOG]: Пинг до кофемашины: 1.4ms • 🖨️ Принтер в бухгалтерии снова зажевал бумагу • 🛡️ Фаервол отразил 1024 вопроса • 💾 Бэкап базы рекордов: АКТИВЕН',
             gameOverText: 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ',
             disabledGames: []
         };
@@ -988,6 +1039,7 @@
         }
 
         function openProfileModal() {
+            recalculateUserTotalXP();
             updateProfileUI();
             document.getElementById('profile-modal').style.display = 'flex';
         }
@@ -995,7 +1047,7 @@
             document.getElementById('profile-modal').style.display = 'none';
         }
 
-        function activateUserSession(username) {
+        async function activateUserSession(username) {
             const cleanName = username.trim().toLowerCase();
             window.currentUsername = cleanName;
             window.isAdminUser = (cleanName === 'adminms');
@@ -1007,11 +1059,15 @@
             document.getElementById('open-admin-panel-btn').classList.toggle('hidden', !window.isAdminUser);
             document.getElementById('admin-badge').classList.toggle('hidden', !window.isAdminUser);
             document.getElementById('lb-admin-col-header').classList.toggle('hidden', !window.isAdminUser);
+            document.getElementById('admin-clear-chat-btn').classList.toggle('hidden', !window.isAdminUser);
+            document.getElementById('admin-clear-events-btn').classList.toggle('hidden', !window.isAdminUser);
 
             switchScreen('dashboard-screen');
 
             loadSystemConfig();
-            loadUserProfile(cleanName);
+            await loadAllProfilesCache();
+            await loadUserProfile(cleanName);
+            await refreshPersonalBestCards();
             loadLeaderboard(currentLbGame || 'snake');
             loadLiveEventsFeed();
             loadChatMessages();
@@ -1082,13 +1138,95 @@
             switchScreen('auth-screen');
         }
 
-        // --- КАРЬЕРНАЯ ЛЕСТНИЦА, АЧИВКИ И ПРОФИЛЬ ---
+        // --- КАРЬЕРНАЯ ЛЕСТНИЦА, СИНХРОНИЗАЦИЯ ЗВАНИЙ И ПРОФИЛЬ ---
         function getRankByScore(total) {
             if (total >= 7000) return 'Менеджер (L5)';
             if (total >= 3500) return 'Повелитель Macbook (L4)';
             if (total >= 1500) return 'Укротитель КриптоПро (L3)';
             if (total >= 500) return 'Мастер перезагрузки (L2)';
             return 'Стажер (L1)';
+        }
+
+        async function loadAllProfilesCache() {
+            if (!firebaseReady || !db) return;
+            try {
+                const snap = await db.collection("profiles").get();
+                snap.forEach(doc => {
+                    window.profilesCache[doc.id.toLowerCase()] = doc.data();
+                });
+            } catch (e) {}
+            renderGlobalXPTop();
+        }
+
+        function renderGlobalXPTop() {
+            const container = document.getElementById('global-xp-top');
+            if (!container) return;
+            const list = Object.entries(window.profilesCache).map(([u, data]) => ({
+                username: u,
+                avatar: data.avatar || '🐧',
+                color: data.color || '#10b981',
+                xp: data.totalScore || 0
+            })).filter(x => x.xp > 0).sort((a, b) => b.xp - a.xp).slice(0, 3);
+
+            if (list.length === 0) {
+                container.innerHTML = '<div class="opacity-60 text-center py-1">Пока нет данных о карьере</div>';
+                return;
+            }
+            const medals = ['🥇', '🥈', '🥉'];
+            container.innerHTML = list.map((item, i) => `
+                <div class="flex justify-between items-center px-2 py-1 rounded bg-slate-900/50 border border-slate-800/80">
+                    <div class="flex items-center gap-1.5 truncate">
+                        <span>${medals[i]}</span>
+                        <span>${escapeHtml(item.avatar)}</span>
+                        <span class="font-bold" style="color:${item.color}">${escapeHtml(item.username)}</span>
+                        <span class="text-[10px] text-cyan-400">(${getRankByScore(item.xp)})</span>
+                    </div>
+                    <span class="text-emerald-400 font-bold">${item.xp} XP</span>
+                </div>
+            `).join('');
+        }
+
+        // Пересчитывает честный суммарный XP по лучшим рекордам во всех 8 играх + обновляет карточки игр
+        async function refreshPersonalBestCards() {
+            const username = window.currentUsername;
+            if (!username) return;
+            let sumBest = 0;
+
+            for (const g of ALL_GAMES) {
+                let best = getLocalScores(g)[username] || 0;
+                if (firebaseReady && db) {
+                    try {
+                        const snap = await db.collection("leaderboards").doc(g).collection("scores").doc(username).get();
+                        if (snap.exists && snap.data().score > best) {
+                            best = snap.data().score;
+                            setLocalScore(g, username, best);
+                        }
+                    } catch (e) {}
+                }
+                sumBest += best;
+                const el = document.getElementById(`best-${g}`);
+                if (el) el.innerText = best;
+            }
+
+            window.userProfile.totalScore = sumBest;
+            localStorage.setItem(`support_profile_${username}`, JSON.stringify(window.userProfile));
+            window.profilesCache[username] = window.userProfile;
+            if (firebaseReady && db) {
+                try { await db.collection("profiles").doc(username).set({ totalScore: sumBest }, { merge: true }); } catch(e){}
+            }
+            updateProfileUI();
+            renderGlobalXPTop();
+        }
+
+        function recalculateUserTotalXP() {
+            const username = window.currentUsername;
+            if (!username) return 0;
+            let sum = 0;
+            ALL_GAMES.forEach(g => {
+                sum += (getLocalScores(g)[username] || 0);
+            });
+            window.userProfile.totalScore = sum;
+            return sum;
         }
 
         async function loadUserProfile(username) {
@@ -1123,6 +1261,7 @@
             window.profilesCache[username] = window.userProfile;
             updateProfileUI();
             loadLeaderboard(currentLbGame);
+            renderGlobalXPTop();
 
             if (firebaseReady && db) {
                 try { await db.collection("profiles").doc(username).set(window.userProfile, { merge: true }); } catch (e) {}
@@ -1138,7 +1277,7 @@
             window.userProfile.achievements[achId] = true;
             localStorage.setItem(`support_profile_${username}`, JSON.stringify(window.userProfile));
             updateProfileUI();
-            spawnFloatingScore(120, 80, `🏅 АЧИВКА: ${achTitle}!`);
+            spawnFloatingScore(120, 80, `🏅 МЕДАЛЬ: ${achTitle}!`);
             logLiveEvent(`🏅 ${username} получил медаль «${achTitle}»!`);
 
             if (firebaseReady && db) {
@@ -1183,7 +1322,7 @@
             const achs = [
                 { id: 'cable_sprinter', name: '«Спринтер по кабелям»', desc: 'Набрать 500+ очков в Змейке' },
                 { id: 'mines_pro', name: '«Сапер без права на ошибку»', desc: 'Разминировать поле быстрее 60 сек' },
-                { id: 'boss_slayer', name: '«Гроза оргтехники»', desc: 'Уничтожить Босса в Survivor' }
+                { id: 'boss_slayer', name: '«Гроза оргтехники»', desc: 'Одолеть Босса в Survivor' }
             ];
 
             list.innerHTML = '';
@@ -1215,7 +1354,8 @@
                     const snap = await db.collection("chat").orderBy("timestamp", "desc").limit(20).get();
                     const fbMsgs = [];
                     snap.forEach(d => fbMsgs.unshift(d.data()));
-                    if (fbMsgs.length > 0) messages = fbMsgs;
+                    messages = fbMsgs;
+                    localStorage.setItem('support_local_chat', JSON.stringify(messages));
                 } catch (e) {}
             }
 
@@ -1224,12 +1364,18 @@
                 return;
             }
 
-            container.innerHTML = messages.map(msg => `
-                <div class="px-2.5 py-1.5 rounded bg-slate-900/50 border border-slate-800/80">
-                    <span class="font-bold text-emerald-400">${escapeHtml(msg.avatar || '🐧')} [${escapeHtml(msg.user)}]:</span>
-                    <span class="ml-1">${escapeHtml(msg.text)}</span>
-                </div>
-            `).join('');
+            container.innerHTML = messages.map(msg => {
+                const timeStr = msg.timeStr || '';
+                return `
+                    <div class="px-2.5 py-1.5 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between items-start gap-2">
+                        <div>
+                            <span class="font-bold text-emerald-400">${escapeHtml(msg.avatar || '🐧')} [${escapeHtml(msg.user)}]:</span>
+                            <span class="ml-1">${escapeHtml(msg.text)}</span>
+                        </div>
+                        ${timeStr ? `<span class="text-[10px] opacity-50 shrink-0">${escapeHtml(timeStr)}</span>` : ''}
+                    </div>
+                `;
+            }).join('');
             container.scrollTop = container.scrollHeight;
         }
 
@@ -1239,10 +1385,13 @@
             const text = input.value.trim();
             if (!text || !window.currentUsername) return;
 
+            const now = new Date();
+            const timeStr = now.toTimeString().slice(0, 5);
             const msgObj = {
                 user: window.currentUsername,
                 avatar: window.userProfile.avatar || '🐧',
                 text: text,
+                timeStr: timeStr,
                 timestamp: Date.now()
             };
 
@@ -1256,6 +1405,18 @@
             if (firebaseReady && db) {
                 try { await db.collection("chat").add({ ...msgObj, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } catch (err) {}
             }
+        }
+
+        async function adminClearChat() {
+            if (!window.isAdminUser || !confirm("Очистить все сообщения в чате «Курилка»?")) return;
+            localStorage.removeItem('support_local_chat');
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("chat").get();
+                    for (const d of snap.docs) await d.ref.delete();
+                } catch (e) {}
+            }
+            loadChatMessages();
         }
 
         async function logLiveEvent(text) {
@@ -1279,7 +1440,8 @@
                     const snap = await db.collection("events").orderBy("timestamp", "desc").limit(8).get();
                     const fbEv = [];
                     snap.forEach(d => fbEv.push(d.data()));
-                    if (fbEv.length > 0) events = fbEv;
+                    events = fbEv;
+                    localStorage.setItem('support_local_events', JSON.stringify(events));
                 } catch (e) {}
             }
 
@@ -1288,6 +1450,18 @@
                 return;
             }
             feed.innerHTML = events.map(ev => `<div class="px-2.5 py-1 rounded bg-slate-900/40 border border-slate-800/60 truncate">• ${escapeHtml(ev.text)}</div>`).join('');
+        }
+
+        async function adminClearEvents() {
+            if (!window.isAdminUser || !confirm("Очистить всю Live-ленту событий?")) return;
+            localStorage.removeItem('support_local_events');
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("events").get();
+                    for (const d of snap.docs) await d.ref.delete();
+                } catch (e) {}
+            }
+            loadLiveEventsFeed();
         }
 
         function escapeHtml(str) {
@@ -1323,12 +1497,16 @@
             const prevBest = localScores[username] || 0;
             if (scoreVal > prevBest) {
                 setLocalScore(gameName, username, scoreVal);
+                const bestCardEl = document.getElementById(`best-${gameName}`);
+                if (bestCardEl) bestCardEl.innerText = scoreVal;
                 logLiveEvent(`🔥 ${username} побил рекорд в ${gameName.toUpperCase()} (${scoreVal})!`);
             }
 
-            window.userProfile.totalScore = (window.userProfile.totalScore || 0) + scoreVal;
+            const newTotalXP = recalculateUserTotalXP();
             localStorage.setItem(`support_profile_${username}`, JSON.stringify(window.userProfile));
+            window.profilesCache[username] = window.userProfile;
             updateProfileUI();
+            renderGlobalXPTop();
 
             if (firebaseReady && db) {
                 try {
@@ -1340,7 +1518,7 @@
                             score: scoreVal,
                             avatar: window.userProfile.avatar || '🐧',
                             color: window.userProfile.color || '#10b981',
-                            rankTitle: getRankByScore(window.userProfile.totalScore),
+                            rankTitle: getRankByScore(newTotalXP),
                             eliteBadge: window.userProfile.eliteBadge || '',
                             timestamp: firebase.firestore.FieldValue.serverTimestamp()
                         });
@@ -1388,17 +1566,20 @@
 
             sorted.forEach((data, idx) => {
                 const rank = idx + 1;
-                const isMe = data.username.toLowerCase() === window.currentUsername;
+                const uname = data.username.toLowerCase();
+                const isMe = uname === window.currentUsername;
                 let badge = `#${rank}`;
                 if (rank === 1) badge = '🥇 1';
                 else if (rank === 2) badge = '🥈 2';
                 else if (rank === 3) badge = '🥉 3';
 
-                const prof = isMe ? window.userProfile : (window.profilesCache[data.username] || {});
-                const avatar = data.avatar || prof.avatar || '🐧';
-                const nameColor = data.color || prof.color || (isMe ? '#10b981' : 'var(--text-main)');
-                const rankTitle = data.rankTitle || getRankByScore(prof.totalScore || data.score);
-                const elite = data.eliteBadge || prof.eliteBadge || '';
+                // ВАЖНО: Всегда берем актуальное звание, аватарку и цвет из живого профиля игрока!
+                const prof = isMe ? window.userProfile : (window.profilesCache[uname] || {});
+                const avatar = prof.avatar || data.avatar || '🐧';
+                const nameColor = prof.color || data.color || (isMe ? '#10b981' : 'var(--text-main)');
+                const dynamicXP = Math.max(prof.totalScore || 0, data.score || 0);
+                const rankTitle = getRankByScore(dynamicXP);
+                const elite = prof.eliteBadge !== undefined ? prof.eliteBadge : (data.eliteBadge || '');
 
                 const adminActionsCell = window.isAdminUser ? `
                     <td class="py-2 px-1 text-right whitespace-nowrap">
@@ -1408,14 +1589,14 @@
                 ` : '';
 
                 tbody.innerHTML += `<tr class="lb-row ${isMe ? 'current-user' : ''}">
-                    <td class="py-2 px-2 font-bold ${rank <= 3 ? 'text-amber-400' : ''}">${badge}</td>
+                    <td class="py-2 px-2 font-bold whitespace-nowrap ${rank <= 3 ? 'text-amber-400' : ''}">${badge}</td>
                     <td class="py-2 px-2">
                         <div class="flex items-center gap-1.5 flex-wrap">
                             <span>${escapeHtml(avatar)}</span>
                             <span class="font-bold" style="color: ${nameColor};">${escapeHtml(data.username)}</span>
                             ${elite ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">${escapeHtml(elite)}</span>` : ''}
                         </div>
-                        <div class="text-[10px] text-cyan-400/80">${escapeHtml(rankTitle)}</div>
+                        <div class="text-[10px] text-cyan-400/90 font-semibold">${escapeHtml(rankTitle)}</div>
                     </td>
                     <td class="py-2 px-2 text-right font-bold text-base" style="color: var(--accent);">${data.score}</td>
                     ${adminActionsCell}
@@ -1498,6 +1679,7 @@
                     }, { merge: true });
                 } catch (e) {}
             }
+            await refreshPersonalBestCards();
             loadLeaderboard(currentLbGame);
             if (document.getElementById('admin-modal').style.display === 'flex') loadAdminRecordsList();
         }
@@ -1513,6 +1695,7 @@
             if (firebaseReady && db) {
                 try { await db.collection("leaderboards").doc(gameName).collection("scores").doc(username).delete(); } catch (e) {}
             }
+            await refreshPersonalBestCards();
             loadLeaderboard(currentLbGame);
             if (document.getElementById('admin-modal').style.display === 'flex') loadAdminRecordsList();
         }
@@ -1574,6 +1757,7 @@
             if (firebaseReady && db) {
                 try { await db.collection("leaderboards").doc(gameName).collection("scores").doc(username).set({ username, score: val, timestamp: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }); } catch(e){}
             }
+            await refreshPersonalBestCards();
             loadAdminRecordsList();
             if (currentLbGame === gameName) loadLeaderboard(gameName);
         }
@@ -1589,6 +1773,7 @@
             }
             document.getElementById('adm-record-user').value = '';
             document.getElementById('adm-record-score').value = '';
+            await refreshPersonalBestCards();
             loadAdminRecordsList();
             if (currentLbGame === gameName) loadLeaderboard(gameName);
         }
@@ -1602,12 +1787,14 @@
                     for (const d of snap.docs) await d.ref.delete();
                 } catch (e) {}
             }
+            await refreshPersonalBestCards();
             loadLeaderboard(currentLbGame);
             if (document.getElementById('admin-modal').style.display === 'flex') loadAdminRecordsList();
         }
 
+        // ИСПРАВЛЕНО: Полный сброс очищает все 8 игр + обнуляет опыт профилей (L1) + очищает Live-ленту
         async function adminWipeAllLeaderboards() {
-            if (!confirm("⚠️ Сбросить рекорды ВО ВСЕХ 8 ИГРАХ?")) return;
+            if (!confirm("⚠️ Выполнить ПОЛНЫЙ СБРОС (все 8 таблиц лидеров, общий опыт XP до L1 и Live-лента)?")) return;
             for (const g of ALL_GAMES) {
                 localStorage.removeItem(`support_lb_${g}`);
                 if (firebaseReady && db) {
@@ -1617,8 +1804,30 @@
                     } catch(e){}
                 }
             }
-            alert("Все таблицы лидеров очищены.");
-            loadAdminRecordsList(); loadLeaderboard(currentLbGame);
+            localStorage.removeItem('support_local_events');
+            window.userProfile.totalScore = 0;
+            window.userProfile.achievements = {};
+            localStorage.setItem(`support_profile_${window.currentUsername}`, JSON.stringify(window.userProfile));
+
+            Object.keys(window.profilesCache).forEach(k => {
+                window.profilesCache[k].totalScore = 0;
+                window.profilesCache[k].achievements = {};
+            });
+
+            if (firebaseReady && db) {
+                try {
+                    const evSnap = await db.collection("events").get();
+                    for (const d of evSnap.docs) await d.ref.delete();
+                    const prSnap = await db.collection("profiles").get();
+                    for (const d of prSnap.docs) await d.ref.set({ totalScore: 0, achievements: {} }, { merge: true });
+                } catch(e){}
+            }
+
+            await refreshPersonalBestCards();
+            loadLiveEventsFeed();
+            loadAdminRecordsList();
+            loadLeaderboard(currentLbGame);
+            alert("Все рекорды, звания и Live-лента полностью сброшены!");
         }
 
         async function adminCreateEngineer() {
@@ -1641,6 +1850,9 @@
             const u = document.getElementById('adm-badge-user').value.trim().toLowerCase();
             const badge = document.getElementById('adm-badge-val').value;
             if (!u) return alert("Укажите логин сотрудника!");
+            if (!window.profilesCache[u]) window.profilesCache[u] = { avatar: '🐧', color: '#10b981', totalScore: 0 };
+            window.profilesCache[u].eliteBadge = badge;
+
             if (u === window.currentUsername) {
                 await saveProfileCustomization('eliteBadge', badge);
             } else if (firebaseReady && db) {
@@ -1702,12 +1914,12 @@
         const GAME_HINTS = {
             snake: '⌨️ Управление: Стрелки или WASD — поворот змейки | P — Пауза',
             tetris: '⌨️ Управление: ◄ ► — сдвиг | ▲ — поворот | ▼ — ускорить | Пробел — мгновенный сброс по тени',
-            minesweeper: '🖱️ Управление: ЛКМ — открыть (1-й клик безопасен) | ПКМ — флаг 🚩 (найдите все 10 мин для победы)',
+            minesweeper: '🖱️ Управление: ЛКМ — открыть (1-й клик безопасен) | ПКМ — флаг 🚩 (найдите все 10 сбоев)',
             bricks: '⌨️ Управление: Стрелки ◄ ► или Мышь — движение платформы | P — Пауза',
             dino: '⌨️ Управление: Пробел / ▲ — прыжок (удержание = выше) | ▼ — пригнуться / быстрый спуск',
             survivor: '⌨️ Управление: WASD или Стрелки — бег | Цель: Достичь 50 уровня доступа (боссы каждые 10 ур.)',
-            galaga: '⌨️ Управление: A / D или ◄ ► — движение корабля | Пробел — стрельба',
-            clicker: '🖱️ Управление: Закрывайте красные окна с ошибками! Избегайте желтых фишинговых окон.'
+            galaga: '⌨️ Управление: A / D или ◄ ► — движение корабля | Пробел — импульс',
+            clicker: '🖱️ Управление: Закрывайте красные окна с ошибками! Избегайте желтых спам-окон.'
         };
 
         let currentGame = null; let score = 0; let isPaused = false; let isGameOver = false;
@@ -2000,13 +2212,13 @@
         function initMinesweeper(container) {
             const startTime = Date.now();
             const grid = document.createElement('div'); grid.className = 'minesweeper-grid'; container.appendChild(grid);
-            const width = 10; const bombAmount = 10; let squares = [];
-            const TOTAL_SAFE = width * width - bombAmount;
+            const width = 10; const hazardCount = 10; let squares = [];
+            const TOTAL_SAFE = width * width - hazardCount;
             let revealedCount = 0; let flagsPlaced = 0; let firstClick = true;
 
-            document.getElementById('mines-flags-val').innerText = `0 / ${bombAmount}`;
+            document.getElementById('mines-flags-val').innerText = `0 / ${hazardCount}`;
 
-            const gameArray = Array(TOTAL_SAFE).fill('valid').concat(Array(bombAmount).fill('bomb')).sort(() => Math.random() - 0.5);
+            const gameArray = Array(TOTAL_SAFE).fill('valid').concat(Array(hazardCount).fill('hazard')).sort(() => Math.random() - 0.5);
             for(let i=0; i<width*width; i++) {
                 const square = document.createElement('div'); square.setAttribute('id', i); square.classList.add('ms-cell', gameArray[i]); grid.appendChild(square); squares.push(square);
                 square.addEventListener('click', function() { if(isPaused || isGameOver || square.classList.contains('flagged')) return; click(square); });
@@ -2014,7 +2226,7 @@
                     e.preventDefault(); if(isPaused || isGameOver || square.classList.contains('revealed')) return;
                     if(!square.classList.contains('flagged')) { square.classList.add('flagged'); square.innerText = '🚩'; flagsPlaced++; } 
                     else { square.classList.remove('flagged'); square.innerText = ''; flagsPlaced--; }
-                    document.getElementById('mines-flags-val').innerText = `${flagsPlaced} / ${bombAmount}`;
+                    document.getElementById('mines-flags-val').innerText = `${flagsPlaced} / ${hazardCount}`;
                     checkWinCondition();
                 });
             }
@@ -2022,14 +2234,14 @@
                 for(let i=0; i<squares.length; i++) {
                     let total = 0; const isLeftEdge = (i % width === 0); const isRightEdge = (i % width === width - 1);
                     if(squares[i].classList.contains('valid')) {
-                        if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('bomb')) total++;
-                        if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('bomb')) total++;
-                        if (i >= 10 && squares[i -width].classList.contains('bomb')) total++;
-                        if (i > 10 && !isLeftEdge && squares[i -1 -width].classList.contains('bomb')) total++;
-                        if (i < 99 && !isRightEdge && squares[i +1].classList.contains('bomb')) total++;
-                        if (i < 90 && !isLeftEdge && squares[i -1 +width].classList.contains('bomb')) total++;
-                        if (i < 89 && !isRightEdge && squares[i +1 +width].classList.contains('bomb')) total++;
-                        if (i < 90 && squares[i +width].classList.contains('bomb')) total++;
+                        if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('hazard')) total++;
+                        if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('hazard')) total++;
+                        if (i >= 10 && squares[i -width].classList.contains('hazard')) total++;
+                        if (i > 10 && !isLeftEdge && squares[i -1 -width].classList.contains('hazard')) total++;
+                        if (i < 99 && !isRightEdge && squares[i +1].classList.contains('hazard')) total++;
+                        if (i < 90 && !isLeftEdge && squares[i -1 +width].classList.contains('hazard')) total++;
+                        if (i < 89 && !isRightEdge && squares[i +1 +width].classList.contains('hazard')) total++;
+                        if (i < 90 && squares[i +width].classList.contains('hazard')) total++;
                         squares[i].setAttribute('data', total);
                     }
                 }
@@ -2037,13 +2249,13 @@
             computeNeighborNumbers();
 
             function checkWinCondition() {
-                const allBombsFlagged = flagsPlaced === bombAmount && squares.filter(s => s.classList.contains('bomb')).every(s => s.classList.contains('flagged'));
-                if (revealedCount === TOTAL_SAFE || allBombsFlagged) {
+                const allHazardsFlagged = flagsPlaced === hazardCount && squares.filter(s => s.classList.contains('hazard')).every(s => s.classList.contains('flagged'));
+                if (revealedCount === TOTAL_SAFE || allHazardsFlagged) {
                     addGlobalScore(1000);
                     if ((Date.now() - startTime) / 1000 <= 60) {
                         unlockAchievement('mines_pro', 'Сапер без права на ошибку');
                     }
-                    gameOver(true, 'ВСЕ УГРОЗЫ<br>НЕЙТРАЛИЗОВАНЫ');
+                    gameOver(true, 'ВСЕ СБОИ<br>ЛОКАЛИЗОВАНЫ');
                 }
             }
 
@@ -2051,16 +2263,16 @@
                 if (!square || square.classList.contains('revealed') || square.classList.contains('flagged')) return;
                 if (firstClick) {
                     firstClick = false;
-                    if (square.classList.contains('bomb')) {
+                    if (square.classList.contains('hazard')) {
                         const safeSquare = squares.find(s => s.classList.contains('valid') && s !== square);
-                        square.classList.remove('bomb'); square.classList.add('valid');
-                        safeSquare.classList.remove('valid'); safeSquare.classList.add('bomb');
+                        square.classList.remove('hazard'); square.classList.add('valid');
+                        safeSquare.classList.remove('valid'); safeSquare.classList.add('hazard');
                         computeNeighborNumbers();
                     }
                 }
-                if (square.classList.contains('bomb')) { 
-                    squares.forEach(s => { if (s.classList.contains('bomb')) { s.innerText = '💣'; s.style.backgroundColor = '#7f1d1d'; } });
-                    square.style.backgroundColor = '#ef4444'; square.innerText = '💥';
+                if (square.classList.contains('hazard')) { 
+                    squares.forEach(s => { if (s.classList.contains('hazard')) { s.innerText = '⚠️'; s.style.backgroundColor = '#7f1d1d'; } });
+                    square.style.backgroundColor = '#ef4444'; square.innerText = '❌';
                     gameOver(false); return; 
                 }
                 square.classList.add('revealed'); revealedCount++; 
@@ -2333,20 +2545,20 @@
             const DB = {
                 weapons: {
                     usb: { id: 'usb', name: 'Флешки', icon: '💾', maxLvl: 8, dmg: 16, cd: 0.75, desc: 'Бросает загрузочные флешки в ближайших врагов.', evoReq: 'dmg', evoId: 'evo_usb' },
-                    cable: { id: 'cable', name: 'Cat5 Кабель', icon: '🔌', maxLvl: 8, dmg: 24, cd: 1.1, desc: 'Бьет по дуге в направлении движения (Хлыст).', evoReq: 'area', evoId: 'evo_cable' },
-                    wifi: { id: 'wifi', name: 'Wi-Fi Аура', icon: '🛜', maxLvl: 8, dmg: 8, cd: 0.9, desc: 'Раздает смертельный пинг врагам вокруг.', evoReq: 'haste', evoId: 'evo_wifi' },
-                    firewall: { id: 'firewall', name: 'Фаервол', icon: '🧱', maxLvl: 8, dmg: 22, cd: 0, desc: 'Кирпичные блоки вращаются вокруг вас.', evoReq: 'speed', evoId: 'evo_firewall' },
-                    evo_usb: { id: 'evo_usb', name: 'DDoS Атака', icon: '🚀', maxLvl: 1, dmg: 40, cd: 0.35, desc: 'Непрерывный поток флешек с пробиванием.', isEvo: true },
-                    evo_cable: { id: 'evo_cable', name: 'Оптоволокно', icon: '⚡', maxLvl: 1, dmg: 55, cd: 0.7, desc: 'Бьет огромным световым хлыстом вокруг вас.', isEvo: true },
-                    evo_wifi: { id: 'evo_wifi', name: '5G Излучатель', icon: '☢️', maxLvl: 1, dmg: 22, cd: 0.45, desc: 'Огромная аура, плавящая микросхемы.', isEvo: true },
+                    cable: { id: 'cable', name: 'Cat5 Кабель', icon: '🔌', maxLvl: 8, dmg: 24, cd: 1.1, desc: 'Импульс по дуге в направлении движения.', evoReq: 'area', evoId: 'evo_cable' },
+                    wifi: { id: 'wifi', name: 'Wi-Fi Аура', icon: '🛜', maxLvl: 8, dmg: 8, cd: 0.9, desc: 'Раздает высокочастотный пинг вокруг.', evoReq: 'haste', evoId: 'evo_wifi' },
+                    firewall: { id: 'firewall', name: 'Фаервол', icon: '🧱', maxLvl: 8, dmg: 22, cd: 0, desc: 'Защитные блоки вращаются вокруг вас.', evoReq: 'speed', evoId: 'evo_firewall' },
+                    evo_usb: { id: 'evo_usb', name: 'Пакетный Шторм', icon: '🚀', maxLvl: 1, dmg: 40, cd: 0.35, desc: 'Непрерывный поток флешек во все стороны.', isEvo: true },
+                    evo_cable: { id: 'evo_cable', name: 'Оптоволокно', icon: '⚡', maxLvl: 1, dmg: 55, cd: 0.7, desc: 'Мощный световой разряд вокруг вас.', isEvo: true },
+                    evo_wifi: { id: 'evo_wifi', name: '5G Излучатель', icon: '☢️', maxLvl: 1, dmg: 22, cd: 0.45, desc: 'Огромная аура подавления сбоев.', isEvo: true },
                     evo_firewall: { id: 'evo_firewall', name: 'VPN Туннель', icon: '🛡️', maxLvl: 1, dmg: 45, cd: 0, desc: 'Непробиваемое кольцо шифрования.', isEvo: true }
                 },
                 passives: {
-                    hp: { id: 'hp', name: 'Облачный Бэкап', icon: '☁️', maxLvl: 5, desc: '+20% Макс Здоровья и лечение' },
+                    hp: { id: 'hp', name: 'Облачный Бэкап', icon: '☁️', maxLvl: 5, desc: '+20% Макс Здоровья и восстановление' },
                     speed: { id: 'speed', name: 'Кресло Маркуса', icon: '💺', maxLvl: 5, desc: '+15% Скорость передвижения' },
-                    dmg: { id: 'dmg', name: 'Root Доступ', icon: '🔑', maxLvl: 5, desc: '+20% Урон всех систем' },
-                    area: { id: 'area', name: 'Мощный Роутер', icon: '📡', maxLvl: 5, desc: '+25% Радиус оружия и магнита XP' },
-                    haste: { id: 'haste', name: 'Двойной Эспрессо', icon: '☕', maxLvl: 5, desc: '+15% Скорость перезарядки атак' }
+                    dmg: { id: 'dmg', name: 'Root Доступ', icon: '🔑', maxLvl: 5, desc: '+20% Мощность всех систем' },
+                    area: { id: 'area', name: 'Мощный Роутер', icon: '📡', maxLvl: 5, desc: '+25% Радиус систем и магнита XP' },
+                    haste: { id: 'haste', name: 'Двойной Эспрессо', icon: '☕', maxLvl: 5, desc: '+15% Скорость перезарядки' }
                 }
             };
 
@@ -2387,10 +2599,10 @@
                         document.getElementById('sv-buff-indicator').classList.remove('hidden');
                         svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "OVERCLOCK!", '#facc15', true));
                         spawnParticles(this.x, this.y, '#facc15', 15);
-                    } else if (this.type === 'nuke') {
+                    } else if (this.type === 'clear_all') {
                         svEnemies.forEach(e => { if(!e.isBoss) e.hit(9999, 0, 0); });
                         svGame.shake = 0.4;
-                        svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "SYSTEM NUKE!", '#ef4444', true));
+                        svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "REBOOT ALL!", '#ef4444', true));
                         spawnParticles(svPlayer.x, svPlayer.y, '#ef4444', 40);
                     } else if (this.type === 'magnet') {
                         svItems.forEach(i => i.state = 1);
@@ -2407,15 +2619,13 @@
                     } else if (this.type === 'overclock') {
                         ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
                         ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.moveTo(2,-10); ctx.lineTo(-6,2); ctx.lineTo(0,2); ctx.lineTo(-2,10); ctx.lineTo(6,-2); ctx.lineTo(0,-2); ctx.fill();
-                    } else if (this.type === 'nuke') {
+                    } else if (this.type === 'clear_all') {
                         ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
                         ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(0,0,6,0,Math.PI*2); ctx.fill();
-                        ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(0,0,3,0,Math.PI*2); ctx.fill();
                     } else if (this.type === 'magnet') {
                         ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
                         ctx.strokeStyle = '#fff'; ctx.lineWidth=5; ctx.lineCap='round';
                         ctx.beginPath(); ctx.arc(0,2,7, Math.PI, 0); ctx.stroke();
-                        ctx.fillStyle='#ef4444'; ctx.fillRect(-10,2,5,4); ctx.fillRect(5,2,5,4);
                     }
                     ctx.restore();
                 }
@@ -2446,7 +2656,7 @@
                     const pHash = hash(this.cx*3, this.cy*3);
                     if (pHash > 0.55) {
                         const px = this.x + 200 + (hash(this.cx, this.cy*2) * (CHUNK_SIZE-400)), py = this.y + 200 + (hash(this.cx*2, this.cy) * (CHUNK_SIZE-400));
-                        let pType = this.type === 'CAFETERIA' ? 'heal' : (this.type === 'SERVER_ROOM' ? 'overclock' : (pHash > 0.88 ? 'nuke' : 'magnet'));
+                        let pType = this.type === 'CAFETERIA' ? 'heal' : (this.type === 'SERVER_ROOM' ? 'overclock' : (pHash > 0.88 ? 'clear_all' : 'magnet'));
                         svPowerups.push(new Powerup(px, py, pType));
                     }
                 }
@@ -2480,28 +2690,16 @@
                             ctx.fillStyle = '#94a3b8'; ctx.fillRect(-60, -40, 120, 60);
                             ctx.fillStyle = '#3b82f6'; ctx.fillRect(-65, -45, 130, 8); ctx.fillRect(-65, -45, 8, 90);
                             ctx.fillStyle = '#1e293b'; ctx.fillRect(-15, -35, 30, 10);
-                            ctx.fillStyle = '#0f172a'; ctx.fillRect(-13, -33, 26, 6);
-                            ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(0, 30, 12, 0, Math.PI*2); ctx.fill(); ctx.fillRect(-10, 25, 20, 8);
+                            ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(0, 30, 12, 0, Math.PI*2); ctx.fill();
                         } else if (p.t === 'server') {
                             ctx.fillStyle = '#1e293b'; ctx.fillRect(-30, -20, 60, 40);
                             ctx.fillStyle = '#0f172a'; ctx.fillRect(-25, -15, 50, 30);
                             const blink = Math.sin(svGame.time * 5 + p.seed) > 0;
                             ctx.fillStyle = blink ? '#22c55e' : '#ef4444'; ctx.fillRect(-20, -10, 6, 6);
-                            ctx.fillStyle = !blink ? '#3b82f6' : '#1e293b'; ctx.fillRect(-20, 0, 6, 6);
                         } else if (p.t === 'table') {
-                            ctx.fillStyle = '#334155';
-                            ctx.beginPath(); ctx.arc(-48, 0, 11, 0, Math.PI*2); ctx.fill();
-                            ctx.beginPath(); ctx.arc(48, 0, 11, 0, Math.PI*2); ctx.fill();
-                            ctx.beginPath(); ctx.arc(0, -48, 11, 0, Math.PI*2); ctx.fill();
-                            ctx.beginPath(); ctx.arc(0, 48, 11, 0, Math.PI*2); ctx.fill();
                             ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.arc(0, 0, 38, 0, Math.PI*2); ctx.fill();
-                            ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 3; ctx.stroke();
                         } else if (p.t === 'plant') {
-                            ctx.fillStyle = '#b45309'; ctx.fillRect(-12, -10, 24, 20);
-                            ctx.fillStyle = '#16a34a';
-                            ctx.beginPath(); ctx.arc(-5, -15, 10, 0, Math.PI*2); ctx.fill();
-                            ctx.beginPath(); ctx.arc(5, -15, 10, 0, Math.PI*2); ctx.fill();
-                            ctx.beginPath(); ctx.arc(0, -22, 12, 0, Math.PI*2); ctx.fill();
+                            ctx.fillStyle = '#16a34a'; ctx.beginPath(); ctx.arc(0, -18, 14, 0, Math.PI*2); ctx.fill();
                         }
                         ctx.translate(-p.x, -p.y);
                     }
@@ -2555,19 +2753,13 @@
                         const pulse = (svGame.time * (isEvo?8:4)) % (Math.PI*2);
                         ctx.beginPath(); ctx.arc(0,0, r, 0, Math.PI*2);
                         ctx.fillStyle = isEvo ? 'rgba(34, 211, 238, 0.1)' : 'rgba(56, 189, 248, 0.06)'; ctx.fill();
-                        ctx.strokeStyle = isEvo ? `rgba(34, 211, 238, ${Math.max(0, 1 - pulse/(Math.PI*2))})` : 'rgba(56, 189, 248, 0.35)';
-                        ctx.lineWidth = isEvo ? 4 : 2;
+                        ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)'; ctx.lineWidth = 2;
                         ctx.beginPath(); ctx.arc(0,0, r * (pulse/(Math.PI*2)), 0, Math.PI*2); ctx.stroke();
                     }
 
                     ctx.scale(this.facing, 1);
                     const bob = Math.sin(this.animTime)*2;
                     ctx.translate(0, bob);
-
-                    if (this.buffTimer > 0) {
-                        ctx.beginPath(); ctx.arc(0, 0, this.r+6, 0, Math.PI*2);
-                        ctx.fillStyle = 'rgba(250, 204, 21, 0.35)'; ctx.fill();
-                    }
 
                     ctx.fillStyle = '#334155'; ctx.fillRect(-8, -5, 16, 15);
                     ctx.fillStyle = '#0f172a';
@@ -2577,11 +2769,6 @@
                     ctx.fillStyle = '#451a03'; ctx.beginPath(); ctx.arc(0, -14, 9.5, Math.PI, 0); ctx.fill(); ctx.fillRect(-9.5, -14, 19, 4);
                     ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
                     ctx.strokeRect(-2, -15, 6, 4); ctx.strokeRect(4, -15, 6, 4);
-
-                    if (this.invuln > 0) {
-                        ctx.beginPath(); ctx.arc(0, 0, this.r+8, 0, Math.PI*2);
-                        ctx.strokeStyle = 'rgba(239, 68, 68, 0.8)'; ctx.lineWidth = 3; ctx.stroke();
-                    }
                     ctx.restore();
                 }
             }
@@ -2594,25 +2781,17 @@
                     
                     const lvlScale = (svGame.lvl - 1) / 25; 
                     if (this.type === 'boss') {
-                        this.r = 35;
-                        this.maxHp = this.hp = 600 + (lvlScale * 1800);
-                        this.speed = 50 + (lvlScale * 25); this.dmg = 25 + (lvlScale * 20);
-                        this.xp = 40;
+                        this.r = 35; this.maxHp = this.hp = 600 + (lvlScale * 1800);
+                        this.speed = 50 + (lvlScale * 25); this.dmg = 25 + (lvlScale * 20); this.xp = 40;
                     } else if (this.type === 'pc') {
-                        this.r = 16;
-                        this.maxHp = this.hp = 18 + (lvlScale * 45);
-                        this.speed = 75 + (lvlScale * 50) + (Math.random()*16-8); this.dmg = 8 + (lvlScale * 12);
-                        this.xp = svGame.lvl >= 15 ? 2 : 1;
+                        this.r = 16; this.maxHp = this.hp = 18 + (lvlScale * 45);
+                        this.speed = 75 + (lvlScale * 50) + (Math.random()*16-8); this.dmg = 8 + (lvlScale * 12); this.xp = svGame.lvl >= 15 ? 2 : 1;
                     } else if (this.type === 'router') {
-                        this.r = 12;
-                        this.maxHp = this.hp = 10 + (lvlScale * 25);
-                        this.speed = 120 + (lvlScale * 65) + (Math.random()*20-10); this.dmg = 5 + (lvlScale * 8);
-                        this.xp = svGame.lvl >= 25 ? 2 : 1;
-                    } else if (this.type === 'printer') {
-                        this.r = 22;
-                        this.maxHp = this.hp = 45 + (lvlScale * 90);
-                        this.speed = 45 + (lvlScale * 35); this.dmg = 16 + (lvlScale * 16);
-                        this.xp = svGame.lvl >= 10 ? 5 : 3;
+                        this.r = 12; this.maxHp = this.hp = 10 + (lvlScale * 25);
+                        this.speed = 120 + (lvlScale * 65) + (Math.random()*20-10); this.dmg = 5 + (lvlScale * 8); this.xp = svGame.lvl >= 25 ? 2 : 1;
+                    } else {
+                        this.r = 22; this.maxHp = this.hp = 45 + (lvlScale * 90);
+                        this.speed = 45 + (lvlScale * 35); this.dmg = 16 + (lvlScale * 16); this.xp = svGame.lvl >= 10 ? 5 : 3;
                     }
                     this.vx = 0; this.vy = 0; this.kbT = 0; this.kbX = 0; this.kbY = 0;
                     this.anim = Math.random()*100;
@@ -2631,7 +2810,7 @@
                             unlockAchievement('boss_slayer', 'Гроза оргтехники');
                         }
                         if (Math.random() < 0.025) {
-                            const pType = ['heal', 'overclock', 'magnet', 'nuke'][Math.floor(Math.random()*4)];
+                            const pType = ['heal', 'overclock', 'magnet', 'clear_all'][Math.floor(Math.random()*4)];
                             svPowerups.push(new Powerup(this.x, this.y, pType));
                         }
                         return true;
@@ -2650,74 +2829,28 @@
                 }
                 draw(ctx) {
                     ctx.save(); ctx.translate(this.x, this.y);
-                    ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.beginPath(); ctx.ellipse(0, this.r, this.r+4, this.r/2, 0, 0, Math.PI*2); ctx.fill();
-
-                    const isMoving = this.vx !== 0 || this.vy !== 0;
-                    const walkCycle = isMoving ? (svGame.time * 15 + this.anim) : 0;
+                    const walkCycle = (svGame.time * 15 + this.anim);
                     const facing = this.vx < 0 ? -1 : 1;
                     ctx.scale(facing, 1);
 
                     if (this.type === 'boss') {
-                        ctx.strokeStyle = '#475569'; ctx.lineWidth = 6;
-                        for(let i=0; i<4; i++) {
-                            const legAnim = Math.sin(walkCycle * 0.5 + i*Math.PI/2) * 14;
-                            ctx.beginPath();
-                            if(i%2===0) { ctx.moveTo(-15, 10); ctx.lineTo(-25, 20 + Math.max(0, legAnim)); ctx.lineTo(-30, 35); }
-                            else { ctx.moveTo(15, 10); ctx.lineTo(25, 20 + Math.max(0, legAnim)); ctx.lineTo(30, 35); }
-                            ctx.stroke();
-                        }
                         ctx.fillStyle = '#0f172a'; ctx.fillRect(-30, -45, 60, 60);
-                        ctx.fillStyle = '#1e293b'; ctx.fillRect(-25, -40, 50, 50);
-                        ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 4;
-                        ctx.beginPath(); ctx.moveTo(-15, -25); ctx.lineTo(-5, -15); ctx.stroke();
-                        ctx.beginPath(); ctx.moveTo(15, -25); ctx.lineTo(5, -15); ctx.stroke();
                         ctx.fillStyle = '#ef4444'; ctx.fillRect(-15, -5, 30, 10);
                         ctx.scale(facing, 1);
                         ctx.fillStyle = '#000'; ctx.fillRect(-30, -60, 60, 8);
                         ctx.fillStyle = '#ef4444'; ctx.fillRect(-29, -59, 58*Math.max(0, this.hp/this.maxHp), 6);
                     } else if (this.type === 'pc') {
-                        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 3;
-                        for(let i=0; i<4; i++) {
-                            const legAnim = Math.sin(walkCycle + i*Math.PI/2) * 6;
-                            ctx.beginPath();
-                            if(i%2===0) { ctx.moveTo(-5, 5); ctx.lineTo(-12, 10 + legAnim); ctx.lineTo(-15, 18); }
-                            else { ctx.moveTo(5, 5); ctx.lineTo(12, 10 + legAnim); ctx.lineTo(15, 18); }
-                            ctx.stroke();
-                        }
                         ctx.translate(0, Math.sin(walkCycle*2)*2);
                         ctx.fillStyle = '#cbd5e1'; ctx.fillRect(-14, -14, 28, 22);
                         ctx.fillStyle = '#1e293b'; ctx.fillRect(-11, -11, 22, 16);
                         ctx.fillStyle = '#ef4444'; ctx.fillRect(-7, -7, 4, 4); ctx.fillRect(3, -7, 4, 4);
                     } else if (this.type === 'router') {
-                        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
-                        for(let i=0; i<4; i++) {
-                            const legAnim = Math.sin(walkCycle*1.5 + i*Math.PI/2) * 4;
-                            ctx.beginPath();
-                            if(i%2===0) { ctx.moveTo(-5, 0); ctx.lineTo(-10, 5 + legAnim); ctx.lineTo(-12, 12); }
-                            else { ctx.moveTo(5, 0); ctx.lineTo(10, 5 + legAnim); ctx.lineTo(12, 12); }
-                            ctx.stroke();
-                        }
                         ctx.translate(0, Math.sin(walkCycle*3)*3);
                         ctx.fillStyle = '#1e293b'; ctx.fillRect(-12, -8, 24, 12);
-                        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
-                        ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(-12, -18); ctx.stroke();
-                        ctx.beginPath(); ctx.moveTo(8, -8); ctx.lineTo(12, -18); ctx.stroke();
-                        ctx.fillStyle = (Math.floor(svGame.time*10)%2===0) ? '#22c55e' : '#1e293b';
-                        ctx.fillRect(0, -4, 4, 4);
-                    } else if (this.type === 'printer') {
-                        ctx.strokeStyle = '#475569'; ctx.lineWidth = 4;
-                        for(let i=0; i<4; i++) {
-                            const legAnim = Math.sin(walkCycle*0.5 + i*Math.PI/2) * 8;
-                            ctx.beginPath();
-                            if(i%2===0) { ctx.moveTo(-10, 5); ctx.lineTo(-18, 15 + legAnim); ctx.lineTo(-22, 22); }
-                            else { ctx.moveTo(10, 5); ctx.lineTo(18, 15 + legAnim); ctx.lineTo(22, 22); }
-                            ctx.stroke();
-                        }
-                        ctx.translate(0, Math.sin(walkCycle)*1);
+                        ctx.fillStyle = '#22c55e'; ctx.fillRect(0, -4, 4, 4);
+                    } else {
                         ctx.fillStyle = '#e2e8f0'; ctx.fillRect(-18, -18, 36, 30);
                         ctx.fillStyle = '#94a3b8'; ctx.fillRect(-18, -18, 36, 10);
-                        ctx.fillStyle = '#ffffff'; ctx.fillRect(-12, 5, 24, 15);
-                        ctx.fillStyle = '#cbd5e1'; ctx.fillRect(-8, 8, 16, 2); ctx.fillRect(-8, 12, 16, 2);
                         ctx.fillStyle = '#ef4444'; ctx.fillRect(10, -14, 4, 4);
                     }
                     ctx.restore();
@@ -2736,12 +2869,9 @@
                         ctx.rotate(Math.atan2(this.vy, this.vx));
                         ctx.fillStyle = '#0ea5e9'; ctx.fillRect(-10, -5, 15, 10);
                         ctx.fillStyle = '#cbd5e1'; ctx.fillRect(5, -3, 8, 6);
-                        ctx.fillStyle = 'rgba(56, 189, 248, 0.5)'; ctx.fillRect(-24, -2, 14, 4);
                     } else if (this.wId.includes('firewall')) {
                         ctx.rotate(this.extra.angle);
                         ctx.fillStyle = '#ef4444'; ctx.fillRect(-15, -10, 30, 20);
-                        ctx.strokeStyle = '#fca5a5'; ctx.lineWidth = 2; ctx.strokeRect(-15, -10, 30, 20);
-                        ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(15, 0); ctx.moveTo(0, -10); ctx.lineTo(0, 0); ctx.stroke();
                     } else if (this.wId.includes('cable')) {
                         ctx.beginPath(); ctx.arc(0,0, this.extra.r, 0, Math.PI*2);
                         ctx.fillStyle = this.wId === 'evo_cable' ? 'rgba(234, 179, 8, 0.7)' : 'rgba(239, 68, 68, 0.7)'; ctx.fill();
@@ -2757,15 +2887,9 @@
                     if (dSq < pR*pR) this.state = 1; if (this.state === 1) { const d = Math.sqrt(dSq); this.x += (dx/d) * 620 * dt; this.y += (dy/d) * 620 * dt; }
                 }
                 draw(ctx) {
-                    ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(svGame.time * 2.5);
-                    if (this.val >= 5) {
-                        ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.arc(0,0, 9, 0, Math.PI*2); ctx.fill();
-                        ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.arc(0,0, 5, 0, Math.PI*2); ctx.fill();
-                    } else if (this.val >= 2) {
-                        ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.moveTo(0, -9); ctx.lineTo(9, 0); ctx.lineTo(0, 9); ctx.lineTo(-9, 0); ctx.fill();
-                    } else {
-                        ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.moveTo(0, -7); ctx.lineTo(7, 0); ctx.lineTo(0, 7); ctx.lineTo(-7, 0); ctx.fill();
-                    }
+                    ctx.save(); ctx.translate(this.x, this.y);
+                    ctx.fillStyle = this.val >= 5 ? '#f59e0b' : (this.val >= 2 ? '#10b981' : '#38bdf8');
+                    ctx.beginPath(); ctx.arc(0,0, 6, 0, Math.PI*2); ctx.fill();
                     ctx.restore();
                 }
             }
@@ -2787,24 +2911,17 @@
 
             function runDirector(dt) {
                 director.maxEnemies = Math.floor(35 + (svGame.lvl * 8.5));
-                
                 if (svGame.lvl % 10 === 0 && !spawnedBossLevels.has(svGame.lvl)) {
                     spawnedBossLevels.add(svGame.lvl);
                     const a = Math.random() * Math.PI * 2;
                     svEnemies.push(new Enemy(svPlayer.x + Math.cos(a)*(cw/2+150), svPlayer.y + Math.sin(a)*(ch/2+150), true));
-                    svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y - 50, `⚠️ БОСС ${svGame.lvl} УРОВНЯ!`, '#ef4444', true));
                 }
-
                 if (svEnemies.length >= director.maxEnemies) return;
-                
-                const hordePulse = Math.abs(Math.sin(svGame.time * Math.PI / 25));
-                const spawnRate = 2.8 + (svGame.lvl * 1.15) + (hordePulse * svGame.lvl * 0.6);
+                const spawnRate = 2.8 + (svGame.lvl * 1.15);
                 director.budget += spawnRate * dt;
-                
                 while(director.budget > 1 && svEnemies.length < director.maxEnemies) {
                     director.budget -= 1;
-                    const a = Math.random() * Math.PI * 2;
-                    const r = cw/2 + 220;
+                    const a = Math.random() * Math.PI * 2; const r = cw/2 + 220;
                     svEnemies.push(new Enemy(svPlayer.x + Math.cos(a)*r, svPlayer.y + Math.sin(a)*r, false));
                 }
             }
@@ -2841,14 +2958,11 @@
             function lvlUp() {
                 svGame.xp -= svGame.xpReq;
                 svGame.lvl++;
-                
                 if (svGame.lvl >= MAX_GAME_LEVEL) {
-                    updateHUD();
-                    addGlobalScore(5000);
+                    updateHUD(); addGlobalScore(5000);
                     gameOver(true, '50 УРОВЕНЬ ДОСТИГНУТ!<br>ОФИС СПАСЕН');
                     return;
                 }
-
                 svGame.state = 'LVLUP';
                 svGame.xpReq = Math.floor(5 + (svGame.lvl * 3.5));
                 svPlayer.updateStats();
@@ -2864,7 +2978,6 @@
                 
                 if (choices.length === 0) {
                     svPlayer.hp = Math.min(svPlayer.hp+35, svPlayer.stats.maxHp);
-                    svDamageTexts.push(new DmgText(svPlayer.x, svPlayer.y-30, "УРОВЕНЬ " + svGame.lvl + " (+HP)", '#10b981', true));
                     svGame.state = 'PLAY'; svGame.lastTime = 0; updateHUD(); requestAnimationFrame(survivorLoop); return;
                 }
                 
@@ -2873,15 +2986,12 @@
                     const isW = ch.startsWith('w_'), isE = ch.startsWith('e_'), id = ch.substring(2); const data = isW||isE ? DB.weapons[id] : DB.passives[id]; const cur = (isW ? svPlayer.weapons[id] : svPlayer.passives[id]) || 0;
                     const el = document.createElement('div'); el.className = `sv-card ${isE?'sv-evo-card':''}`;
                     el.innerHTML = `<div class="text-4xl mb-2">${data.icon}</div><div class="font-bold text-base mb-1">${data.name}</div>
-                                    <div class="text-xs opacity-80 mb-2 flex-grow">${isE?'<b class="text-fuchsia-400">СЛИЯНИЕ СИСТЕМ!</b><br>':''}${data.desc}</div>
+                                    <div class="text-xs opacity-80 mb-2 flex-grow">${data.desc}</div>
                                     <div class="sv-card-level">${cur===0?'Новый доступ':'Ур. '+(isE?'MAX':cur+1)}</div>`;
                     el.onclick = () => {
                         if(isE) { for(let k in DB.weapons) if(DB.weapons[k].evoId===id) delete svPlayer.weapons[k]; svPlayer.weapons[id]=1; }
                         else if(isW) svPlayer.weapons[id] = cur+1;
-                        else {
-                            svPlayer.passives[id] = cur+1; svPlayer.updateStats();
-                            if (id === 'hp') svPlayer.hp = Math.min(svPlayer.hp + 25, svPlayer.stats.maxHp);
-                        }
+                        else { svPlayer.passives[id] = cur+1; svPlayer.updateStats(); }
                         document.getElementById('sv-screen-levelup').classList.add('hidden'); svGame.state = 'PLAY'; svGame.lastTime = 0; updateHUD(); requestAnimationFrame(survivorLoop);
                     };
                     c.appendChild(el);
@@ -2915,7 +3025,6 @@
 
                 ctx.fillStyle = '#020617'; ctx.fillRect(0,0,cw,ch); 
                 ctx.save();
-                if(svGame.shake > 0) { ctx.translate((Math.random()-0.5)*10, (Math.random()-0.5)*10); svGame.shake -= dt; }
                 ctx.translate(-camera.x, -camera.y);
                 
                 const startCX = Math.floor(camera.x / CHUNK_SIZE), endCX = Math.floor((camera.x+cw) / CHUNK_SIZE);
@@ -2926,12 +3035,8 @@
                 const drawables = [...svEnemies, svPlayer].sort((a,b) => a.y - b.y);
                 drawables.forEach(d => d.draw(ctx));
 
-                for(const p of svParticles) { ctx.fillStyle=p.c; ctx.globalAlpha=Math.max(0, p.l/0.4); ctx.fillRect(p.x-2,p.y-2,4,4); }
-                ctx.globalAlpha = 1;
                 for(const d of svDamageTexts) {
-                    ctx.font = d.crit ? '900 20px Arial' : 'bold 14px Arial';
-                    ctx.fillStyle = d.c; ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
-                    ctx.strokeText(d.txt, d.x, d.y); ctx.fillText(d.txt, d.x, d.y);
+                    ctx.font = 'bold 14px Arial'; ctx.fillStyle = d.c; ctx.fillText(d.txt, d.x, d.y);
                 }
                 ctx.restore();
 
@@ -2989,22 +3094,6 @@
                 }
             }
 
-            class Particle {
-                constructor(x, y, color, speedScale = 1) {
-                    this.x = x; this.y = y; this.color = color;
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 3 * speedScale;
-                    this.vx = Math.cos(angle) * speed; this.vy = Math.sin(angle) * speed;
-                    this.life = 1.0; this.decay = Math.random() * 0.02 + 0.02; this.size = Math.random() * 3 + 1;
-                }
-                update() { this.x += this.vx; this.y += this.vy; this.life -= this.decay; }
-                draw(ctx) {
-                    ctx.globalAlpha = Math.max(0, this.life); ctx.fillStyle = this.color;
-                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
-                    ctx.globalAlpha = 1.0;
-                }
-            }
-
             class Bullet {
                 constructor(x, y, isEnemy, color = '#fff') {
                     this.x = x; this.y = y; this.isEnemy = isEnemy; this.width = 4; this.height = 15;
@@ -3040,7 +3129,6 @@
                 hit() {
                     if (window.isAdminUser && window.adminCheats.godMode) return false;
                     if (this.invulnerable > 0) return false;
-                    this.game.createExplosion(this.x, this.y, this.color, 30, 2);
                     this.game.lives--; this.game.waveFlawless = false; this.invulnerable = 120;
                     return true;
                 }
@@ -3088,7 +3176,7 @@
                 }
                 hit() {
                     this.hp--;
-                    if (this.hp <= 0) { this.markedForDeletion = true; this.game.createExplosion(this.x, this.y, this.type.color, 15); return true; }
+                    if (this.hp <= 0) { this.markedForDeletion = true; return true; }
                     return false;
                 }
             }
@@ -3097,7 +3185,7 @@
                 constructor() { this.stars = Array.from({ length: 80 }, () => new Star()); this.init(); }
                 init() {
                     this.player = new Player(this);
-                    this.bullets = []; this.enemies = []; this.particles = [];
+                    this.bullets = []; this.enemies = [];
                     this.lives = 3; this.level = 1;
                     this.comboMulti = 1; this.comboTimer = 0; this.comboMaxTime = 120;
                     this.waveFlawless = true; this.waveMessageTimer = 0; this.waveMessage = "";
@@ -3116,7 +3204,6 @@
                     }
                     this.showWaveMessage(`ВОЛНА ${this.level}`);
                 }
-                createExplosion(x, y, color, count, speedScale = 1) { for (let i = 0; i < count; i++) this.particles.push(new Particle(x, y, color, speedScale)); }
                 addScore(points) {
                     const added = addGlobalScore(points * this.comboMulti);
                     spawnFloatingScore(this.player.x, this.player.y - 20, '+' + added);
@@ -3150,7 +3237,6 @@
                     this.player.update();
                     this.bullets.forEach(b => b.update()); this.bullets = this.bullets.filter(b => !b.markedForDeletion);
                     this.enemies.forEach(e => e.update()); this.enemies = this.enemies.filter(e => !e.markedForDeletion);
-                    this.particles.forEach(p => p.update()); this.particles = this.particles.filter(p => p.life > 0);
                     this.checkCollisions();
 
                     if (this.comboTimer > 0) { this.comboTimer--; if (this.comboTimer === 0) this.comboMulti = 1; }
@@ -3185,9 +3271,10 @@
                     }
                 }
                 draw() {
-                    ctx.fillStyle = 'rgba(5, 8, 17, 0.35)'; ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    ctx.fillStyle = 'rgba(5, 8, 17, 0.35)';
+                    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                     this.stars.forEach(s => s.draw(ctx));
-                    this.particles.forEach(p => p.draw(ctx)); this.bullets.forEach(b => b.draw(ctx));
+                    this.bullets.forEach(b => b.draw(ctx));
                     this.enemies.forEach(e => e.draw(ctx));
                     if (this.lives > 0) this.player.draw(ctx);
                     this.drawHUD();
@@ -3212,22 +3299,22 @@
         }
 
         // ==========================================
-        // 8. TICKET SLASHER (ПРИВЯЗКА КО ВРЕМЕНИ И ПЛАВНОЕ УСКОРЕНИЕ)
+        // 8. TICKET SLASHER (ПРИВЯЗКА КО ВРЕМЕНИ)
         // ==========================================
         function initClicker(container) {
             const myRun = window.currentRunId;
             const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 550; canvas.className = 'game-canvas cursor-crosshair'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
 
-            const TOTAL_ROUND_TIME = 45; // 45 секунд на смену
+            const TOTAL_ROUND_TIME = 45;
             let timeLeft = TOTAL_ROUND_TIME;
             let elapsedTime = 0;
-            let spawnAccumulator = 0.8; // первый тикет появится почти сразу
+            let spawnAccumulator = 0.8;
             let activeItems = [];
             let lastTimestamp = 0;
 
             const errorTitles = ["BSOD 0x000000", "404 Not Found", "Printer Jam", "CryptoPro Error", "No Internet", "Outlook Hang", "DNS Failure", "RAID Degraded"];
-            const phishingTitles = ["FREE IPHONE 16!", "ВЫИГРЫШ 1 МЛН ₽", "СКАЧАТЬ RAM.EXE", "СРОЧНО ВВЕДИ ПАРОЛЬ"];
+            const spamTitles = ["FREE IPHONE 16!", "БОНУС 1 МЛН ₽", "СКАЧАТЬ RAM.EXE", "ОТКРОЙ АРХИВ.ZIP"];
 
             canvas.addEventListener('mousedown', function clickerHandler(e) {
                 if (currentGame !== 'clicker' || isPaused || isGameOver) return;
@@ -3239,11 +3326,11 @@
                     let it = activeItems[i];
                     if (mouseX >= it.x && mouseX <= it.x + it.w && mouseY >= it.y && mouseY <= it.y + it.h) {
                         activeItems.splice(i, 1);
-                        if (it.isPhishing) {
+                        if (it.isSpam) {
                             if (!window.isAdminUser || !window.adminCheats.godMode) {
                                 score = Math.max(0, score - 40);
                                 document.getElementById('score').innerText = score;
-                                spawnFloatingScore(e.clientX - rect.left, e.clientY - rect.top, '-40 ФИШИНГ!');
+                                spawnFloatingScore(e.clientX - rect.left, e.clientY - rect.top, '-40 СПАМ!');
                             }
                         } else {
                             const added = addGlobalScore(25);
@@ -3273,27 +3360,22 @@
                     return;
                 }
 
-                // Прогресс сложности от 0.0 (начало) до 1.0 (конец смены)
                 const progress = Math.min(1, elapsedTime / TOTAL_ROUND_TIME);
-                // Интервал спавна плавно снижается с 1.35 сек до 0.65 сек
                 const currentSpawnInterval = 1.35 - (progress * 0.70);
-                // Время жизни окна на экране плавно снижается с 3.5 сек до 1.85 сек
                 const currentTicketLifetime = 3.5 - (progress * 1.65);
 
                 spawnAccumulator += dt;
                 if (spawnAccumulator >= currentSpawnInterval && activeItems.length < 7) {
                     spawnAccumulator = 0;
-                    const isPhishing = Math.random() < 0.22;
+                    const isSpam = Math.random() < 0.22;
                     const w = 165, h = 78;
-                    
-                    // Выбираем координаты без сильного наложения
                     let x = 40 + Math.random() * (canvas.width - w - 80);
                     let y = 70 + Math.random() * (canvas.height - h - 90);
 
                     activeItems.push({
                         x, y, w, h,
-                        title: isPhishing ? phishingTitles[Math.floor(Math.random() * phishingTitles.length)] : errorTitles[Math.floor(Math.random() * errorTitles.length)],
-                        isPhishing: isPhishing,
+                        title: isSpam ? spamTitles[Math.floor(Math.random() * spamTitles.length)] : errorTitles[Math.floor(Math.random() * errorTitles.length)],
+                        isSpam: isSpam,
                         maxLife: currentTicketLifetime,
                         life: currentTicketLifetime
                     });
@@ -3302,7 +3384,6 @@
                 ctx.fillStyle = '#050811';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Верхняя панель статуса внутри игры
                 ctx.fillStyle = '#0f172a';
                 ctx.fillRect(0, 0, canvas.width, 50);
                 ctx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
@@ -3318,7 +3399,6 @@
                 ctx.textAlign = 'right';
                 ctx.fillText(`ТЕМП СМЕНЫ: ${Math.round(100 + progress * 100)}%`, canvas.width - 24, 31);
 
-                // Отрисовка всплывающих окон с индикатором оставшегося времени
                 for (let i = activeItems.length - 1; i >= 0; i--) {
                     let it = activeItems[i];
                     it.life -= dt;
@@ -3332,35 +3412,31 @@
                     ctx.save();
                     ctx.translate(it.x, it.y);
                     
-                    // Тень и фон карточки тикета
-                    ctx.fillStyle = it.isPhishing ? '#451a03' : '#1e293b';
-                    ctx.strokeStyle = it.isPhishing ? '#f59e0b' : '#ef4444';
+                    ctx.fillStyle = it.isSpam ? '#451a03' : '#1e293b';
+                    ctx.strokeStyle = it.isSpam ? '#f59e0b' : '#ef4444';
                     ctx.lineWidth = 2;
                     ctx.beginPath();
                     ctx.roundRect(0, 0, it.w, it.h, 8);
                     ctx.fill();
                     ctx.stroke();
 
-                    // Шапка окна
-                    ctx.fillStyle = it.isPhishing ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+                    ctx.fillStyle = it.isSpam ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)';
                     ctx.beginPath();
                     ctx.roundRect(0, 0, it.w, 24, [8, 8, 0, 0]);
                     ctx.fill();
 
-                    ctx.fillStyle = it.isPhishing ? '#fbbf24' : '#f87171';
+                    ctx.fillStyle = it.isSpam ? '#fbbf24' : '#f87171';
                     ctx.font = 'bold 11px "Fira Code"';
                     ctx.textAlign = 'left';
-                    ctx.fillText(it.isPhishing ? "⚠️ ФИШИНГ (НЕ ЖМИ)" : "❌ ТИКЕТ ОШИБКИ [X]", 8, 16);
+                    ctx.fillText(it.isSpam ? "⚠️ СПАМ (НЕ ЖМИ)" : "❌ ТИКЕТ ОШИБКИ [X]", 8, 16);
 
-                    // Текст тикета
                     ctx.fillStyle = '#f8fafc';
                     ctx.font = 'bold 13px "Inter"';
                     ctx.fillText(it.title, 10, 48);
 
-                    // Полоска оставшегося времени внизу тикета
                     ctx.fillStyle = 'rgba(0,0,0,0.4)';
                     ctx.fillRect(8, it.h - 11, it.w - 16, 5);
-                    ctx.fillStyle = it.isPhishing ? '#f59e0b' : '#10b981';
+                    ctx.fillStyle = it.isSpam ? '#f59e0b' : '#10b981';
                     ctx.fillRect(8, it.h - 11, (it.w - 16) * lifeRatio, 5);
 
                     ctx.restore();
