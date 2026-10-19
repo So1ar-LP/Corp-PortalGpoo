@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Support Terminal — Relaxation Protocol</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Стабильные синхронные скрипты Firebase (работают даже с локального файла file://) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -86,9 +85,9 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .anim-card { animation: fadeInScale 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
-        .delay-1 { animation-delay: 0.05s; } .delay-2 { animation-delay: 0.10s; } .delay-3 { animation-delay: 0.15s; }
-        .delay-4 { animation-delay: 0.20s; } .delay-5 { animation-delay: 0.25s; } .delay-6 { animation-delay: 0.30s; }
-        .delay-7 { animation-delay: 0.35s; } .delay-8 { animation-delay: 0.40s; }
+        .delay-1 { animation-delay: 0.04s; } .delay-2 { animation-delay: 0.08s; } .delay-3 { animation-delay: 0.12s; }
+        .delay-4 { animation-delay: 0.16s; } .delay-5 { animation-delay: 0.20s; } .delay-6 { animation-delay: 0.24s; }
+        .delay-7 { animation-delay: 0.28s; } .delay-8 { animation-delay: 0.32s; }
 
         .screen { position: relative; height: 100vh; display: none; flex-direction: column; z-index: 1; width: 100%; }
         .screen.active { display: flex; animation: fadeInScale 0.3s ease-out; }
@@ -107,7 +106,7 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 16px 18px;
+            padding: 14px 16px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
@@ -135,7 +134,7 @@
         .btn {
             font-family: 'Fira Code', monospace;
             font-weight: 600;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
             background: var(--bg-card);
@@ -145,8 +144,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 6px;
+            font-size: 0.8rem;
         }
         .btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 14px var(--accent-glow); transform: translateY(-1px); }
         .btn:active { transform: translateY(0); }
@@ -161,16 +160,17 @@
 
         .input-tech {
             background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
-            font-family: 'Fira Code', monospace; font-size: 0.95rem; padding: 10px 14px; border-radius: 10px; outline: none; width: 100%; transition: all 0.2s;
+            font-family: 'Fira Code', monospace; font-size: 0.9rem; padding: 9px 13px; border-radius: 10px; outline: none; width: 100%; transition: all 0.2s;
         }
         .input-tech:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
-        .lb-tab, .admin-tab, .right-panel-tab {
-            font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 600; padding: 6px 8px;
-            border-radius: 8px; border: 1px solid transparent; color: var(--text-muted); background: transparent; cursor: pointer; transition: all 0.2s;
+        .lb-tab, .admin-tab {
+            font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 600; padding: 7px 6px;
+            border-radius: 8px; border: 1px solid transparent; color: var(--text-muted); background: transparent;
+            cursor: pointer; transition: all 0.2s; text-align: center;
         }
-        .lb-tab:hover, .admin-tab:hover, .right-panel-tab:hover { color: var(--text-main); background: var(--bg-card); }
-        .lb-tab.active, .admin-tab.active, .right-panel-tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px var(--accent-glow); }
+        .lb-tab:hover, .admin-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.04); }
+        .lb-tab.active, .admin-tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 10px var(--accent-glow); }
 
         .lb-row { border-bottom: 1px solid var(--border-color); transition: background 0.15s; }
         .lb-row:hover { background: var(--bg-card-hover); }
@@ -192,12 +192,12 @@
         .floating-score { position: absolute; color: var(--accent); font-family: 'Fira Code', monospace; font-size: 1.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.6); pointer-events: none; animation: floatUpScore 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; z-index: 100; }
         @keyframes floatUpScore { 0% { opacity: 0; transform: translateY(10px) scale(0.7); } 25% { opacity: 1; transform: translateY(-5px) scale(1.1); } 100% { opacity: 0; transform: translateY(-45px) scale(1); } }
 
-        #game-over-overlay, #admin-modal {
+        #game-over-overlay, #admin-modal, #profile-modal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(7, 11, 20, 0.92); backdrop-filter: blur(10px); z-index: 100; display: none;
+            background: rgba(7, 11, 20, 0.90); backdrop-filter: blur(10px); z-index: 100; display: none;
             flex-direction: column; justify-content: center; align-items: center;
         }
-        body.light-theme #game-over-overlay, body.light-theme #admin-modal { background: rgba(241, 245, 249, 0.92); }
+        body.light-theme #game-over-overlay, body.light-theme #admin-modal, body.light-theme #profile-modal { background: rgba(241, 245, 249, 0.90); }
 
         @keyframes pulseAlert {
             0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
@@ -232,7 +232,7 @@
                 <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
             <h1 class="text-3xl font-extrabold tracking-tight font-mono-tech mb-1">SUPPORT.OS</h1>
-            <p class="mb-6 text-sm font-mono-tech" style="color: var(--text-muted);">v16.0 // ТЕРМИНАЛ РАЗГРУЗКИ</p>
+            <p class="mb-6 text-sm font-mono-tech" style="color: var(--text-muted);">v17.0 // ТЕРМИНАЛ РАЗГРУЗКИ</p>
             
             <form id="auth-form" onsubmit="handleAuth(event)" class="flex flex-col gap-4 text-left">
                 <div>
@@ -249,338 +249,286 @@
         </div>
     </div>
 
-    <!-- 2. ГЛАВНЫЙ ДАШБОРД -->
-    <div id="dashboard-screen" class="screen p-4 sm:p-6 max-w-[1600px] mx-auto gap-4">
-        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
-        <header class="panel px-6 py-3.5 flex flex-wrap justify-between items-center gap-4 shrink-0">
+    <!-- 2. ГЛАВНЫЙ ДАШБОРД (РАСПРЕДЕЛЕННАЯ КОМПОНОВКА) -->
+    <div id="dashboard-screen" class="screen p-4 sm:p-5 max-w-[1640px] mx-auto gap-4">
+        
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ С ИНТЕРАКТИВНОЙ КАРТОЧКОЙ ПРОФИЛЯ -->
+        <header class="panel px-5 py-3 flex flex-wrap justify-between items-center gap-4 shrink-0">
             <div class="flex items-center gap-4">
-                <div id="header-avatar-box" class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-2xl">
-                    🐧
-                </div>
-                <div>
-                    <div class="flex items-center gap-2.5 flex-wrap">
-                        <span class="text-xl font-extrabold tracking-tight font-mono-tech">SUPPORT.OS</span>
-                        <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono-tech flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>ONLINE
-                        </span>
-                        <span id="admin-badge" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono-tech font-bold">
-                            ROOT: ADMINMS
-                        </span>
+                <!-- Клик по профилю открывает модальное окно Профиля и Ачивок -->
+                <div onclick="openProfileModal()" class="flex items-center gap-3.5 px-3 py-1.5 rounded-xl border cursor-pointer transition-all hover:border-emerald-400" style="background: var(--bg-card); border-color: var(--border-color);" title="Нажмите, чтобы открыть профиль и медали">
+                    <div id="header-avatar-box" class="w-10 h-10 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-2xl shrink-0">
+                        🐧
                     </div>
-                    <div class="text-xs font-mono-tech mt-0.5 flex items-center gap-2 flex-wrap" style="color: var(--text-muted);">
-                        <span>Инженер: <span id="user-display-name" class="font-bold text-amber-400"></span></span>
-                        <span>•</span>
-                        <span id="user-rank-display" class="text-cyan-400 font-bold">Стажер (L1)</span>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="user-display-name" class="font-bold font-mono-tech text-sm text-amber-400">guest</span>
+                            <span id="header-elite-badge" class="hidden text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono-tech"></span>
+                            <span id="admin-badge" class="hidden text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono-tech font-bold">ROOT</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-[11px] font-mono-tech mt-0.5">
+                            <span id="user-rank-display" class="text-cyan-400 font-semibold">Стажер (L1)</span>
+                            <span style="color: var(--text-muted);">•</span>
+                            <span id="header-ach-summary" class="text-amber-400" title="Получено медалей">🏅 0/3</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="hidden xl:block flex-1 max-w-sm mx-4 ticker-wrap border px-3 py-1.5 rounded-lg text-xs font-mono-tech" style="border-color: var(--border-color); background: var(--bg-card); color: var(--text-muted);">
+            <!-- Живая бегущая строка -->
+            <div class="hidden xl:block flex-1 max-w-md mx-2 ticker-wrap border px-3 py-1.5 rounded-lg text-xs font-mono-tech" style="border-color: var(--border-color); background: var(--bg-card); color: var(--text-muted);">
                 <div id="global-ticker-text" class="ticker-move">
                     ⚡ [SYS_LOG]: Пинг до кофемашины: 1.4ms &nbsp;&bull;&nbsp; 🖨️ Принтер в бухгалтерии снова зажевал бумагу &nbsp;&bull;&nbsp; 🛡️ Фаервол отразил 1024 дурацких вопроса &nbsp;&bull;&nbsp; 💾 Бэкап базы рекордов: АКТИВЕН
                 </div>
             </div>
 
-            <div class="flex items-center gap-2.5">
-                <button id="open-admin-panel-btn" onclick="openAdminModal()" class="hidden btn btn-admin text-xs">[ 🛠️ АДМИН-ПАНЕЛЬ ]</button>
-                <button onclick="toggleFX()" id="fx-btn" class="btn text-xs" title="Включить/выключить анимацию фона">[ FX: ON ]</button>
-                <button onclick="toggleTheme()" id="theme-btn" class="btn text-xs">[ ТЕМА: ТЕМНАЯ ]</button>
+            <!-- Кнопки управления -->
+            <div class="flex items-center gap-2 flex-wrap">
+                <button onclick="openProfileModal()" class="btn text-xs">[ 👤 ПРОФИЛЬ & МЕДАЛИ ]</button>
+                <button id="open-admin-panel-btn" onclick="openAdminModal()" class="hidden btn btn-admin text-xs">[ 🛠️ АДМИН ]</button>
+                <button onclick="toggleFX()" id="fx-btn" class="btn text-xs" title="Анимация фона">[ FX: ON ]</button>
+                <button onclick="toggleTheme()" id="theme-btn" class="btn text-xs">[ ТЕМА ]</button>
                 <button onclick="logout()" class="btn btn-danger text-xs">[ ВЫХОД ]</button>
             </div>
         </header>
 
-        <!-- ОСНОВНОЙ КОНТЕНТ: ИГРЫ + ПРАВАЯ ПАНЕЛЬ -->
-        <div class="flex flex-col lg:flex-row gap-5 flex-1 min-h-0">
+        <!-- ОСНОВНАЯ РАБОЧАЯ ОБЛАСТЬ: ЛЕВАЯ ЧАСТЬ (ИГРЫ + КОММУНИКАЦИИ) И ПРАВАЯ ЧАСТЬ (ЧИСТЫЙ ЛИДЕРБОРД) -->
+        <div class="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
             
-            <!-- КАТАЛОГ ИГР -->
-            <main class="panel flex-[2] p-6 flex flex-col min-h-0 overflow-y-auto">
-                <div class="flex justify-between items-end mb-5 pb-3 border-b" style="border-color: var(--border-color);">
-                    <div>
-                        <h2 class="text-2xl font-bold tracking-tight">Протоколы разгрузки</h2>
-                        <p class="text-sm mt-0.5" style="color: var(--text-muted);">Выберите симуляцию для перерыва между тикетами</p>
-                    </div>
-                    <span class="text-xs font-mono-tech hidden sm:inline" style="color: var(--text-muted);">МОДУЛЕЙ АКТИВНО: <span id="active-modules-count">8</span></span>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 flex-1">
-                    <!-- SNAKE -->
-                    <div id="card-snake" onclick="startGame('snake')" class="game-card anim-card delay-1">
+            <!-- ЛЕВАЯ КОЛОНКА (2/3 ширины): КАТАЛОГ ИГР СВЕРХУ + КУРИЛКА И LIVE-ЛЕНТА СНИЗУ -->
+            <div class="flex-[2] flex flex-col gap-4 min-h-0">
+                
+                <!-- БЛОК 1: КАТАЛОГ ИГР -->
+                <main class="panel p-5 flex flex-col flex-1 min-h-0 overflow-y-auto">
+                    <div class="flex justify-between items-center mb-3.5 pb-2.5 border-b shrink-0" style="border-color: var(--border-color);">
                         <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
-                                    <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
+                            <h2 class="text-xl font-bold tracking-tight">Протоколы разгрузки</h2>
+                            <p class="text-xs mt-0.5" style="color: var(--text-muted);">Выберите симуляцию для перерыва между тикетами</p>
+                        </div>
+                        <span class="text-xs font-mono-tech hidden sm:inline" style="color: var(--text-muted);">АКТИВНО: <span id="active-modules-count" class="text-emerald-400 font-bold">8</span> / 8</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5 flex-1">
+                        <!-- SNAKE -->
+                        <div id="card-snake" onclick="startGame('snake')" class="game-card anim-card delay-1">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
+                                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
+                                    </div>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАДА</span>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАДА</span>
+                                <h3 class="text-base font-bold font-mono-tech mb-1">SNAKE.sh</h3>
+                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Классическая змейка. Медаль за 500 очков.</p>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">SNAKE.sh</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Змейка с очередью нажатий. Ачивка «Спринтер по кабелям» за 500 очков.</p>
+                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                <span>⌨️ Стрелки</span>
+                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            </div>
                         </div>
-                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>⌨️ Стрелки</span>
-                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
-                        </div>
-                    </div>
 
-                    <!-- TETRIS -->
-                    <div id="card-tetris" onclick="startGame('tetris')" class="game-card anim-card delay-2">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
-                                    <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
+                        <!-- TETRIS -->
+                        <div id="card-tetris" onclick="startGame('tetris')" class="game-card anim-card delay-2">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
+                                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
+                                    </div>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">ЛОГИКА</span>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">ЛОГИКА</span>
+                                <h3 class="text-base font-bold font-mono-tech mb-1">TETRIS.bat</h3>
+                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Укладка блоков с сеткой и тенью падения.</p>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">TETRIS.bat</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Укладка блоков с сеткой, тенью падения (Ghost Piece) и быстрым сбросом.</p>
+                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                <span>⌨️ Стрелки</span>
+                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            </div>
                         </div>
-                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>⌨️ Стрелки + Пробел</span>
-                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
-                        </div>
-                    </div>
 
-                    <!-- MINESWEEPER -->
-                    <div id="card-minesweeper" onclick="startGame('minesweeper')" class="game-card anim-card delay-3">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
-                                    <svg class="w-7 h-7 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
+                        <!-- MINESWEEPER -->
+                        <div id="card-minesweeper" onclick="startGame('minesweeper')" class="game-card anim-card delay-3">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
+                                        <svg class="w-6 h-6 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
+                                    </div>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">САПЕР</span>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">САПЕР</span>
+                                <h3 class="text-base font-bold font-mono-tech mb-1">MINESWEEP</h3>
+                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Поиск сбоев. Медаль за разминирование до 60с.</p>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">MINESWEEP</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Безопасный 1-й клик. Ачивка «Сапер без права на ошибку» за победу до 60 сек.</p>
+                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                <span>🖱️ ЛКМ / ПКМ</span>
+                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            </div>
                         </div>
-                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>🖱️ ЛКМ / ПКМ</span>
-                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
-                        </div>
-                    </div>
 
-                    <!-- BRICKS -->
-                    <div id="card-bricks" onclick="startGame('bricks')" class="game-card anim-card delay-4">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
-                                    <svg class="w-7 h-7 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
+                        <!-- BRICKS -->
+                        <div id="card-bricks" onclick="startGame('bricks')" class="game-card anim-card delay-4">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
+                                        <svg class="w-6 h-6 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
+                                    </div>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАНОИД</span>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАНОИД</span>
+                                <h3 class="text-base font-bold font-mono-tech mb-1">BRICKS.exe</h3>
+                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Пробивайте защиту фаервола. Волны +500 очков.</p>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">BRICKS.exe</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Разбивайте фаерволы с переходом на новые волны. Стрелки или мышь.</p>
+                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                <span>⌨️ Мышь / ◄ ►</span>
+                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            </div>
                         </div>
-                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>⌨️ Стрелки / Мышь</span>
-                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
-                        </div>
-                    </div>
 
-                    <!-- DINO -->
-                    <div id="card-dino" onclick="startGame('dino')" class="game-card anim-card delay-5">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
-                                    <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
+                        <!-- DINO -->
+                        <div id="card-dino" onclick="startGame('dino')" class="game-card anim-card delay-5">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
+                                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
+                                    </div>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">РАННЕР</span>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">РАННЕР</span>
+                                <h3 class="text-base font-bold font-mono-tech mb-1">DINO.exe</h3>
+                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Прыжки через серверные стойки и дронов.</p>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">DINO.exe</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Отзывчивый прыжок с контролем высоты. Перепрыгивайте стойки и баги.</p>
+                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                <span>⌨️ Пробел</span>
+                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            </div>
                         </div>
-                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>⌨️ Пробел / Вниз</span>
-                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
-                        </div>
-                    </div>
 
-                    <!-- SURVIVOR -->
-                    <div id="card-survivor" onclick="startGame('survivor')" class="game-card anim-card delay-6">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
-                                    <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
+                        <!-- SURVIVOR -->
+                        <div id="card-survivor" onclick="startGame('survivor')" class="game-card anim-card delay-6">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
+                                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
+                                    </div>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">50 УРОВНЕЙ</span>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">50 УРОВНЕЙ</span>
+                                <h3 class="text-base font-bold font-mono-tech mb-1">SURVIVOR</h3>
+                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Выживание против восставшей оргтехники.</p>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">SURVIVOR</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Ачивка «Гроза оргтехники» за победу над боссом. 50 уровней прокачки.</p>
+                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                <span>⌨️ WASD</span>
+                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            </div>
                         </div>
-                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>⌨️ WASD / Стрелки</span>
-                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
-                        </div>
-                    </div>
 
-                    <!-- GALAGA -->
-                    <div id="card-galaga" onclick="startGame('galaga')" class="game-card anim-card delay-7">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
-                                    <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M12 2L4 14l3 2 1-4h8l1 4 3-2-8-12z"/></svg>
+                        <!-- GALAGA -->
+                        <div id="card-galaga" onclick="startGame('galaga')" class="game-card anim-card delay-7">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
+                                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2L4 14l3 2 1-4h8l1 4 3-2-8-12z"/></svg>
+                                    </div>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">ШУТЕР</span>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">ШУТЕР</span>
+                                <h3 class="text-base font-bold font-mono-tech mb-1">GALAGA</h3>
+                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Отражайте волны пикирующих вирусов с комбо.</p>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">GALAGA</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Отражайте волны пикирующих вирусов и копите комбо-множитель.</p>
+                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                <span>⌨️ A/D + Пробел</span>
+                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            </div>
                         </div>
-                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>⌨️ A/D + Пробел</span>
-                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
-                        </div>
-                    </div>
 
-                    <!-- TICKET SLASHER (CLICKER) -->
-                    <div id="card-clicker" onclick="startGame('clicker')" class="game-card anim-card delay-8">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
-                                    <svg class="w-7 h-7 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+                        <!-- TICKET SLASHER -->
+                        <div id="card-clicker" onclick="startGame('clicker')" class="game-card anim-card delay-8">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="p-2 rounded-xl bg-emerald-500/10 card-icon">
+                                        <svg class="w-6 h-6 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+                                    </div>
+                                    <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">БАЛАНС</span>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">КЛИКЕР</span>
+                                <h3 class="text-base font-bold font-mono-tech mb-1">TICKET_SLASH</h3>
+                                <p class="text-xs leading-relaxed mb-3" style="color: var(--text-muted);">Плавное закрытие ошибок с таймером на каждом окне.</p>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">TICKET_SLASH</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Скоростное закрытие всплывающих ошибок без нажатия на фишинг.</p>
-                        </div>
-                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
-                            <span>🖱️ Клик мыши</span>
-                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            <div class="pt-2 border-t flex items-center justify-between text-[11px] font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                                <span>🖱️ Клик мыши</span>
+                                <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </main>
+                </main>
 
-            <!-- ПРАВАЯ ПАНЕЛЬ: ЛИДЕРЫ / ПРОФИЛЬ И АЧИВКИ / КУРИЛКА -->
-            <aside class="panel flex-1 lg:max-w-[460px] p-5 flex flex-col min-h-0 shrink-0">
-                <div class="flex gap-1.5 mb-4 p-1 rounded-xl shrink-0" style="background: var(--bg-card);" id="right-panel-tabs">
-                    <button data-tab="leaderboard" class="right-panel-tab active flex-1" onclick="switchRightPanelTab('leaderboard')">🏆 Лидеры</button>
-                    <button data-tab="profile" class="right-panel-tab flex-1" onclick="switchRightPanelTab('profile')">👤 Профиль & Ачивки</button>
-                    <button data-tab="chat" class="right-panel-tab flex-1" onclick="switchRightPanelTab('chat')">💬 Курилка</button>
-                </div>
-
-                <!-- СЕКЦИЯ 1: ЛИДЕРБОРД + LIVE ЛЕНТА -->
-                <div id="right-section-leaderboard" class="flex flex-col flex-1 min-h-0">
-                    <div class="flex justify-between items-center mb-2.5">
-                        <span class="text-xs font-mono-tech uppercase" style="color: var(--text-muted);">Рейтинг по дисциплинам</span>
-                        <div class="flex gap-1.5">
-                            <button id="admin-quick-add-btn" class="hidden btn btn-admin text-xs py-1 px-2" onclick="quickAddScorePrompt()">+ ЗАПИСЬ</button>
-                            <button id="admin-reset-btn" class="hidden btn btn-danger text-xs py-1 px-2" onclick="resetLeaderboard()">СБРОС</button>
+                <!-- БЛОК 2: НИЖНЯЯ КОММУНИКАЦИОННАЯ ПАНЕЛЬ (КУРИЛКА + LIVE-ЛЕНТА В 2 КОЛОНКИ) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-48 shrink-0">
+                    <!-- Чат Курилка -->
+                    <section class="panel p-4 flex flex-col min-h-0">
+                        <div class="flex justify-between items-center mb-2 pb-1.5 border-b shrink-0" style="border-color: var(--border-color);">
+                            <span class="text-xs font-mono-tech uppercase font-bold text-emerald-400">💬 Чат смены «Курилка»</span>
+                            <span class="text-[10px] font-mono-tech" style="color: var(--text-muted);">Онлайн-канал</span>
                         </div>
-                    </div>
+                        <div id="chat-messages-container" class="flex-1 overflow-y-auto space-y-1.5 pr-1 text-xs font-mono-tech mb-2">
+                            <div class="opacity-70 text-center py-4">Загрузка сообщений...</div>
+                        </div>
+                        <form onsubmit="sendChatMessage(event)" class="flex gap-2 shrink-0">
+                            <input type="text" id="chat-input" class="input-tech py-1.5 px-3 text-xs" placeholder="Написать коллегам..." autocomplete="off">
+                            <button type="submit" class="btn btn-primary py-1.5 px-3 text-xs shrink-0">ОТПРАВИТЬ</button>
+                        </form>
+                    </section>
 
-                    <div class="flex flex-wrap gap-1 mb-3 p-1 rounded-xl" style="background: var(--bg-card);" id="lb-tabs">
-                        <button data-game="snake" class="lb-tab active flex-1" onclick="loadLeaderboard('snake')">SNAKE</button>
-                        <button data-game="tetris" class="lb-tab flex-1" onclick="loadLeaderboard('tetris')">TETRIS</button>
-                        <button data-game="minesweeper" class="lb-tab flex-1" onclick="loadLeaderboard('minesweeper')">MINES</button>
-                        <button data-game="bricks" class="lb-tab flex-1" onclick="loadLeaderboard('bricks')">BRICKS</button>
-                        <button data-game="dino" class="lb-tab flex-1" onclick="loadLeaderboard('dino')">DINO</button>
-                        <button data-game="survivor" class="lb-tab flex-1" onclick="loadLeaderboard('survivor')">SURVIV</button>
-                        <button data-game="galaga" class="lb-tab flex-1" onclick="loadLeaderboard('galaga')">GALAGA</button>
-                        <button data-game="clicker" class="lb-tab flex-1" onclick="loadLeaderboard('clicker')">CLICK</button>
-                    </div>
-
-                    <div class="overflow-y-auto flex-1 rounded-xl border p-2 min-h-[160px]" style="border-color: var(--border-color); background: var(--bg-card);">
-                        <table class="w-full text-sm font-mono-tech border-collapse">
-                            <thead>
-                                <tr class="text-xs uppercase border-b" style="color: var(--text-muted); border-color: var(--border-color);">
-                                    <th class="py-2 px-2 text-left w-12">Ранг</th>
-                                    <th class="py-2 px-2 text-left">Оператор</th>
-                                    <th class="py-2 px-2 text-right">Рекорд</th>
-                                    <th id="lb-admin-col-header" class="hidden py-2 px-1 text-right w-16">Правка</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaderboard-body">
-                                <tr><td colspan="4" class="text-center py-6" style="color: var(--text-muted);">Загрузка...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Live-лента событий -->
-                    <div class="mt-3 p-3 rounded-xl border shrink-0 max-h-28 overflow-y-auto" style="border-color: var(--border-color); background: var(--bg-card);">
-                        <div class="text-[11px] font-mono-tech uppercase mb-1 flex items-center justify-between" style="color: var(--text-muted);">
-                            <span>🔥 Live-лента рекордов</span>
+                    <!-- Live-лента рекордов и событий -->
+                    <section class="panel p-4 flex flex-col min-h-0">
+                        <div class="flex justify-between items-center mb-2 pb-1.5 border-b shrink-0" style="border-color: var(--border-color);">
+                            <span class="text-xs font-mono-tech uppercase font-bold text-amber-400">🔥 Live-лента событий</span>
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                         </div>
-                        <div id="live-events-feed" class="text-xs font-mono-tech space-y-1">
+                        <div id="live-events-feed" class="flex-1 overflow-y-auto space-y-1.5 pr-1 text-xs font-mono-tech">
                             <div class="opacity-70">Загрузка событий...</div>
                         </div>
+                    </section>
+                </div>
+
+            </div>
+
+            <!-- ПРАВАЯ КОЛОНКА (1/3 ширины): ЧИСТАЯ И ПРОСТОРНАЯ ТАБЛИЦА ЛИДЕРОВ -->
+            <aside class="panel flex-1 lg:max-w-[440px] p-5 flex flex-col min-h-0 shrink-0">
+                <div class="flex justify-between items-center mb-3 pb-2.5 border-b shrink-0" style="border-color: var(--border-color);">
+                    <div>
+                        <h2 class="text-lg font-bold tracking-tight flex items-center gap-2">🏆 Таблица лидеров</h2>
+                        <p class="text-[11px]" style="color: var(--text-muted);">Топ-20 инженеров по дисциплинам</p>
+                    </div>
+                    <div class="flex gap-1.5">
+                        <button id="admin-quick-add-btn" class="hidden btn btn-admin text-xs py-1 px-2.5" onclick="quickAddScorePrompt()">+ ЗАПИСЬ</button>
+                        <button id="admin-reset-btn" class="hidden btn btn-danger text-xs py-1 px-2.5" onclick="resetLeaderboard()">СБРОС</button>
                     </div>
                 </div>
 
-                <!-- СЕКЦИЯ 2: ПРОФИЛЬ, КАСТОМИЗАЦИЯ И АЧИВКИ -->
-                <div id="right-section-profile" class="hidden flex-col flex-1 min-h-0 overflow-y-auto pr-1 space-y-4">
-                    <div class="p-4 rounded-xl border flex flex-col gap-3" style="background: var(--bg-card); border-color: var(--border-color);">
-                        <div class="flex items-center gap-4">
-                            <div id="profile-avatar-display" class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-3xl shrink-0">
-                                🐧
-                            </div>
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 id="profile-name-display" class="text-lg font-bold font-mono-tech">User</h3>
-                                    <span id="profile-elite-badge" class="hidden text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono-tech">⭐ ЭЛИТА</span>
-                                </div>
-                                <p id="profile-rank-display" class="text-xs font-mono-tech text-cyan-400 font-bold">Стажер (L1)</p>
-                                <p class="text-[11px] font-mono-tech mt-0.5" style="color: var(--text-muted);">Сумма очков: <span id="profile-total-score" class="text-emerald-400 font-bold">0</span></p>
-                            </div>
-                        </div>
-
-                        <div class="pt-3 border-t space-y-3 text-xs font-mono-tech" style="border-color: var(--border-color);">
-                            <div>
-                                <label class="uppercase block mb-1.5" style="color: var(--text-muted);">Талисман (Аватарка):</label>
-                                <div class="flex gap-1.5 flex-wrap">
-                                    <button onclick="saveProfileCustomization('avatar', '🐧')" class="btn py-1 px-2.5 text-base">🐧</button>
-                                    <button onclick="saveProfileCustomization('avatar', '🪟')" class="btn py-1 px-2.5 text-base">🪟</button>
-                                    <button onclick="saveProfileCustomization('avatar', '☕')" class="btn py-1 px-2.5 text-base">☕</button>
-                                    <button onclick="saveProfileCustomization('avatar', '🔥')" class="btn py-1 px-2.5 text-base">🔥</button>
-                                    <button onclick="saveProfileCustomization('avatar', '🔑')" class="btn py-1 px-2.5 text-base">🔑</button>
-                                    <button onclick="saveProfileCustomization('avatar', '🦊')" class="btn py-1 px-2.5 text-base">🦊</button>
-                                    <button onclick="saveProfileCustomization('avatar', '💀')" class="btn py-1 px-2.5 text-base">💀</button>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="uppercase block mb-1.5" style="color: var(--text-muted);">Цвет ника в таблице:</label>
-                                <div class="flex gap-2 flex-wrap">
-                                    <button onclick="saveProfileCustomization('color', '#10b981')" class="w-7 h-7 rounded-lg bg-emerald-500 border border-white/20"></button>
-                                    <button onclick="saveProfileCustomization('color', '#38bdf8')" class="w-7 h-7 rounded-lg bg-sky-400 border border-white/20"></button>
-                                    <button onclick="saveProfileCustomization('color', '#facc15')" class="w-7 h-7 rounded-lg bg-amber-400 border border-white/20"></button>
-                                    <button onclick="saveProfileCustomization('color', '#e879f9')" class="w-7 h-7 rounded-lg bg-fuchsia-400 border border-white/20"></button>
-                                    <button onclick="saveProfileCustomization('color', '#f43f5e')" class="w-7 h-7 rounded-lg bg-rose-500 border border-white/20"></button>
-                                    <button onclick="saveProfileCustomization('color', '#f1f5f9')" class="w-7 h-7 rounded-lg bg-slate-100 border border-white/20"></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Карьерная лестница -->
-                    <div class="p-3.5 rounded-xl border text-xs font-mono-tech space-y-1" style="background: var(--bg-card); border-color: var(--border-color);">
-                        <div class="uppercase font-bold mb-1" style="color: var(--text-muted);">📈 Карьерная лестница (по сумме очков):</div>
-                        <div>• 0+ — Стажер (L1)</div>
-                        <div>• 500+ — Мастер перезагрузки</div>
-                        <div>• 1500+ — Укротитель КриптоПро</div>
-                        <div>• 3500+ — Повелитель Macbook</div>
-                        <div>• 7000+ — Менеджер</div>
-                    </div>
-
-                    <!-- Достижения -->
-                    <div class="p-4 rounded-xl border flex flex-col gap-2.5" style="background: var(--bg-card); border-color: var(--border-color);">
-                        <div class="flex justify-between items-center">
-                            <h4 class="text-xs font-mono-tech uppercase font-bold" style="color: var(--text-muted);">🏅 Медали (Ачивки)</h4>
-                            <span id="achievements-count" class="text-xs font-mono-tech text-amber-400 font-bold">0 / 3</span>
-                        </div>
-                        <div id="achievements-list" class="space-y-2 text-xs font-mono-tech"></div>
-                    </div>
+                <!-- Симметричная сетка 4x2 для всех 8 игр -->
+                <div class="grid grid-cols-4 gap-1.5 mb-3.5 p-1.5 rounded-xl shrink-0" style="background: var(--bg-card);" id="lb-tabs">
+                    <button data-game="snake" class="lb-tab active" onclick="loadLeaderboard('snake')">SNAKE</button>
+                    <button data-game="tetris" class="lb-tab" onclick="loadLeaderboard('tetris')">TETRIS</button>
+                    <button data-game="minesweeper" class="lb-tab" onclick="loadLeaderboard('minesweeper')">MINES</button>
+                    <button data-game="bricks" class="lb-tab" onclick="loadLeaderboard('bricks')">BRICKS</button>
+                    <button data-game="dino" class="lb-tab" onclick="loadLeaderboard('dino')">DINO</button>
+                    <button data-game="survivor" class="lb-tab" onclick="loadLeaderboard('survivor')">SURVIV</button>
+                    <button data-game="galaga" class="lb-tab" onclick="loadLeaderboard('galaga')">GALAGA</button>
+                    <button data-game="clicker" class="lb-tab" onclick="loadLeaderboard('clicker')">SLASH</button>
                 </div>
 
-                <!-- СЕКЦИЯ 3: ЧАТ КУРИЛКА -->
-                <div id="right-section-chat" class="hidden flex-col flex-1 min-h-0">
-                    <div class="flex-1 overflow-y-auto rounded-xl border p-3 mb-3 space-y-2 text-xs font-mono-tech" style="border-color: var(--border-color); background: var(--bg-card);" id="chat-messages-container">
-                        <div class="opacity-70 text-center py-4">Загрузка сообщений...</div>
-                    </div>
-                    <form onsubmit="sendChatMessage(event)" class="flex gap-2 shrink-0">
-                        <input type="text" id="chat-input" class="input-tech py-2 text-xs" placeholder="Написать в курилку..." autocomplete="off">
-                        <button type="submit" class="btn btn-primary py-2 px-3 text-xs shrink-0">ОТПРАВИТЬ</button>
-                    </form>
+                <!-- Список рекордов на всю высоту панели -->
+                <div class="overflow-y-auto flex-1 rounded-xl border p-2" style="border-color: var(--border-color); background: var(--bg-card);">
+                    <table class="w-full text-sm font-mono-tech border-collapse">
+                        <thead>
+                            <tr class="text-xs uppercase border-b" style="color: var(--text-muted); border-color: var(--border-color);">
+                                <th class="py-2 px-2 text-left w-12">Ранг</th>
+                                <th class="py-2 px-2 text-left">Оператор</th>
+                                <th class="py-2 px-2 text-right">Рекорд</th>
+                                <th id="lb-admin-col-header" class="hidden py-2 px-1 text-right w-16">Правка</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            <tr><td colspan="4" class="text-center py-10" style="color: var(--text-muted);">Загрузка...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </aside>
+
         </div>
     </div>
 
@@ -639,7 +587,91 @@
         </main>
     </div>
 
-    <!-- 4. ОВЕРЛЕЙ ПРОИГРЫША / ПОБЕДЫ -->
+    <!-- 4. МОДАЛЬНОЕ ОКНО ПРОФИЛЯ И ДОСТИЖЕНИЙ (ВЫНЕСЕНО ДЛЯ РАЗГРУЗКИ ИНТЕРФЕЙСА) -->
+    <div id="profile-modal">
+        <div class="panel p-6 sm:p-8 max-w-2xl w-full mx-4 max-h-[90vh] flex flex-col border-emerald-500/40">
+            <div class="flex justify-between items-center pb-4 mb-5 border-b" style="border-color: var(--border-color);">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">👤</span>
+                    <div>
+                        <h2 class="text-xl font-bold font-mono-tech text-emerald-400">ЛИЧНОЕ ДЕЛО ИНЖЕНЕРА</h2>
+                        <p class="text-xs font-mono-tech" style="color: var(--text-muted);">Кастомизация профиля, карьерный рост и медали</p>
+                    </div>
+                </div>
+                <button onclick="closeProfileModal()" class="btn btn-danger text-xs py-1.5 px-3">[ ✕ ЗАКРЫТЬ ]</button>
+            </div>
+
+            <div class="overflow-y-auto space-y-5 pr-1">
+                <!-- Карточка инженера и кастомизация -->
+                <div class="p-5 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style="background: var(--bg-card); border-color: var(--border-color);">
+                    <div class="flex items-center gap-4">
+                        <div id="profile-avatar-display" class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-4xl shrink-0">
+                            🐧
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h3 id="profile-name-display" class="text-xl font-bold font-mono-tech">User</h3>
+                                <span id="profile-elite-badge" class="hidden text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono-tech">⭐ ЭЛИТА</span>
+                            </div>
+                            <p id="profile-rank-display" class="text-sm font-mono-tech text-cyan-400 font-bold mt-0.5">Стажер (L1)</p>
+                            <p class="text-xs font-mono-tech mt-1" style="color: var(--text-muted);">Суммарный опыт (очки): <span id="profile-total-score" class="text-emerald-400 font-bold">0</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Выбор талисмана и цвета -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-xl border font-mono-tech text-xs" style="background: var(--bg-card); border-color: var(--border-color);">
+                        <label class="uppercase block mb-2 font-bold" style="color: var(--text-muted);">Выберите талисман:</label>
+                        <div class="flex gap-2 flex-wrap">
+                            <button onclick="saveProfileCustomization('avatar', '🐧')" class="btn py-1.5 px-3 text-lg">🐧</button>
+                            <button onclick="saveProfileCustomization('avatar', '🪟')" class="btn py-1.5 px-3 text-lg">🪟</button>
+                            <button onclick="saveProfileCustomization('avatar', '☕')" class="btn py-1.5 px-3 text-lg">☕</button>
+                            <button onclick="saveProfileCustomization('avatar', '🔥')" class="btn py-1.5 px-3 text-lg">🔥</button>
+                            <button onclick="saveProfileCustomization('avatar', '🔑')" class="btn py-1.5 px-3 text-lg">🔑</button>
+                            <button onclick="saveProfileCustomization('avatar', '🦊')" class="btn py-1.5 px-3 text-lg">🦊</button>
+                            <button onclick="saveProfileCustomization('avatar', '💀')" class="btn py-1.5 px-3 text-lg">💀</button>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl border font-mono-tech text-xs" style="background: var(--bg-card); border-color: var(--border-color);">
+                        <label class="uppercase block mb-2 font-bold" style="color: var(--text-muted);">Цвет ника в таблице:</label>
+                        <div class="flex gap-2.5 flex-wrap items-center pt-1">
+                            <button onclick="saveProfileCustomization('color', '#10b981')" class="w-8 h-8 rounded-lg bg-emerald-500 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                            <button onclick="saveProfileCustomization('color', '#38bdf8')" class="w-8 h-8 rounded-lg bg-sky-400 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                            <button onclick="saveProfileCustomization('color', '#facc15')" class="w-8 h-8 rounded-lg bg-amber-400 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                            <button onclick="saveProfileCustomization('color', '#e879f9')" class="w-8 h-8 rounded-lg bg-fuchsia-400 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                            <button onclick="saveProfileCustomization('color', '#f43f5e')" class="w-8 h-8 rounded-lg bg-rose-500 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                            <button onclick="saveProfileCustomization('color', '#f1f5f9')" class="w-8 h-8 rounded-lg bg-slate-100 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карьерная лестница -->
+                <div class="p-4 rounded-xl border text-xs font-mono-tech" style="background: var(--bg-card); border-color: var(--border-color);">
+                    <div class="uppercase font-bold mb-2.5" style="color: var(--text-muted);">📈 Карьерная лестница ИТ-отдела:</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L1</div><div class="text-[11px] mt-0.5">Стажер</div><div class="text-[10px] opacity-60">0+ очк.</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L2</div><div class="text-[11px] mt-0.5">Мастер ребута</div><div class="text-[10px] opacity-60">500+ очк.</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L3</div><div class="text-[11px] mt-0.5">КриптоПро Гуру</div><div class="text-[10px] opacity-60">1500+ очк.</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50"><div class="text-cyan-400 font-bold">L4</div><div class="text-[11px] mt-0.5">Повелитель Mac</div><div class="text-[10px] opacity-60">3500+ очк.</div></div>
+                        <div class="p-2 rounded border border-slate-700 bg-slate-900/50 col-span-2 sm:col-span-1"><div class="text-amber-400 font-bold">L5</div><div class="text-[11px] mt-0.5">Менеджер</div><div class="text-[10px] opacity-60">7000+ очк.</div></div>
+                    </div>
+                </div>
+
+                <!-- Медали / Ачивки -->
+                <div class="p-4 rounded-xl border flex flex-col gap-3" style="background: var(--bg-card); border-color: var(--border-color);">
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-xs font-mono-tech uppercase font-bold" style="color: var(--text-muted);">🏅 Тематические медали (Ачивки)</h4>
+                        <span id="achievements-count" class="text-xs font-mono-tech text-amber-400 font-bold">0 / 3</span>
+                    </div>
+                    <div id="achievements-list" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono-tech"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. ОВЕРЛЕЙ ПРОИГРЫША / ПОБЕДЫ -->
     <div id="game-over-overlay">
         <div id="game-over-box" class="alert-box max-w-xl w-full mx-4">
             <div id="game-over-huge-text" class="text-3xl sm:text-5xl font-extrabold font-mono-tech tracking-tight leading-tight">
@@ -655,7 +687,7 @@
         </div>
     </div>
 
-    <!-- 5. МОДАЛЬНОЕ ОКНО АДМИН-ПАНЕЛИ -->
+    <!-- 6. МОДАЛЬНОЕ ОКНО АДМИН-ПАНЕЛИ -->
     <div id="admin-modal">
         <div class="panel p-6 sm:p-8 max-w-4xl w-full mx-4 max-h-[90vh] flex flex-col border-purple-500/40">
             <div class="flex justify-between items-center pb-4 mb-4 border-b" style="border-color: var(--border-color);">
@@ -753,7 +785,7 @@
 
                     <div class="p-5 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-color);">
                         <h3 class="text-base font-bold font-mono-tech mb-1">⭐ Выдача элитного значка игроку недели</h3>
-                        <p class="text-xs mb-4" style="color: var(--text-muted);">Награждает сотрудника уникальным значком в таблице лидеров и профиле.</p>
+                        <p class="text-xs mb-4" style="color: var(--text-muted);">Награждает сотрудника уникальным значком в таблице лидеров и шапке сайта.</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                             <div>
                                 <label class="text-xs font-mono-tech uppercase block mb-1" style="color: var(--text-muted);">Логин сотрудника</label>
@@ -942,7 +974,6 @@
         function toggleTheme() {
             isLightMode = !isLightMode;
             document.body.classList.toggle('light-theme', isLightMode);
-            document.getElementById('theme-btn').innerText = isLightMode ? '[ ТЕМА: СВЕТЛАЯ ]' : '[ ТЕМА: ТЕМНАЯ ]';
         }
 
         window.addEventListener("keydown", function(e) {
@@ -956,7 +987,14 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // Мгновенный вход в сессию (работает и с Firebase, и в автономном режиме)
+        function openProfileModal() {
+            updateProfileUI();
+            document.getElementById('profile-modal').style.display = 'flex';
+        }
+        function closeProfileModal() {
+            document.getElementById('profile-modal').style.display = 'none';
+        }
+
         function activateUserSession(username) {
             const cleanName = username.trim().toLowerCase();
             window.currentUsername = cleanName;
@@ -970,10 +1008,8 @@
             document.getElementById('admin-badge').classList.toggle('hidden', !window.isAdminUser);
             document.getElementById('lb-admin-col-header').classList.toggle('hidden', !window.isAdminUser);
 
-            // МГНОВЕННО переключаем экран, не дожидаясь сетевых запросов!
             switchScreen('dashboard-screen');
 
-            // Фоновая подгрузка данных
             loadSystemConfig();
             loadUserProfile(cleanName);
             loadLeaderboard(currentLbGame || 'snake');
@@ -1011,9 +1047,8 @@
 
             if (firebaseReady && auth) {
                 try {
-                    // Таймаут 5 секунд на случай, если сеть блокирует Firebase
                     const signInPromise = auth.signInWithEmailAndPassword(fakeEmail, password);
-                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("TIMEOUT")), 5000));
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("TIMEOUT")), 4500));
                     await Promise.race([signInPromise, timeoutPromise]);
                     errorEl.innerText = "";
                     btn.disabled = false;
@@ -1021,20 +1056,12 @@
                     return;
                 } catch (error) {
                     btn.disabled = false;
-                    // Если неправильный пароль в Firebase — сообщаем, но если аккаунта еще нет в базе или сеть недоступна — пускаем!
-                    if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                        // Пробуем создать пользователя, если его еще нет, либо пускаем в сессию
-                        try {
-                            await auth.createUserWithEmailAndPassword(fakeEmail, password);
-                            errorEl.innerText = "";
-                            activateUserSession(usernameInput);
-                            return;
-                        } catch (createErr) {
-                            // Если это админ или демо-вход, все равно активируем сессию локально, чтобы сайт никогда не блокировался
-                            activateUserSession(usernameInput);
-                            return;
-                        }
-                    } else {
+                    try {
+                        await auth.createUserWithEmailAndPassword(fakeEmail, password);
+                        errorEl.innerText = "";
+                        activateUserSession(usernameInput);
+                        return;
+                    } catch (createErr) {
                         activateUserSession(usernameInput);
                         return;
                     }
@@ -1106,7 +1133,7 @@
             const username = window.currentUsername;
             if (!username) return;
             if (!window.userProfile.achievements) window.userProfile.achievements = {};
-            if (window.userProfile.achievements[achId]) return; // уже открыта
+            if (window.userProfile.achievements[achId]) return;
 
             window.userProfile.achievements[achId] = true;
             localStorage.setItem(`support_profile_${username}`, JSON.stringify(window.userProfile));
@@ -1128,11 +1155,15 @@
             document.getElementById('header-avatar-box').innerText = window.userProfile.avatar || '🐧';
             
             const eliteEl = document.getElementById('profile-elite-badge');
+            const headerEliteEl = document.getElementById('header-elite-badge');
             if (window.userProfile.eliteBadge) {
                 eliteEl.innerText = window.userProfile.eliteBadge;
                 eliteEl.classList.remove('hidden');
+                headerEliteEl.innerText = window.userProfile.eliteBadge;
+                headerEliteEl.classList.remove('hidden');
             } else {
                 eliteEl.classList.add('hidden');
+                headerEliteEl.classList.add('hidden');
             }
 
             const total = window.userProfile.totalScore || 0;
@@ -1151,7 +1182,7 @@
             
             const achs = [
                 { id: 'cable_sprinter', name: '«Спринтер по кабелям»', desc: 'Набрать 500+ очков в Змейке' },
-                { id: 'mines_pro', name: '«Сапер без права на ошибку»', desc: 'Разминировать поле быстрее чем за 60 сек' },
+                { id: 'mines_pro', name: '«Сапер без права на ошибку»', desc: 'Разминировать поле быстрее 60 сек' },
                 { id: 'boss_slayer', name: '«Гроза оргтехники»', desc: 'Уничтожить Босса в Survivor' }
             ];
 
@@ -1160,16 +1191,18 @@
                 const isDone = !!unlocked[a.id];
                 if (isDone) unlockedCount++;
                 list.innerHTML += `
-                    <div class="flex items-center justify-between p-2.5 rounded-lg border" style="border-color: var(--border-color); opacity: ${isDone ? 1 : 0.45};">
-                        <div>
-                            <div class="font-bold text-emerald-400">${a.name}</div>
-                            <div class="text-[10px]" style="color: var(--text-muted);">${a.desc}</div>
+                    <div class="p-3 rounded-xl border flex flex-col justify-between" style="border-color: var(--border-color); background: rgba(15,23,42,0.5); opacity: ${isDone ? 1 : 0.45};">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-bold text-emerald-400">${a.name}</span>
+                            <span class="text-lg">${isDone ? '🏅' : '🔒'}</span>
                         </div>
-                        <span class="text-base">${isDone ? '🏅' : '🔒'}</span>
+                        <div class="text-[11px]" style="color: var(--text-muted);">${a.desc}</div>
                     </div>
                 `;
             });
             document.getElementById('achievements-count').innerText = `${unlockedCount} / ${achs.length}`;
+            const headerAch = document.getElementById('header-ach-summary');
+            if (headerAch) headerAch.innerText = `🏅 ${unlockedCount}/${achs.length}`;
         }
 
         // --- МИНИ-ЧАТ КУРИЛКА И LIVE-ЛЕНТА ---
@@ -1187,12 +1220,12 @@
             }
 
             if (messages.length === 0) {
-                container.innerHTML = '<div class="opacity-70 text-center py-4">В курилке пока тихо. Напишите первое сообщение!</div>';
+                container.innerHTML = '<div class="opacity-60 text-center py-4">В курилке пока тихо. Напишите первое сообщение!</div>';
                 return;
             }
 
             container.innerHTML = messages.map(msg => `
-                <div class="p-2 rounded bg-slate-900/50 border border-slate-800">
+                <div class="px-2.5 py-1.5 rounded bg-slate-900/50 border border-slate-800/80">
                     <span class="font-bold text-emerald-400">${escapeHtml(msg.avatar || '🐧')} [${escapeHtml(msg.user)}]:</span>
                     <span class="ml-1">${escapeHtml(msg.text)}</span>
                 </div>
@@ -1228,7 +1261,7 @@
         async function logLiveEvent(text) {
             const localEvents = JSON.parse(localStorage.getItem('support_local_events') || '[]');
             localEvents.unshift({ text, ts: Date.now() });
-            if (localEvents.length > 10) localEvents.pop();
+            if (localEvents.length > 12) localEvents.pop();
             localStorage.setItem('support_local_events', JSON.stringify(localEvents));
             loadLiveEventsFeed();
 
@@ -1243,7 +1276,7 @@
 
             if (firebaseReady && db) {
                 try {
-                    const snap = await db.collection("events").orderBy("timestamp", "desc").limit(6).get();
+                    const snap = await db.collection("events").orderBy("timestamp", "desc").limit(8).get();
                     const fbEv = [];
                     snap.forEach(d => fbEv.push(d.data()));
                     if (fbEv.length > 0) events = fbEv;
@@ -1251,24 +1284,14 @@
             }
 
             if (events.length === 0) {
-                feed.innerHTML = '<div class="opacity-70">Пока нет свежих рекордов</div>';
+                feed.innerHTML = '<div class="opacity-60 py-4 text-center">Пока нет свежих рекордов</div>';
                 return;
             }
-            feed.innerHTML = events.map(ev => `<div class="truncate">• ${escapeHtml(ev.text)}</div>`).join('');
+            feed.innerHTML = events.map(ev => `<div class="px-2.5 py-1 rounded bg-slate-900/40 border border-slate-800/60 truncate">• ${escapeHtml(ev.text)}</div>`).join('');
         }
 
         function escapeHtml(str) {
             return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        function switchRightPanelTab(tab) {
-            ['leaderboard', 'profile', 'chat'].forEach(t => {
-                document.querySelector(`[data-tab="${t}"]`).classList.toggle('active', t === tab);
-                const sec = document.getElementById(`right-section-${t}`);
-                sec.classList.toggle('hidden', t !== tab);
-                sec.classList.toggle('flex', t === tab);
-            });
-            if (tab === 'chat') loadChatMessages();
         }
 
         // --- ОЧКИ И ТАБЛИЦА ЛИДЕРОВ ---
@@ -1359,7 +1382,7 @@
             tbody.innerHTML = '';
 
             if (sorted.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8" style="color: var(--text-muted);">Пока нет рекордов</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-10" style="color: var(--text-muted);">Пока нет рекордов</td></tr>';
                 return;
             }
 
@@ -1684,7 +1707,7 @@
             dino: '⌨️ Управление: Пробел / ▲ — прыжок (удержание = выше) | ▼ — пригнуться / быстрый спуск',
             survivor: '⌨️ Управление: WASD или Стрелки — бег | Цель: Достичь 50 уровня доступа (боссы каждые 10 ур.)',
             galaga: '⌨️ Управление: A / D или ◄ ► — движение корабля | Пробел — стрельба',
-            clicker: '🖱️ Управление: Кликайте по всплывающим тикетам ошибок, избегая фишинговых окон!'
+            clicker: '🖱️ Управление: Закрывайте красные окна с ошибками! Избегайте желтых фишинговых окон.'
         };
 
         let currentGame = null; let score = 0; let isPaused = false; let isGameOver = false;
@@ -3189,20 +3212,24 @@
         }
 
         // ==========================================
-        // 8. TICKET SLASHER (КЛИКЕР)
+        // 8. TICKET SLASHER (ПРИВЯЗКА КО ВРЕМЕНИ И ПЛАВНОЕ УСКОРЕНИЕ)
         // ==========================================
         function initClicker(container) {
             const myRun = window.currentRunId;
-            const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 550; canvas.className = 'game-canvas'; container.appendChild(canvas);
+            const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 550; canvas.className = 'game-canvas cursor-crosshair'; container.appendChild(canvas);
             const ctx = canvas.getContext('2d');
 
-            let timeLeft = 30;
+            const TOTAL_ROUND_TIME = 45; // 45 секунд на смену
+            let timeLeft = TOTAL_ROUND_TIME;
+            let elapsedTime = 0;
+            let spawnAccumulator = 0.8; // первый тикет появится почти сразу
             let activeItems = [];
-            let spawnTimer = 0;
+            let lastTimestamp = 0;
 
-            const errorTitles = ["BSOD 0x000000", "404 Not Found", "Printer Jam", "CryptoPro Error", "No Internet", "Outlook Hang", "Jira Notification"];
+            const errorTitles = ["BSOD 0x000000", "404 Not Found", "Printer Jam", "CryptoPro Error", "No Internet", "Outlook Hang", "DNS Failure", "RAID Degraded"];
+            const phishingTitles = ["FREE IPHONE 16!", "ВЫИГРЫШ 1 МЛН ₽", "СКАЧАТЬ RAM.EXE", "СРОЧНО ВВЕДИ ПАРОЛЬ"];
 
-            addGameListener('click', function clickerHandler(e) {
+            canvas.addEventListener('mousedown', function clickerHandler(e) {
                 if (currentGame !== 'clicker' || isPaused || isGameOver) return;
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
@@ -3214,9 +3241,9 @@
                         activeItems.splice(i, 1);
                         if (it.isPhishing) {
                             if (!window.isAdminUser || !window.adminCheats.godMode) {
-                                score = Math.max(0, score - 50);
+                                score = Math.max(0, score - 40);
                                 document.getElementById('score').innerText = score;
-                                spawnFloatingScore(e.clientX - rect.left, e.clientY - rect.top, '-50 ШТРАФ!');
+                                spawnFloatingScore(e.clientX - rect.left, e.clientY - rect.top, '-40 ФИШИНГ!');
                             }
                         } else {
                             const added = addGlobalScore(25);
@@ -3227,62 +3254,117 @@
                 }
             });
 
-            let timerInterval = setInterval(() => {
-                if (myRun !== window.currentRunId) { clearInterval(timerInterval); return; }
-                if (!isPaused && !isGameOver) {
-                    timeLeft--;
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        gameOver(true, 'СМЕНА ЗАВЕРШЕНА!<br>ОТЛИЧНАЯ РЕАКЦИЯ');
-                    }
-                }
-            }, 1000);
-
-            function loop() {
+            function loop(ts) {
                 if (myRun !== window.currentRunId) return;
                 requestAnimationFrame(loop);
+
+                if (!lastTimestamp) lastTimestamp = ts;
+                let dt = (ts - lastTimestamp) / 1000;
+                lastTimestamp = ts;
+
                 if (isPaused || isGameOver) return;
+                if (dt > 0.2) dt = 0.2;
 
-                ctx.fillStyle = '#050811'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                elapsedTime += dt;
+                timeLeft = Math.max(0, TOTAL_ROUND_TIME - elapsedTime);
 
-                spawnTimer++;
-                if (spawnTimer > 28) {
-                    spawnTimer = 0;
-                    const isPhishing = Math.random() < 0.25;
+                if (timeLeft <= 0) {
+                    gameOver(true, 'СМЕНА ЗАВЕРШЕНА!<br>ТИКЕТЫ ЗАКРЫТЫ');
+                    return;
+                }
+
+                // Прогресс сложности от 0.0 (начало) до 1.0 (конец смены)
+                const progress = Math.min(1, elapsedTime / TOTAL_ROUND_TIME);
+                // Интервал спавна плавно снижается с 1.35 сек до 0.65 сек
+                const currentSpawnInterval = 1.35 - (progress * 0.70);
+                // Время жизни окна на экране плавно снижается с 3.5 сек до 1.85 сек
+                const currentTicketLifetime = 3.5 - (progress * 1.65);
+
+                spawnAccumulator += dt;
+                if (spawnAccumulator >= currentSpawnInterval && activeItems.length < 7) {
+                    spawnAccumulator = 0;
+                    const isPhishing = Math.random() < 0.22;
+                    const w = 165, h = 78;
+                    
+                    // Выбираем координаты без сильного наложения
+                    let x = 40 + Math.random() * (canvas.width - w - 80);
+                    let y = 70 + Math.random() * (canvas.height - h - 90);
+
                     activeItems.push({
-                        x: 50 + Math.random() * (canvas.width - 200),
-                        y: 60 + Math.random() * (canvas.height - 150),
-                        w: 130, h: 70,
-                        title: isPhishing ? "FREE IPHONE 16!" : errorTitles[Math.floor(Math.random() * errorTitles.length)],
+                        x, y, w, h,
+                        title: isPhishing ? phishingTitles[Math.floor(Math.random() * phishingTitles.length)] : errorTitles[Math.floor(Math.random() * errorTitles.length)],
                         isPhishing: isPhishing,
-                        life: 80 
+                        maxLife: currentTicketLifetime,
+                        life: currentTicketLifetime
                     });
                 }
 
+                ctx.fillStyle = '#050811';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Верхняя панель статуса внутри игры
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, 50);
+                ctx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
+                ctx.beginPath(); ctx.moveTo(0, 50); ctx.lineTo(canvas.width, 50); ctx.stroke();
+
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = 'bold 18px "Fira Code"';
+                ctx.textAlign = 'left';
+                ctx.fillText(`⏱️ ОСТАЛОСЬ: ${Math.ceil(timeLeft)} сек`, 24, 31);
+
+                ctx.fillStyle = '#10b981';
+                ctx.font = 'bold 14px "Fira Code"';
+                ctx.textAlign = 'right';
+                ctx.fillText(`ТЕМП СМЕНЫ: ${Math.round(100 + progress * 100)}%`, canvas.width - 24, 31);
+
+                // Отрисовка всплывающих окон с индикатором оставшегося времени
                 for (let i = activeItems.length - 1; i >= 0; i--) {
                     let it = activeItems[i];
-                    it.life--;
-                    if (it.life <= 0) { activeItems.splice(i, 1); continue; }
+                    it.life -= dt;
+                    if (it.life <= 0) {
+                        activeItems.splice(i, 1);
+                        continue;
+                    }
+
+                    const lifeRatio = Math.max(0, it.life / it.maxLife);
 
                     ctx.save();
                     ctx.translate(it.x, it.y);
+                    
+                    // Тень и фон карточки тикета
                     ctx.fillStyle = it.isPhishing ? '#451a03' : '#1e293b';
                     ctx.strokeStyle = it.isPhishing ? '#f59e0b' : '#ef4444';
                     ctx.lineWidth = 2;
-                    ctx.beginPath(); ctx.roundRect(0, 0, it.w, it.h, 6); ctx.fill(); ctx.stroke();
+                    ctx.beginPath();
+                    ctx.roundRect(0, 0, it.w, it.h, 8);
+                    ctx.fill();
+                    ctx.stroke();
 
-                    ctx.fillStyle = it.isPhishing ? '#f59e0b' : '#ef4444';
-                    ctx.font = 'bold 12px "Fira Code"';
-                    ctx.fillText(it.isPhishing ? "⚠️ ФИШИНГ!" : "❌ ОШИБКА", 10, 22);
+                    // Шапка окна
+                    ctx.fillStyle = it.isPhishing ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+                    ctx.beginPath();
+                    ctx.roundRect(0, 0, it.w, 24, [8, 8, 0, 0]);
+                    ctx.fill();
 
+                    ctx.fillStyle = it.isPhishing ? '#fbbf24' : '#f87171';
+                    ctx.font = 'bold 11px "Fira Code"';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(it.isPhishing ? "⚠️ ФИШИНГ (НЕ ЖМИ)" : "❌ ТИКЕТ ОШИБКИ [X]", 8, 16);
+
+                    // Текст тикета
                     ctx.fillStyle = '#f8fafc';
                     ctx.font = 'bold 13px "Inter"';
-                    ctx.fillText(it.title, 10, 46);
+                    ctx.fillText(it.title, 10, 48);
+
+                    // Полоска оставшегося времени внизу тикета
+                    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                    ctx.fillRect(8, it.h - 11, it.w - 16, 5);
+                    ctx.fillStyle = it.isPhishing ? '#f59e0b' : '#10b981';
+                    ctx.fillRect(8, it.h - 11, (it.w - 16) * lifeRatio, 5);
+
                     ctx.restore();
                 }
-
-                ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 24px "Fira Code"'; ctx.textAlign = 'center';
-                ctx.fillText(`ВРЕМЯ: ${timeLeft}с`, canvas.width / 2, 35);
             }
             requestAnimationFrame(loop);
         }
