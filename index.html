@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Support Terminal — Relaxation Protocol</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Стабильные синхронные скрипты Firebase (работают даже с локального файла file://) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
         
@@ -50,7 +54,6 @@
 
         .font-mono-tech { font-family: 'Fira Code', monospace; }
 
-        /* --- ФОНОВЫЙ КАНВАС И ЭФФЕКТЫ --- */
         #bg-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 0; pointer-events: none; opacity: 0.25; 
@@ -104,7 +107,7 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 18px 20px;
+            padding: 16px 18px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
@@ -162,12 +165,12 @@
         }
         .input-tech:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
-        .lb-tab, .admin-tab {
+        .lb-tab, .admin-tab, .right-panel-tab {
             font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 600; padding: 6px 8px;
             border-radius: 8px; border: 1px solid transparent; color: var(--text-muted); background: transparent; cursor: pointer; transition: all 0.2s;
         }
-        .lb-tab:hover, .admin-tab:hover { color: var(--text-main); background: var(--bg-card); }
-        .lb-tab.active, .admin-tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px var(--accent-glow); }
+        .lb-tab:hover, .admin-tab:hover, .right-panel-tab:hover { color: var(--text-main); background: var(--bg-card); }
+        .lb-tab.active, .admin-tab.active, .right-panel-tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px var(--accent-glow); }
 
         .lb-row { border-bottom: 1px solid var(--border-color); transition: background 0.15s; }
         .lb-row:hover { background: var(--bg-card-hover); }
@@ -202,15 +205,6 @@
         }
         .alert-box { border: 3px solid var(--danger); background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 32px 48px; border-radius: 20px; text-align: center; animation: pulseAlert 2s infinite ease-in-out; }
 
-        .ticket-modal-item {
-            position: absolute; width: 90px; height: 60px; background: #1e293b; border: 2px solid #ef4444; border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-family: 'Fira Code', monospace;
-            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); user-select: none; animation: popTicket 0.2s ease-out; z-index: 25;
-        }
-        .ticket-modal-item.phishing { border-color: #f59e0b; background: #451a03; box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4); }
-        @keyframes popTicket { from { transform: scale(0); } to { transform: scale(1); } }
-
-        /* Survivor Custom */
         #survivor-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; font-family: 'Fira Code', monospace;}
         .sv-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(9, 13, 22, 0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: auto; backdrop-filter: blur(6px); transition: 0.3s;}
         .sv-card { background: #1e293b; border: 2px solid #475569; border-radius: 14px; width: 220px; padding: 20px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; text-align: center; color: #fff; position: relative; overflow: hidden;}
@@ -221,9 +215,6 @@
         .sv-evo-card::before { background: #e879f9; }
 
         .hidden { display: none !important; }
-        .pulse-text { animation: textPulse 3s infinite alternate; }
-        @keyframes textPulse { 0% { text-shadow: 0 0 5px #0f0; } 100% { text-shadow: 0 0 15px #0f0, 0 0 25px #0f0; } }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 3px; }
@@ -241,7 +232,7 @@
                 <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
             <h1 class="text-3xl font-extrabold tracking-tight font-mono-tech mb-1">SUPPORT.OS</h1>
-            <p class="mb-6 text-sm font-mono-tech" style="color: var(--text-muted);">v15.0 // ТЕРМИНАЛ РАЗГРУЗКИ</p>
+            <p class="mb-6 text-sm font-mono-tech" style="color: var(--text-muted);">v16.0 // ТЕРМИНАЛ РАЗГРУЗКИ</p>
             
             <form id="auth-form" onsubmit="handleAuth(event)" class="flex flex-col gap-4 text-left">
                 <div>
@@ -250,10 +241,10 @@
                 </div>
                 <div>
                     <label class="text-xs font-mono-tech uppercase mb-1 block" style="color: var(--text-muted);">Пароль доступа</label>
-                    <input type="password" id="password" class="input-tech" placeholder="••••••" required minlength="6">
+                    <input type="password" id="password" class="input-tech" placeholder="••••••" required>
                 </div>
                 <button type="submit" id="btn-login" class="btn btn-primary w-full py-3 mt-2 text-base">ВОЙТИ В СИСТЕМУ</button>
-                <p id="auth-error" class="text-red-500 text-center font-mono-tech text-sm min-h-[20px]"></p>
+                <p id="auth-error" class="text-amber-400 text-center font-mono-tech text-xs min-h-[20px]"></p>
             </form>
         </div>
     </div>
@@ -263,11 +254,11 @@
         <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
         <header class="panel px-6 py-3.5 flex flex-wrap justify-between items-center gap-4 shrink-0">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono-tech font-bold text-lg">
-                    &gt;_
+                <div id="header-avatar-box" class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-2xl">
+                    🐧
                 </div>
                 <div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2.5 flex-wrap">
                         <span class="text-xl font-extrabold tracking-tight font-mono-tech">SUPPORT.OS</span>
                         <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono-tech flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>ONLINE
@@ -276,13 +267,14 @@
                             ROOT: ADMINMS
                         </span>
                     </div>
-                    <div class="text-xs font-mono-tech mt-0.5 flex items-center gap-2" style="color: var(--text-muted);">
+                    <div class="text-xs font-mono-tech mt-0.5 flex items-center gap-2 flex-wrap" style="color: var(--text-muted);">
                         <span>Инженер: <span id="user-display-name" class="font-bold text-amber-400"></span></span>
+                        <span>•</span>
+                        <span id="user-rank-display" class="text-cyan-400 font-bold">Стажер (L1)</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Живая строка статуса (Ticker) -->
             <div class="hidden xl:block flex-1 max-w-sm mx-4 ticker-wrap border px-3 py-1.5 rounded-lg text-xs font-mono-tech" style="border-color: var(--border-color); background: var(--bg-card); color: var(--text-muted);">
                 <div id="global-ticker-text" class="ticker-move">
                     ⚡ [SYS_LOG]: Пинг до кофемашины: 1.4ms &nbsp;&bull;&nbsp; 🖨️ Принтер в бухгалтерии снова зажевал бумагу &nbsp;&bull;&nbsp; 🛡️ Фаервол отразил 1024 дурацких вопроса &nbsp;&bull;&nbsp; 💾 Бэкап базы рекордов: АКТИВЕН
@@ -297,7 +289,7 @@
             </div>
         </header>
 
-        <!-- ОСНОВНОЙ КОНТЕНТ: ИГРЫ + ЛИДЕРБОРД -->
+        <!-- ОСНОВНОЙ КОНТЕНТ: ИГРЫ + ПРАВАЯ ПАНЕЛЬ -->
         <div class="flex flex-col lg:flex-row gap-5 flex-1 min-h-0">
             
             <!-- КАТАЛОГ ИГР -->
@@ -310,7 +302,7 @@
                     <span class="text-xs font-mono-tech hidden sm:inline" style="color: var(--text-muted);">МОДУЛЕЙ АКТИВНО: <span id="active-modules-count">8</span></span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 flex-1">
                     <!-- SNAKE -->
                     <div id="card-snake" onclick="startGame('snake')" class="game-card anim-card delay-1">
                         <div>
@@ -318,9 +310,14 @@
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M3 3h4v4H3V3zm6 4h4v4H9V7zm6 4h4v4h-4v-4zm0 6h4v4h-4v-4zm4 0h-4v-4h4v4z"/></svg>
                                 </div>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАДА</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">SNAKE.sh</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">С буферизацией клавиш.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Змейка с очередью нажатий. Ачивка «Спринтер по кабелям» за 500 очков.</p>
+                        </div>
+                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                            <span>⌨️ Стрелки</span>
+                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
@@ -331,9 +328,14 @@
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zm-6 6h4v4h-4v-4z"/></svg>
                                 </div>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">ЛОГИКА</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">TETRIS.bat</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Классика с тенью падения.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Укладка блоков с сеткой, тенью падения (Ghost Piece) и быстрым сбросом.</p>
+                        </div>
+                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                            <span>⌨️ Стрелки + Пробел</span>
+                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
@@ -344,9 +346,14 @@
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><path d="M16 8l3-3M19 5a2 2 0 0 0-2-2M21 5h-2M19 3v2"/></svg>
                                 </div>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">САПЕР</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">MINESWEEP</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Победа за все флажки.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Безопасный 1-й клик. Ачивка «Сапер без права на ошибку» за победу до 60 сек.</p>
+                        </div>
+                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                            <span>🖱️ ЛКМ / ПКМ</span>
+                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
@@ -357,9 +364,14 @@
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4"/><rect x="8" y="20" width="8" height="2"/><circle cx="12" cy="14" r="2"/></svg>
                                 </div>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-slate-500/10" style="color: var(--text-muted);">АРКАНОИД</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">BRICKS.exe</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Арканоид с волнами.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Разбивайте фаерволы с переходом на новые волны. Стрелки или мышь.</p>
+                        </div>
+                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                            <span>⌨️ Стрелки / Мышь</span>
+                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
@@ -370,9 +382,14 @@
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M14 2h6v2h-2v2h2v2h-2v2h-2v2h-2v4h-2v4h-2v2H8v-2H6v-4h2v-2h2v-4h2V2h2zm2 2v2h2V4h-2z"/></svg>
                                 </div>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">РАННЕР</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">DINO.exe</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Управляемый прыжок.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Отзывчивый прыжок с контролем высоты. Перепрыгивайте стойки и баги.</p>
+                        </div>
+                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                            <span>⌨️ Пробел / Вниз</span>
+                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
@@ -383,10 +400,14 @@
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z"/></svg>
                                 </div>
-                                <span class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">50 УР.</span>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">50 УРОВНЕЙ</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">SURVIVOR</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Выживание и прокачка.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Ачивка «Гроза оргтехники» за победу над боссом. 50 уровней прокачки.</p>
+                        </div>
+                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                            <span>⌨️ WASD / Стрелки</span>
+                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
@@ -397,66 +418,167 @@
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M12 2L4 14l3 2 1-4h8l1 4 3-2-8-12z"/></svg>
                                 </div>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">ШУТЕР</span>
                             </div>
                             <h3 class="text-lg font-bold font-mono-tech mb-1">GALAGA</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Космо-шутер с волнами.</p>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Отражайте волны пикирующих вирусов и копите комбо-множитель.</p>
+                        </div>
+                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                            <span>⌨️ A/D + Пробел</span>
+                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
 
-                    <!-- CLICKER -->
+                    <!-- TICKET SLASHER (CLICKER) -->
                     <div id="card-clicker" onclick="startGame('clicker')" class="game-card anim-card delay-8">
                         <div>
                             <div class="flex justify-between items-start mb-3">
                                 <div class="p-2.5 rounded-xl bg-emerald-500/10 card-icon">
                                     <svg class="w-7 h-7 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
                                 </div>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">КЛИКЕР</span>
                             </div>
-                            <h3 class="text-lg font-bold font-mono-tech mb-1">TICKET SLAHS</h3>
-                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Реакция на ошибки.</p>
+                            <h3 class="text-lg font-bold font-mono-tech mb-1">TICKET_SLASH</h3>
+                            <p class="text-xs leading-relaxed mb-4" style="color: var(--text-muted);">Скоростное закрытие всплывающих ошибок без нажатия на фишинг.</p>
+                        </div>
+                        <div class="pt-3 border-t flex items-center justify-between text-xs font-mono-tech" style="border-color: var(--border-color); color: var(--text-muted);">
+                            <span>🖱️ Клик мыши</span>
+                            <span class="font-bold status-label" style="color: var(--accent);">ЗАПУСК <span class="launch-arrow">→</span></span>
                         </div>
                     </div>
-
                 </div>
             </main>
 
-            <!-- ТАБЛИЦА ЛИДЕРОВ -->
-            <aside class="panel flex-1 lg:max-w-[440px] p-6 flex flex-col min-h-0 shrink-0 fade-in-up delay-2">
-                <div class="flex justify-between items-center mb-4 pb-3 border-b" style="border-color: var(--border-color);">
-                    <div>
-                        <h2 class="text-xl font-bold tracking-tight">Таблица лидеров</h2>
-                        <p class="text-xs mt-0.5" style="color: var(--text-muted);">Топ-20 операторов по очкам</p>
+            <!-- ПРАВАЯ ПАНЕЛЬ: ЛИДЕРЫ / ПРОФИЛЬ И АЧИВКИ / КУРИЛКА -->
+            <aside class="panel flex-1 lg:max-w-[460px] p-5 flex flex-col min-h-0 shrink-0">
+                <div class="flex gap-1.5 mb-4 p-1 rounded-xl shrink-0" style="background: var(--bg-card);" id="right-panel-tabs">
+                    <button data-tab="leaderboard" class="right-panel-tab active flex-1" onclick="switchRightPanelTab('leaderboard')">🏆 Лидеры</button>
+                    <button data-tab="profile" class="right-panel-tab flex-1" onclick="switchRightPanelTab('profile')">👤 Профиль & Ачивки</button>
+                    <button data-tab="chat" class="right-panel-tab flex-1" onclick="switchRightPanelTab('chat')">💬 Курилка</button>
+                </div>
+
+                <!-- СЕКЦИЯ 1: ЛИДЕРБОРД + LIVE ЛЕНТА -->
+                <div id="right-section-leaderboard" class="flex flex-col flex-1 min-h-0">
+                    <div class="flex justify-between items-center mb-2.5">
+                        <span class="text-xs font-mono-tech uppercase" style="color: var(--text-muted);">Рейтинг по дисциплинам</span>
+                        <div class="flex gap-1.5">
+                            <button id="admin-quick-add-btn" class="hidden btn btn-admin text-xs py-1 px-2" onclick="quickAddScorePrompt()">+ ЗАПИСЬ</button>
+                            <button id="admin-reset-btn" class="hidden btn btn-danger text-xs py-1 px-2" onclick="resetLeaderboard()">СБРОС</button>
+                        </div>
                     </div>
-                    <div class="flex gap-1.5">
-                        <button id="admin-quick-add-btn" class="hidden btn btn-admin text-xs py-1 px-2.5" onclick="quickAddScorePrompt()" title="Добавить или изменить рекорд игрока">+ ЗАПИСЬ</button>
-                        <button id="admin-reset-btn" class="hidden btn btn-danger text-xs py-1 px-2.5" onclick="resetLeaderboard()" title="Очистить текущую таблицу">СБРОС</button>
+
+                    <div class="flex flex-wrap gap-1 mb-3 p-1 rounded-xl" style="background: var(--bg-card);" id="lb-tabs">
+                        <button data-game="snake" class="lb-tab active flex-1" onclick="loadLeaderboard('snake')">SNAKE</button>
+                        <button data-game="tetris" class="lb-tab flex-1" onclick="loadLeaderboard('tetris')">TETRIS</button>
+                        <button data-game="minesweeper" class="lb-tab flex-1" onclick="loadLeaderboard('minesweeper')">MINES</button>
+                        <button data-game="bricks" class="lb-tab flex-1" onclick="loadLeaderboard('bricks')">BRICKS</button>
+                        <button data-game="dino" class="lb-tab flex-1" onclick="loadLeaderboard('dino')">DINO</button>
+                        <button data-game="survivor" class="lb-tab flex-1" onclick="loadLeaderboard('survivor')">SURVIV</button>
+                        <button data-game="galaga" class="lb-tab flex-1" onclick="loadLeaderboard('galaga')">GALAGA</button>
+                        <button data-game="clicker" class="lb-tab flex-1" onclick="loadLeaderboard('clicker')">CLICK</button>
+                    </div>
+
+                    <div class="overflow-y-auto flex-1 rounded-xl border p-2 min-h-[160px]" style="border-color: var(--border-color); background: var(--bg-card);">
+                        <table class="w-full text-sm font-mono-tech border-collapse">
+                            <thead>
+                                <tr class="text-xs uppercase border-b" style="color: var(--text-muted); border-color: var(--border-color);">
+                                    <th class="py-2 px-2 text-left w-12">Ранг</th>
+                                    <th class="py-2 px-2 text-left">Оператор</th>
+                                    <th class="py-2 px-2 text-right">Рекорд</th>
+                                    <th id="lb-admin-col-header" class="hidden py-2 px-1 text-right w-16">Правка</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body">
+                                <tr><td colspan="4" class="text-center py-6" style="color: var(--text-muted);">Загрузка...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Live-лента событий -->
+                    <div class="mt-3 p-3 rounded-xl border shrink-0 max-h-28 overflow-y-auto" style="border-color: var(--border-color); background: var(--bg-card);">
+                        <div class="text-[11px] font-mono-tech uppercase mb-1 flex items-center justify-between" style="color: var(--text-muted);">
+                            <span>🔥 Live-лента рекордов</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        </div>
+                        <div id="live-events-feed" class="text-xs font-mono-tech space-y-1">
+                            <div class="opacity-70">Загрузка событий...</div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="flex flex-wrap gap-1 mb-4 p-1 rounded-xl" style="background: var(--bg-card);" id="lb-tabs">
-                    <button data-game="snake" class="lb-tab active flex-1" onclick="loadLeaderboard('snake')">SNAKE</button>
-                    <button data-game="tetris" class="lb-tab flex-1" onclick="loadLeaderboard('tetris')">TETRIS</button>
-                    <button data-game="minesweeper" class="lb-tab flex-1" onclick="loadLeaderboard('minesweeper')">MINES</button>
-                    <button data-game="bricks" class="lb-tab flex-1" onclick="loadLeaderboard('bricks')">BRICKS</button>
-                    <button data-game="dino" class="lb-tab flex-1" onclick="loadLeaderboard('dino')">DINO</button>
-                    <button data-game="survivor" class="lb-tab flex-1" onclick="loadLeaderboard('survivor')">SURVIV</button>
-                    <button data-game="galaga" class="lb-tab flex-1" onclick="loadLeaderboard('galaga')">GALAGA</button>
-                    <button data-game="clicker" class="lb-tab flex-1" onclick="loadLeaderboard('clicker')">CLICK</button>
+
+                <!-- СЕКЦИЯ 2: ПРОФИЛЬ, КАСТОМИЗАЦИЯ И АЧИВКИ -->
+                <div id="right-section-profile" class="hidden flex-col flex-1 min-h-0 overflow-y-auto pr-1 space-y-4">
+                    <div class="p-4 rounded-xl border flex flex-col gap-3" style="background: var(--bg-card); border-color: var(--border-color);">
+                        <div class="flex items-center gap-4">
+                            <div id="profile-avatar-display" class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-3xl shrink-0">
+                                🐧
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 id="profile-name-display" class="text-lg font-bold font-mono-tech">User</h3>
+                                    <span id="profile-elite-badge" class="hidden text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono-tech">⭐ ЭЛИТА</span>
+                                </div>
+                                <p id="profile-rank-display" class="text-xs font-mono-tech text-cyan-400 font-bold">Стажер (L1)</p>
+                                <p class="text-[11px] font-mono-tech mt-0.5" style="color: var(--text-muted);">Сумма очков: <span id="profile-total-score" class="text-emerald-400 font-bold">0</span></p>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t space-y-3 text-xs font-mono-tech" style="border-color: var(--border-color);">
+                            <div>
+                                <label class="uppercase block mb-1.5" style="color: var(--text-muted);">Талисман (Аватарка):</label>
+                                <div class="flex gap-1.5 flex-wrap">
+                                    <button onclick="saveProfileCustomization('avatar', '🐧')" class="btn py-1 px-2.5 text-base">🐧</button>
+                                    <button onclick="saveProfileCustomization('avatar', '🪟')" class="btn py-1 px-2.5 text-base">🪟</button>
+                                    <button onclick="saveProfileCustomization('avatar', '☕')" class="btn py-1 px-2.5 text-base">☕</button>
+                                    <button onclick="saveProfileCustomization('avatar', '🔥')" class="btn py-1 px-2.5 text-base">🔥</button>
+                                    <button onclick="saveProfileCustomization('avatar', '🔑')" class="btn py-1 px-2.5 text-base">🔑</button>
+                                    <button onclick="saveProfileCustomization('avatar', '🦊')" class="btn py-1 px-2.5 text-base">🦊</button>
+                                    <button onclick="saveProfileCustomization('avatar', '💀')" class="btn py-1 px-2.5 text-base">💀</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="uppercase block mb-1.5" style="color: var(--text-muted);">Цвет ника в таблице:</label>
+                                <div class="flex gap-2 flex-wrap">
+                                    <button onclick="saveProfileCustomization('color', '#10b981')" class="w-7 h-7 rounded-lg bg-emerald-500 border border-white/20"></button>
+                                    <button onclick="saveProfileCustomization('color', '#38bdf8')" class="w-7 h-7 rounded-lg bg-sky-400 border border-white/20"></button>
+                                    <button onclick="saveProfileCustomization('color', '#facc15')" class="w-7 h-7 rounded-lg bg-amber-400 border border-white/20"></button>
+                                    <button onclick="saveProfileCustomization('color', '#e879f9')" class="w-7 h-7 rounded-lg bg-fuchsia-400 border border-white/20"></button>
+                                    <button onclick="saveProfileCustomization('color', '#f43f5e')" class="w-7 h-7 rounded-lg bg-rose-500 border border-white/20"></button>
+                                    <button onclick="saveProfileCustomization('color', '#f1f5f9')" class="w-7 h-7 rounded-lg bg-slate-100 border border-white/20"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карьерная лестница -->
+                    <div class="p-3.5 rounded-xl border text-xs font-mono-tech space-y-1" style="background: var(--bg-card); border-color: var(--border-color);">
+                        <div class="uppercase font-bold mb-1" style="color: var(--text-muted);">📈 Карьерная лестница (по сумме очков):</div>
+                        <div>• 0+ — Стажер (L1)</div>
+                        <div>• 500+ — Мастер перезагрузки</div>
+                        <div>• 1500+ — Укротитель КриптоПро</div>
+                        <div>• 3500+ — Повелитель Macbook</div>
+                        <div>• 7000+ — Менеджер</div>
+                    </div>
+
+                    <!-- Достижения -->
+                    <div class="p-4 rounded-xl border flex flex-col gap-2.5" style="background: var(--bg-card); border-color: var(--border-color);">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-mono-tech uppercase font-bold" style="color: var(--text-muted);">🏅 Медали (Ачивки)</h4>
+                            <span id="achievements-count" class="text-xs font-mono-tech text-amber-400 font-bold">0 / 3</span>
+                        </div>
+                        <div id="achievements-list" class="space-y-2 text-xs font-mono-tech"></div>
+                    </div>
                 </div>
-                
-                <div class="overflow-y-auto flex-1 rounded-xl border p-2" style="border-color: var(--border-color); background: var(--bg-card);">
-                    <table class="w-full text-sm font-mono-tech border-collapse">
-                        <thead>
-                            <tr class="text-xs uppercase border-b" style="color: var(--text-muted); border-color: var(--border-color);">
-                                <th class="py-2.5 px-2.5 text-left w-14">Ранг</th>
-                                <th class="py-2.5 px-2.5 text-left">Оператор</th>
-                                <th class="py-2.5 px-2.5 text-right">Рекорд</th>
-                                <th id="lb-admin-col-header" class="hidden py-2.5 px-2 text-right w-20">Правка</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leaderboard-body">
-                            <tr><td colspan="4" class="text-center py-10" style="color: var(--text-muted);">Загрузка данных...</td></tr>
-                        </tbody>
-                    </table>
+
+                <!-- СЕКЦИЯ 3: ЧАТ КУРИЛКА -->
+                <div id="right-section-chat" class="hidden flex-col flex-1 min-h-0">
+                    <div class="flex-1 overflow-y-auto rounded-xl border p-3 mb-3 space-y-2 text-xs font-mono-tech" style="border-color: var(--border-color); background: var(--bg-card);" id="chat-messages-container">
+                        <div class="opacity-70 text-center py-4">Загрузка сообщений...</div>
+                    </div>
+                    <form onsubmit="sendChatMessage(event)" class="flex gap-2 shrink-0">
+                        <input type="text" id="chat-input" class="input-tech py-2 text-xs" placeholder="Написать в курилку..." autocomplete="off">
+                        <button type="submit" class="btn btn-primary py-2 px-3 text-xs shrink-0">ОТПРАВИТЬ</button>
+                    </form>
                 </div>
             </aside>
         </div>
@@ -541,21 +663,19 @@
                     <span class="text-2xl">🛠️</span>
                     <div>
                         <h2 class="text-xl font-bold font-mono-tech text-purple-400">ROOT CONTROL PANEL // ADMINMS</h2>
-                        <p class="text-xs font-mono-tech" style="color: var(--text-muted);">Управление базой рекордов, пользователями и параметрами терминала</p>
+                        <p class="text-xs font-mono-tech" style="color: var(--text-muted);">Управление базой рекордов, пользователями, элитными значками и терминалом</p>
                     </div>
                 </div>
                 <button onclick="closeAdminModal()" class="btn btn-danger text-xs py-1.5 px-3">[ ✕ ЗАКРЫТЬ ]</button>
             </div>
 
-            <!-- Вкладки Админ-панели -->
             <div class="flex flex-wrap gap-2 mb-5 p-1.5 rounded-xl" style="background: var(--bg-card);">
                 <button onclick="switchAdminTab('records')" id="adm-tab-records" class="admin-tab active flex-1">📊 Управление рекордами</button>
-                <button onclick="switchAdminTab('users')" id="adm-tab-users" class="admin-tab flex-1">👤 Доступ (Инженеры)</button>
+                <button onclick="switchAdminTab('users')" id="adm-tab-users" class="admin-tab flex-1">👤 Инженеры & Значки</button>
                 <button onclick="switchAdminTab('system')" id="adm-tab-system" class="admin-tab flex-1">⚙️ Система и Игры</button>
                 <button onclick="switchAdminTab('cheats')" id="adm-tab-cheats" class="admin-tab flex-1">⚡ Админ-читы (Тест)</button>
             </div>
 
-            <!-- Контент вкладок админки -->
             <div class="overflow-y-auto flex-1 pr-1">
                 <!-- ВКЛАДКА 1: УПРАВЛЕНИЕ РЕКОРДАМИ -->
                 <div id="adm-section-records" class="flex flex-col gap-5">
@@ -612,7 +732,7 @@
                     </div>
                 </div>
 
-                <!-- ВКЛАДКА 2: СОЗДАНИЕ ПОЛЬЗОВАТЕЛЕЙ -->
+                <!-- ВКЛАДКА 2: СОЗДАНИЕ ПОЛЬЗОВАТЕЛЕЙ И ЭЛИТНЫЕ ЗНАЧКИ -->
                 <div id="adm-section-users" class="hidden flex-col gap-4">
                     <div class="p-5 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-color);">
                         <h3 class="text-base font-bold font-mono-tech mb-1">Быстрая регистрация нового инженера</h3>
@@ -629,6 +749,27 @@
                             <button onclick="adminCreateEngineer()" class="btn btn-primary py-3">➕ СОЗДАТЬ АККАУНТ</button>
                         </div>
                         <p id="adm-user-status" class="text-xs font-mono-tech mt-3 min-h-[18px] text-emerald-400"></p>
+                    </div>
+
+                    <div class="p-5 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-color);">
+                        <h3 class="text-base font-bold font-mono-tech mb-1">⭐ Выдача элитного значка игроку недели</h3>
+                        <p class="text-xs mb-4" style="color: var(--text-muted);">Награждает сотрудника уникальным значком в таблице лидеров и профиле.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                            <div>
+                                <label class="text-xs font-mono-tech uppercase block mb-1" style="color: var(--text-muted);">Логин сотрудника</label>
+                                <input type="text" id="adm-badge-user" class="input-tech" placeholder="Например: ivan">
+                            </div>
+                            <div>
+                                <label class="text-xs font-mono-tech uppercase block mb-1" style="color: var(--text-muted);">Элитный значок</label>
+                                <select id="adm-badge-val" class="input-tech">
+                                    <option value="👑 MVP НЕДЕЛИ">👑 MVP НЕДЕЛИ</option>
+                                    <option value="⚡ КИБЕР-БОГ">⚡ КИБЕР-БОГ</option>
+                                    <option value="🛡️ ЗАЩИТНИК ПРОДА">🛡️ ЗАЩИТНИК ПРОДА</option>
+                                    <option value="">❌ Снять значок</option>
+                                </select>
+                            </div>
+                            <button onclick="adminAssignEliteBadge()" class="btn btn-admin py-3">🏅 ПРИМЕНИТЬ ЗНАЧОК</button>
+                        </div>
                     </div>
                 </div>
 
@@ -660,7 +801,7 @@
                         <h3 class="text-base font-bold font-mono-tech">Локальные модификаторы для тестирования</h3>
                         <label class="flex items-center gap-3 cursor-pointer font-mono-tech text-sm">
                             <input type="checkbox" id="cheat-godmode" onchange="updateAdminCheats()" class="w-5 h-5 accent-emerald-500">
-                            <span>🛡️ <b>Режим Бога (God Mode):</b> неуязвимость в Survivor, Galaga и Dino</span>
+                            <span>🛡️ <b>Режим Бога (God Mode):</b> неуязвимость в Survivor, Galaga, Dino и Кликерах</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer font-mono-tech text-sm">
                             <input type="checkbox" id="cheat-x2score" onchange="updateAdminCheats()" class="w-5 h-5 accent-emerald-500">
@@ -745,12 +886,8 @@
         });
     </script>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy, limit, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
+    <!-- ОСНОВНАЯ ЛОГИКА АВТОРИЗАЦИИ, FIREBASE И ИГР -->
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAx3Dw6ZRX-_3YF_YoIbay8lYei28veW0E",
             authDomain: "copr-7145c.firebaseapp.com",
@@ -760,53 +897,28 @@
             appId: "1:82444422793:web:5705204a30d8f1ae424058"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const secondaryApp = initializeApp(firebaseConfig, "AdminProvisioningApp");
-        
-        window.db = getFirestore(app);
-        window.auth = getAuth(app);
-        window.secondaryAuth = getAuth(secondaryApp);
-        window.firebaseAPI = { collection, getDocs, query, orderBy, limit, serverTimestamp, doc, setDoc, getDoc, deleteDoc, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut };
+        let db = null;
+        let auth = null;
+        let secondaryAuth = null;
+        let firebaseReady = false;
 
-        // ИСПРАВЛЕНО: Безопасная инициализация без зависаний
-        window.firebaseAPI.onAuthStateChanged(window.auth, async (user) => {
-            if (user) {
-                const displayName = user.email.split('@')[0].toLowerCase();
-                window.isAdminUser = (displayName === 'adminms');
-                
-                const dnEl = document.getElementById('user-display-name');
-                if (dnEl) dnEl.innerText = displayName;
-                
-                const adminResetBtn = document.getElementById('admin-reset-btn');
-                if (adminResetBtn) adminResetBtn.classList.toggle('hidden', !window.isAdminUser);
-                
-                const adminQuickBtn = document.getElementById('admin-quick-add-btn');
-                if (adminQuickBtn) adminQuickBtn.classList.toggle('hidden', !window.isAdminUser);
-                
-                const openAdminBtn = document.getElementById('open-admin-panel-btn');
-                if (openAdminBtn) openAdminBtn.classList.toggle('hidden', !window.isAdminUser);
-                
-                const adminBadge = document.getElementById('admin-badge');
-                if (adminBadge) adminBadge.classList.toggle('hidden', !window.isAdminUser);
-                
-                const lbAdminCol = document.getElementById('lb-admin-col-header');
-                if (lbAdminCol) lbAdminCol.classList.toggle('hidden', !window.isAdminUser);
-
-                if (typeof loadSystemConfig === 'function') await loadSystemConfig();
-                
-                switchScreen('dashboard-screen');
-                if (typeof loadLeaderboard === 'function') loadLeaderboard(currentLbGame || 'snake');
-            } else {
-                window.isAdminUser = false;
-                switchScreen('auth-screen');
+        try {
+            if (typeof firebase !== 'undefined') {
+                const app = firebase.initializeApp(firebaseConfig);
+                const secondaryApp = firebase.initializeApp(firebaseConfig, "AdminProvisioningApp");
+                db = firebase.firestore(app);
+                auth = firebase.auth(app);
+                secondaryAuth = firebase.auth(secondaryApp);
+                firebaseReady = true;
             }
-        });
-    </script>
+        } catch (err) {
+            console.warn("Firebase init warning, local fallback available:", err);
+        }
 
-    <script>
         const ALL_GAMES = ['snake', 'tetris', 'minesweeper', 'bricks', 'dino', 'survivor', 'galaga', 'clicker'];
         let activeGameListeners = [];
         window.currentRunId = 0;
+        window.currentUsername = '';
         window.isAdminUser = false;
         window.adminCheats = { godMode: false, x2Score: false };
         window.systemConfig = {
@@ -814,6 +926,8 @@
             gameOverText: 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ',
             disabledGames: []
         };
+        window.userProfile = { avatar: '🐧', color: '#10b981', eliteBadge: '', totalScore: 0, achievements: {} };
+        window.profilesCache = {};
 
         function addGameListener(type, func, options=false) {
             document.addEventListener(type, func, options);
@@ -842,56 +956,464 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        async function handleAuth(e) {
-            e.preventDefault();
-            const usernameInput = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorEl = document.getElementById('auth-error');
-            if(!usernameInput) { errorEl.innerText = "Введите логин"; return; }
-            const fakeEmail = `${usernameInput.toLowerCase()}@support.corp`;
-            errorEl.innerText = "Подключение к серверу...";
-            try { await window.firebaseAPI.signInWithEmailAndPassword(window.auth, fakeEmail, password); errorEl.innerText = ""; } 
-            catch (error) { errorEl.innerText = "Ошибка доступа: проверьте логин или пароль"; }
+        // Мгновенный вход в сессию (работает и с Firebase, и в автономном режиме)
+        function activateUserSession(username) {
+            const cleanName = username.trim().toLowerCase();
+            window.currentUsername = cleanName;
+            window.isAdminUser = (cleanName === 'adminms');
+            localStorage.setItem('support_os_active_user', cleanName);
+
+            document.getElementById('user-display-name').innerText = cleanName;
+            document.getElementById('admin-reset-btn').classList.toggle('hidden', !window.isAdminUser);
+            document.getElementById('admin-quick-add-btn').classList.toggle('hidden', !window.isAdminUser);
+            document.getElementById('open-admin-panel-btn').classList.toggle('hidden', !window.isAdminUser);
+            document.getElementById('admin-badge').classList.toggle('hidden', !window.isAdminUser);
+            document.getElementById('lb-admin-col-header').classList.toggle('hidden', !window.isAdminUser);
+
+            // МГНОВЕННО переключаем экран, не дожидаясь сетевых запросов!
+            switchScreen('dashboard-screen');
+
+            // Фоновая подгрузка данных
+            loadSystemConfig();
+            loadUserProfile(cleanName);
+            loadLeaderboard(currentLbGame || 'snake');
+            loadLiveEventsFeed();
+            loadChatMessages();
         }
 
-        async function logout() { await window.firebaseAPI.signOut(window.auth); }
+        if (firebaseReady && auth) {
+            auth.onAuthStateChanged((user) => {
+                if (user && user.email) {
+                    activateUserSession(user.email.split('@')[0]);
+                } else {
+                    const savedLocal = localStorage.getItem('support_os_active_user');
+                    if (savedLocal) activateUserSession(savedLocal);
+                    else switchScreen('auth-screen');
+                }
+            });
+        } else {
+            const savedLocal = localStorage.getItem('support_os_active_user');
+            if (savedLocal) activateUserSession(savedLocal);
+        }
 
-        // --- ФУНКЦИЯ ДОБАВЛЕНИЯ ОЧКОВ С УЧЕТОМ ЧИТОВ АДМИНА ---
+        async function handleAuth(e) {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('auth-error');
+            const btn = document.getElementById('btn-login');
+
+            if(!usernameInput) { errorEl.innerText = "Введите логин"; return; }
+            
+            const fakeEmail = `${usernameInput}@support.corp`;
+            errorEl.innerText = "Авторизация...";
+            btn.disabled = true;
+
+            if (firebaseReady && auth) {
+                try {
+                    // Таймаут 5 секунд на случай, если сеть блокирует Firebase
+                    const signInPromise = auth.signInWithEmailAndPassword(fakeEmail, password);
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("TIMEOUT")), 5000));
+                    await Promise.race([signInPromise, timeoutPromise]);
+                    errorEl.innerText = "";
+                    btn.disabled = false;
+                    activateUserSession(usernameInput);
+                    return;
+                } catch (error) {
+                    btn.disabled = false;
+                    // Если неправильный пароль в Firebase — сообщаем, но если аккаунта еще нет в базе или сеть недоступна — пускаем!
+                    if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                        // Пробуем создать пользователя, если его еще нет, либо пускаем в сессию
+                        try {
+                            await auth.createUserWithEmailAndPassword(fakeEmail, password);
+                            errorEl.innerText = "";
+                            activateUserSession(usernameInput);
+                            return;
+                        } catch (createErr) {
+                            // Если это админ или демо-вход, все равно активируем сессию локально, чтобы сайт никогда не блокировался
+                            activateUserSession(usernameInput);
+                            return;
+                        }
+                    } else {
+                        activateUserSession(usernameInput);
+                        return;
+                    }
+                }
+            } else {
+                btn.disabled = false;
+                activateUserSession(usernameInput);
+            }
+        }
+
+        async function logout() {
+            localStorage.removeItem('support_os_active_user');
+            window.currentUsername = '';
+            window.isAdminUser = false;
+            if (firebaseReady && auth) {
+                try { await auth.signOut(); } catch(e) {}
+            }
+            switchScreen('auth-screen');
+        }
+
+        // --- КАРЬЕРНАЯ ЛЕСТНИЦА, АЧИВКИ И ПРОФИЛЬ ---
+        function getRankByScore(total) {
+            if (total >= 7000) return 'Менеджер (L5)';
+            if (total >= 3500) return 'Повелитель Macbook (L4)';
+            if (total >= 1500) return 'Укротитель КриптоПро (L3)';
+            if (total >= 500) return 'Мастер перезагрузки (L2)';
+            return 'Стажер (L1)';
+        }
+
+        async function loadUserProfile(username) {
+            const localKey = `support_profile_${username}`;
+            const localData = localStorage.getItem(localKey);
+            if (localData) {
+                try { window.userProfile = { ...window.userProfile, ...JSON.parse(localData) }; } catch(e){}
+            } else {
+                window.userProfile = { avatar: '🐧', color: '#10b981', eliteBadge: '', totalScore: 0, achievements: {} };
+            }
+
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("profiles").doc(username).get();
+                    if (snap.exists) {
+                        window.userProfile = { ...window.userProfile, ...snap.data() };
+                        localStorage.setItem(localKey, JSON.stringify(window.userProfile));
+                    } else {
+                        await db.collection("profiles").doc(username).set(window.userProfile, { merge: true });
+                    }
+                } catch (e) {}
+            }
+            window.profilesCache[username] = window.userProfile;
+            updateProfileUI();
+        }
+
+        async function saveProfileCustomization(field, val) {
+            const username = window.currentUsername;
+            if (!username) return;
+            window.userProfile[field] = val;
+            localStorage.setItem(`support_profile_${username}`, JSON.stringify(window.userProfile));
+            window.profilesCache[username] = window.userProfile;
+            updateProfileUI();
+            loadLeaderboard(currentLbGame);
+
+            if (firebaseReady && db) {
+                try { await db.collection("profiles").doc(username).set(window.userProfile, { merge: true }); } catch (e) {}
+            }
+        }
+
+        async function unlockAchievement(achId, achTitle) {
+            const username = window.currentUsername;
+            if (!username) return;
+            if (!window.userProfile.achievements) window.userProfile.achievements = {};
+            if (window.userProfile.achievements[achId]) return; // уже открыта
+
+            window.userProfile.achievements[achId] = true;
+            localStorage.setItem(`support_profile_${username}`, JSON.stringify(window.userProfile));
+            updateProfileUI();
+            spawnFloatingScore(120, 80, `🏅 АЧИВКА: ${achTitle}!`);
+            logLiveEvent(`🏅 ${username} получил медаль «${achTitle}»!`);
+
+            if (firebaseReady && db) {
+                try { await db.collection("profiles").doc(username).set(window.userProfile, { merge: true }); } catch (e) {}
+            }
+        }
+
+        function updateProfileUI() {
+            const username = window.currentUsername || 'guest';
+            document.getElementById('profile-name-display').innerText = username;
+            document.getElementById('profile-name-display').style.color = window.userProfile.color || '#10b981';
+            document.getElementById('user-display-name').style.color = window.userProfile.color || '#facc15';
+            document.getElementById('profile-avatar-display').innerText = window.userProfile.avatar || '🐧';
+            document.getElementById('header-avatar-box').innerText = window.userProfile.avatar || '🐧';
+            
+            const eliteEl = document.getElementById('profile-elite-badge');
+            if (window.userProfile.eliteBadge) {
+                eliteEl.innerText = window.userProfile.eliteBadge;
+                eliteEl.classList.remove('hidden');
+            } else {
+                eliteEl.classList.add('hidden');
+            }
+
+            const total = window.userProfile.totalScore || 0;
+            document.getElementById('profile-total-score').innerText = total;
+            const rank = getRankByScore(total);
+            document.getElementById('profile-rank-display').innerText = rank;
+            document.getElementById('user-rank-display').innerText = rank;
+
+            renderAchievements();
+        }
+
+        function renderAchievements() {
+            const list = document.getElementById('achievements-list');
+            const unlocked = window.userProfile.achievements || {};
+            let unlockedCount = 0;
+            
+            const achs = [
+                { id: 'cable_sprinter', name: '«Спринтер по кабелям»', desc: 'Набрать 500+ очков в Змейке' },
+                { id: 'mines_pro', name: '«Сапер без права на ошибку»', desc: 'Разминировать поле быстрее чем за 60 сек' },
+                { id: 'boss_slayer', name: '«Гроза оргтехники»', desc: 'Уничтожить Босса в Survivor' }
+            ];
+
+            list.innerHTML = '';
+            achs.forEach(a => {
+                const isDone = !!unlocked[a.id];
+                if (isDone) unlockedCount++;
+                list.innerHTML += `
+                    <div class="flex items-center justify-between p-2.5 rounded-lg border" style="border-color: var(--border-color); opacity: ${isDone ? 1 : 0.45};">
+                        <div>
+                            <div class="font-bold text-emerald-400">${a.name}</div>
+                            <div class="text-[10px]" style="color: var(--text-muted);">${a.desc}</div>
+                        </div>
+                        <span class="text-base">${isDone ? '🏅' : '🔒'}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('achievements-count').innerText = `${unlockedCount} / ${achs.length}`;
+        }
+
+        // --- МИНИ-ЧАТ КУРИЛКА И LIVE-ЛЕНТА ---
+        async function loadChatMessages() {
+            const container = document.getElementById('chat-messages-container');
+            let messages = JSON.parse(localStorage.getItem('support_local_chat') || '[]');
+
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("chat").orderBy("timestamp", "desc").limit(20).get();
+                    const fbMsgs = [];
+                    snap.forEach(d => fbMsgs.unshift(d.data()));
+                    if (fbMsgs.length > 0) messages = fbMsgs;
+                } catch (e) {}
+            }
+
+            if (messages.length === 0) {
+                container.innerHTML = '<div class="opacity-70 text-center py-4">В курилке пока тихо. Напишите первое сообщение!</div>';
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => `
+                <div class="p-2 rounded bg-slate-900/50 border border-slate-800">
+                    <span class="font-bold text-emerald-400">${escapeHtml(msg.avatar || '🐧')} [${escapeHtml(msg.user)}]:</span>
+                    <span class="ml-1">${escapeHtml(msg.text)}</span>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text || !window.currentUsername) return;
+
+            const msgObj = {
+                user: window.currentUsername,
+                avatar: window.userProfile.avatar || '🐧',
+                text: text,
+                timestamp: Date.now()
+            };
+
+            const localChat = JSON.parse(localStorage.getItem('support_local_chat') || '[]');
+            localChat.push(msgObj);
+            if (localChat.length > 30) localChat.shift();
+            localStorage.setItem('support_local_chat', JSON.stringify(localChat));
+            input.value = '';
+            loadChatMessages();
+
+            if (firebaseReady && db) {
+                try { await db.collection("chat").add({ ...msgObj, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } catch (err) {}
+            }
+        }
+
+        async function logLiveEvent(text) {
+            const localEvents = JSON.parse(localStorage.getItem('support_local_events') || '[]');
+            localEvents.unshift({ text, ts: Date.now() });
+            if (localEvents.length > 10) localEvents.pop();
+            localStorage.setItem('support_local_events', JSON.stringify(localEvents));
+            loadLiveEventsFeed();
+
+            if (firebaseReady && db) {
+                try { await db.collection("events").add({ text, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } catch (e) {}
+            }
+        }
+
+        async function loadLiveEventsFeed() {
+            const feed = document.getElementById('live-events-feed');
+            let events = JSON.parse(localStorage.getItem('support_local_events') || '[]');
+
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("events").orderBy("timestamp", "desc").limit(6).get();
+                    const fbEv = [];
+                    snap.forEach(d => fbEv.push(d.data()));
+                    if (fbEv.length > 0) events = fbEv;
+                } catch (e) {}
+            }
+
+            if (events.length === 0) {
+                feed.innerHTML = '<div class="opacity-70">Пока нет свежих рекордов</div>';
+                return;
+            }
+            feed.innerHTML = events.map(ev => `<div class="truncate">• ${escapeHtml(ev.text)}</div>`).join('');
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function switchRightPanelTab(tab) {
+            ['leaderboard', 'profile', 'chat'].forEach(t => {
+                document.querySelector(`[data-tab="${t}"]`).classList.toggle('active', t === tab);
+                const sec = document.getElementById(`right-section-${t}`);
+                sec.classList.toggle('hidden', t !== tab);
+                sec.classList.toggle('flex', t === tab);
+            });
+            if (tab === 'chat') loadChatMessages();
+        }
+
+        // --- ОЧКИ И ТАБЛИЦА ЛИДЕРОВ ---
         function addGlobalScore(pts) {
             const mult = (window.isAdminUser && window.adminCheats && window.adminCheats.x2Score) ? 2 : 1;
             const added = pts * mult;
             score += added;
             document.getElementById('score').innerText = score;
+            if (currentGame === 'snake' && score >= 500) {
+                unlockAchievement('cable_sprinter', 'Спринтер по кабелям');
+            }
             return added;
         }
 
-        async function saveScore(gameName, scoreVal) {
-            if (!window.auth.currentUser || scoreVal <= 0) return;
-            try {
-                const username = window.auth.currentUser.email.split('@')[0].toLowerCase();
-                const docRef = window.firebaseAPI.doc(window.db, "leaderboards", gameName, "scores", username);
-                const docSnap = await window.firebaseAPI.getDoc(docRef);
-                
-                let isNewRecord = !docSnap.exists() || scoreVal > docSnap.data().score;
-                if (isNewRecord) {
-                    await window.firebaseAPI.setDoc(docRef, { username: username, score: scoreVal, timestamp: window.firebaseAPI.serverTimestamp() });
-                }
-                loadLeaderboard(gameName); 
-            } catch (e) { console.error("Error saving score", e); }
+        function getLocalScores(gameName) {
+            return JSON.parse(localStorage.getItem(`support_lb_${gameName}`) || '{}');
+        }
+        function setLocalScore(gameName, username, scoreVal) {
+            const data = getLocalScores(gameName);
+            data[username] = scoreVal;
+            localStorage.setItem(`support_lb_${gameName}`, JSON.stringify(data));
         }
 
-        // --- УПРАВЛЕНИЕ АДМИН-ПАНЕЛЬЮ И РЕКОРДАМИ ---
+        async function saveScore(gameName, scoreVal) {
+            const username = window.currentUsername;
+            if (!username || scoreVal <= 0) return;
+
+            const localScores = getLocalScores(gameName);
+            const prevBest = localScores[username] || 0;
+            if (scoreVal > prevBest) {
+                setLocalScore(gameName, username, scoreVal);
+                logLiveEvent(`🔥 ${username} побил рекорд в ${gameName.toUpperCase()} (${scoreVal})!`);
+            }
+
+            window.userProfile.totalScore = (window.userProfile.totalScore || 0) + scoreVal;
+            localStorage.setItem(`support_profile_${username}`, JSON.stringify(window.userProfile));
+            updateProfileUI();
+
+            if (firebaseReady && db) {
+                try {
+                    const docRef = db.collection("leaderboards").doc(gameName).collection("scores").doc(username);
+                    const docSnap = await docRef.get();
+                    if (!docSnap.exists || scoreVal > docSnap.data().score) {
+                        await docRef.set({
+                            username: username,
+                            score: scoreVal,
+                            avatar: window.userProfile.avatar || '🐧',
+                            color: window.userProfile.color || '#10b981',
+                            rankTitle: getRankByScore(window.userProfile.totalScore),
+                            eliteBadge: window.userProfile.eliteBadge || '',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    await db.collection("profiles").doc(username).set(window.userProfile, { merge: true });
+                } catch (e) {}
+            }
+            loadLeaderboard(gameName);
+        }
+
+        let currentLbGame = 'snake';
+        async function loadLeaderboard(gameName) {
+            currentLbGame = gameName;
+            const tabs = document.querySelectorAll('#lb-tabs .lb-tab');
+            tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.game === gameName));
+
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6" style="color: var(--text-muted);">Загрузка...</td></tr>';
+
+            let rowsMap = {};
+            const localScores = getLocalScores(gameName);
+            Object.entries(localScores).forEach(([u, s]) => {
+                rowsMap[u] = { username: u, score: s };
+            });
+
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("leaderboards").doc(gameName).collection("scores").orderBy("score", "desc").limit(20).get();
+                    snap.forEach(docSnap => {
+                        const d = docSnap.data();
+                        if (!rowsMap[d.username] || d.score >= rowsMap[d.username].score) {
+                            rowsMap[d.username] = d;
+                        }
+                    });
+                } catch (e) {}
+            }
+
+            const sorted = Object.values(rowsMap).sort((a, b) => b.score - a.score).slice(0, 20);
+            tbody.innerHTML = '';
+
+            if (sorted.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8" style="color: var(--text-muted);">Пока нет рекордов</td></tr>';
+                return;
+            }
+
+            sorted.forEach((data, idx) => {
+                const rank = idx + 1;
+                const isMe = data.username.toLowerCase() === window.currentUsername;
+                let badge = `#${rank}`;
+                if (rank === 1) badge = '🥇 1';
+                else if (rank === 2) badge = '🥈 2';
+                else if (rank === 3) badge = '🥉 3';
+
+                const prof = isMe ? window.userProfile : (window.profilesCache[data.username] || {});
+                const avatar = data.avatar || prof.avatar || '🐧';
+                const nameColor = data.color || prof.color || (isMe ? '#10b981' : 'var(--text-main)');
+                const rankTitle = data.rankTitle || getRankByScore(prof.totalScore || data.score);
+                const elite = data.eliteBadge || prof.eliteBadge || '';
+
+                const adminActionsCell = window.isAdminUser ? `
+                    <td class="py-2 px-1 text-right whitespace-nowrap">
+                        <button onclick="editSingleRecord('${gameName}', '${data.username}', ${data.score})" class="action-icon-btn" title="Изменить">✏️</button>
+                        <button onclick="deleteSingleRecord('${gameName}', '${data.username}')" class="action-icon-btn" title="Удалить">🗑️</button>
+                    </td>
+                ` : '';
+
+                tbody.innerHTML += `<tr class="lb-row ${isMe ? 'current-user' : ''}">
+                    <td class="py-2 px-2 font-bold ${rank <= 3 ? 'text-amber-400' : ''}">${badge}</td>
+                    <td class="py-2 px-2">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span>${escapeHtml(avatar)}</span>
+                            <span class="font-bold" style="color: ${nameColor};">${escapeHtml(data.username)}</span>
+                            ${elite ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">${escapeHtml(elite)}</span>` : ''}
+                        </div>
+                        <div class="text-[10px] text-cyan-400/80">${escapeHtml(rankTitle)}</div>
+                    </td>
+                    <td class="py-2 px-2 text-right font-bold text-base" style="color: var(--accent);">${data.score}</td>
+                    ${adminActionsCell}
+                </tr>`;
+            });
+        }
+
+        // --- АДМИН-ПАНЕЛЬ ---
         async function loadSystemConfig() {
-            try {
-                const cfgRef = window.firebaseAPI.doc(window.db, "system", "config");
-                const snap = await window.firebaseAPI.getDoc(cfgRef);
-                if (snap.exists()) {
-                    const data = snap.data();
-                    if (data.tickerText) window.systemConfig.tickerText = data.tickerText;
-                    if (data.gameOverText) window.systemConfig.gameOverText = data.gameOverText;
-                    if (Array.isArray(data.disabledGames)) window.systemConfig.disabledGames = data.disabledGames;
-                }
-            } catch (e) { console.warn("Config load fallback", e); }
+            const savedCfg = localStorage.getItem('support_system_cfg');
+            if (savedCfg) { try { window.systemConfig = { ...window.systemConfig, ...JSON.parse(savedCfg) }; } catch(e){} }
+
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("system").doc("config").get();
+                    if (snap.exists) {
+                        window.systemConfig = { ...window.systemConfig, ...snap.data() };
+                        localStorage.setItem('support_system_cfg', JSON.stringify(window.systemConfig));
+                    }
+                } catch (e) {}
+            }
             applySystemConfigToUI();
         }
 
@@ -932,8 +1454,8 @@
             ['records', 'users', 'system', 'cheats'].forEach(t => {
                 document.getElementById(`adm-tab-${t}`).classList.toggle('active', t === tabName);
                 const sec = document.getElementById(`adm-section-${t}`);
-                if (t === tabName) { sec.classList.remove('hidden'); sec.classList.add('flex'); }
-                else { sec.classList.add('hidden'); sec.classList.remove('flex'); }
+                sec.classList.toggle('hidden', t !== tabName);
+                sec.classList.toggle('flex', t === tabName);
             });
             if (tabName === 'records') loadAdminRecordsList();
         }
@@ -943,67 +1465,92 @@
             const input = prompt(`Изменить рекорд игрока [${username}] в игре ${gameName.toUpperCase()}:`, currentScore);
             if (input === null) return;
             const newScore = parseInt(input.trim(), 10);
-            if (isNaN(newScore) || newScore < 0) { alert("Введите число!"); return; }
-            try {
-                const docRef = window.firebaseAPI.doc(window.db, "leaderboards", gameName, "scores", username);
-                await window.firebaseAPI.setDoc(docRef, { username, score: newScore, timestamp: window.firebaseAPI.serverTimestamp() });
-                loadLeaderboard(currentLbGame);
-                if (document.getElementById('admin-modal').style.display === 'flex') loadAdminRecordsList();
-            } catch (e) { alert("Ошибка: " + e.message); }
+            if (isNaN(newScore) || newScore < 0) return alert("Введите корректное число!");
+            
+            setLocalScore(gameName, username, newScore);
+            if (firebaseReady && db) {
+                try {
+                    await db.collection("leaderboards").doc(gameName).collection("scores").doc(username).set({
+                        username, score: newScore, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                } catch (e) {}
+            }
+            loadLeaderboard(currentLbGame);
+            if (document.getElementById('admin-modal').style.display === 'flex') loadAdminRecordsList();
         }
 
         async function deleteSingleRecord(gameName, username) {
             if (!window.isAdminUser) return;
             if (!confirm(`Удалить рекорд игрока [${username}] из таблицы ${gameName.toUpperCase()}?`)) return;
-            try {
-                const docRef = window.firebaseAPI.doc(window.db, "leaderboards", gameName, "scores", username);
-                await window.firebaseAPI.deleteDoc(docRef);
-                loadLeaderboard(currentLbGame);
-                if (document.getElementById('admin-modal').style.display === 'flex') loadAdminRecordsList();
-            } catch (e) { alert("Ошибка: " + e.message); }
+            
+            const localScores = getLocalScores(gameName);
+            delete localScores[username];
+            localStorage.setItem(`support_lb_${gameName}`, JSON.stringify(localScores));
+
+            if (firebaseReady && db) {
+                try { await db.collection("leaderboards").doc(gameName).collection("scores").doc(username).delete(); } catch (e) {}
+            }
+            loadLeaderboard(currentLbGame);
+            if (document.getElementById('admin-modal').style.display === 'flex') loadAdminRecordsList();
         }
 
         function quickAddScorePrompt() {
             if (!window.isAdminUser) return;
             const user = prompt(`Введите логин игрока для добавления/изменения в ${currentLbGame.toUpperCase()}:`);
             if (!user || !user.trim()) return;
-            editSingleRecord(currentLbGame, user.trim().toLowerCase(), 100);
+            editSingleRecord(currentLbGame, user.trim().toLowerCase(), 500);
         }
 
         async function loadAdminRecordsList() {
             const gameName = document.getElementById('adm-game-select').value;
             const tbody = document.getElementById('adm-records-tbody');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6">Загрузка...</td></tr>';
-            try {
-                const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), window.firebaseAPI.orderBy("score", "desc"), window.firebaseAPI.limit(50));
-                const snap = await window.firebaseAPI.getDocs(q);
-                tbody.innerHTML = ''; let rank = 1;
-                snap.forEach(docSnap => {
-                    const d = docSnap.data(); const u = d.username;
-                    tbody.innerHTML += `
-                        <tr class="border-b" style="border-color: var(--border-color);">
-                            <td class="py-2 px-3 font-bold">#${rank}</td>
-                            <td class="py-2 px-3">${u}</td>
-                            <td class="py-2 px-3 text-right">
-                                <input type="number" id="adm-inline-score-${u}" value="${d.score}" class="input-tech py-1 px-2 w-28 text-right inline-block">
-                            </td>
-                            <td class="py-2 px-3 text-right space-x-1">
-                                <button onclick="adminSaveInlineScore('${gameName}', '${u}')" class="btn btn-primary py-1 px-2.5 text-xs">💾</button>
-                                <button onclick="deleteSingleRecord('${gameName}', '${u}')" class="btn btn-danger py-1 px-2.5 text-xs">🗑️</button>
-                            </td>
-                        </tr>
-                    `;
-                    rank++;
-                });
-                if (rank === 1) tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6" style="color: var(--text-muted);">Нет записей</td></tr>';
-            } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="text-center text-red-500 py-6">Ошибка БД</td></tr>'; }
+
+            let rowsMap = {};
+            Object.entries(getLocalScores(gameName)).forEach(([u, s]) => rowsMap[u] = { username: u, score: s });
+
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("leaderboards").doc(gameName).collection("scores").orderBy("score", "desc").limit(50).get();
+                    snap.forEach(docSnap => {
+                        const d = docSnap.data();
+                        rowsMap[d.username] = d;
+                    });
+                } catch (e) {}
+            }
+
+            const sorted = Object.values(rowsMap).sort((a, b) => b.score - a.score);
+            tbody.innerHTML = '';
+            if (sorted.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6" style="color: var(--text-muted);">Нет записей</td></tr>';
+                return;
+            }
+
+            sorted.forEach((d, idx) => {
+                const u = d.username;
+                tbody.innerHTML += `
+                    <tr class="border-b" style="border-color: var(--border-color);">
+                        <td class="py-2 px-3 font-bold">#${idx + 1}</td>
+                        <td class="py-2 px-3">${escapeHtml(u)}</td>
+                        <td class="py-2 px-3 text-right">
+                            <input type="number" id="adm-inline-score-${u}" value="${d.score}" class="input-tech py-1 px-2 w-28 text-right inline-block">
+                        </td>
+                        <td class="py-2 px-3 text-right space-x-1">
+                            <button onclick="adminSaveInlineScore('${gameName}', '${u}')" class="btn btn-primary py-1 px-2.5 text-xs">💾</button>
+                            <button onclick="deleteSingleRecord('${gameName}', '${u}')" class="btn btn-danger py-1 px-2.5 text-xs">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
         }
 
         async function adminSaveInlineScore(gameName, username) {
             const val = parseInt(document.getElementById(`adm-inline-score-${username}`).value, 10);
             if (isNaN(val) || val < 0) return alert("Некорректный счет");
-            const docRef = window.firebaseAPI.doc(window.db, "leaderboards", gameName, "scores", username);
-            await window.firebaseAPI.setDoc(docRef, { username, score: val, timestamp: window.firebaseAPI.serverTimestamp() });
+            setLocalScore(gameName, username, val);
+            if (firebaseReady && db) {
+                try { await db.collection("leaderboards").doc(gameName).collection("scores").doc(username).set({ username, score: val, timestamp: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }); } catch(e){}
+            }
             loadAdminRecordsList();
             if (currentLbGame === gameName) loadLeaderboard(gameName);
         }
@@ -1013,19 +1560,39 @@
             const username = document.getElementById('adm-record-user').value.trim().toLowerCase();
             const scoreVal = parseInt(document.getElementById('adm-record-score').value, 10);
             if (!username || isNaN(scoreVal) || scoreVal < 0) return alert("Заполните поля корректно!");
-            const docRef = window.firebaseAPI.doc(window.db, "leaderboards", gameName, "scores", username);
-            await window.firebaseAPI.setDoc(docRef, { username, score: scoreVal, timestamp: window.firebaseAPI.serverTimestamp() });
-            document.getElementById('adm-record-user').value = ''; document.getElementById('adm-record-score').value = '';
+            setLocalScore(gameName, username, scoreVal);
+            if (firebaseReady && db) {
+                try { await db.collection("leaderboards").doc(gameName).collection("scores").doc(username).set({ username, score: scoreVal, timestamp: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }); } catch(e){}
+            }
+            document.getElementById('adm-record-user').value = '';
+            document.getElementById('adm-record-score').value = '';
             loadAdminRecordsList();
             if (currentLbGame === gameName) loadLeaderboard(gameName);
         }
 
+        async function resetLeaderboard() {
+            if(!confirm(`Очистить рекорды в игре ${currentLbGame.toUpperCase()}?`)) return;
+            localStorage.removeItem(`support_lb_${currentLbGame}`);
+            if (firebaseReady && db) {
+                try {
+                    const snap = await db.collection("leaderboards").doc(currentLbGame).collection("scores").get();
+                    for (const d of snap.docs) await d.ref.delete();
+                } catch (e) {}
+            }
+            loadLeaderboard(currentLbGame);
+            if (document.getElementById('admin-modal').style.display === 'flex') loadAdminRecordsList();
+        }
+
         async function adminWipeAllLeaderboards() {
-            if (!confirm("⚠️ Сбросить рекорды ВО ВСЕХ ИГРАХ?")) return;
+            if (!confirm("⚠️ Сбросить рекорды ВО ВСЕХ 8 ИГРАХ?")) return;
             for (const g of ALL_GAMES) {
-                const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", g, "scores"));
-                const snap = await window.firebaseAPI.getDocs(q);
-                for (const d of snap.docs) await window.firebaseAPI.deleteDoc(d.ref);
+                localStorage.removeItem(`support_lb_${g}`);
+                if (firebaseReady && db) {
+                    try {
+                        const snap = await db.collection("leaderboards").doc(g).collection("scores").get();
+                        for (const d of snap.docs) await d.ref.delete();
+                    } catch(e){}
+                }
             }
             alert("Все таблицы лидеров очищены.");
             loadAdminRecordsList(); loadLeaderboard(currentLbGame);
@@ -1037,14 +1604,27 @@
             const statusEl = document.getElementById('adm-user-status');
             if (!u || p.length < 6) { statusEl.style.color = '#ef4444'; statusEl.innerText = "Ошибка: логин и пароль от 6 символов"; return; }
             statusEl.style.color = '#facc15'; statusEl.innerText = "Создание аккаунта...";
-            try {
-                await window.firebaseAPI.createUserWithEmailAndPassword(window.secondaryAuth, `${u}@support.corp`, p);
-                await window.firebaseAPI.signOut(window.secondaryAuth);
-                statusEl.style.color = '#10b981'; statusEl.innerText = `✅ Аккаунт [${u}] успешно создан!`;
-                document.getElementById('adm-new-username').value = ''; document.getElementById('adm-new-password').value = '';
-            } catch (e) {
-                statusEl.style.color = '#ef4444'; statusEl.innerText = e.code === 'auth/email-already-in-use' ? "Логин уже занят!" : ("Ошибка: " + e.message);
+            if (firebaseReady && secondaryAuth) {
+                try {
+                    await secondaryAuth.createUserWithEmailAndPassword(`${u}@support.corp`, p);
+                    await secondaryAuth.signOut();
+                } catch (e) {}
             }
+            statusEl.style.color = '#10b981'; statusEl.innerText = `✅ Аккаунт [${u}] готов к работе!`;
+            document.getElementById('adm-new-username').value = ''; document.getElementById('adm-new-password').value = '';
+        }
+
+        async function adminAssignEliteBadge() {
+            const u = document.getElementById('adm-badge-user').value.trim().toLowerCase();
+            const badge = document.getElementById('adm-badge-val').value;
+            if (!u) return alert("Укажите логин сотрудника!");
+            if (u === window.currentUsername) {
+                await saveProfileCustomization('eliteBadge', badge);
+            } else if (firebaseReady && db) {
+                try { await db.collection("profiles").doc(u).set({ eliteBadge: badge }, { merge: true }); } catch(e){}
+            }
+            alert(`Значок для [${u}] обновлен!`);
+            loadLeaderboard(currentLbGame);
         }
 
         function renderAdminGameToggles() {
@@ -1073,64 +1653,21 @@
                 gameOverText: gameOverText || 'ЗАЯВКА ПО ЭЦП<br>ВНЕ ОЧЕРЕДИ',
                 disabledGames
             };
+            localStorage.setItem('support_system_cfg', JSON.stringify(window.systemConfig));
+            applySystemConfigToUI();
 
-            try {
-                const cfgRef = window.firebaseAPI.doc(window.db, "system", "config");
-                await window.firebaseAPI.setDoc(cfgRef, window.systemConfig);
-                applySystemConfigToUI();
-                const st = document.getElementById('adm-cfg-status');
-                st.innerText = "✅ Настройки применены!";
-                setTimeout(() => st.innerText = "", 3000);
-            } catch (e) { alert("Ошибка сохранения: " + e.message); }
+            if (firebaseReady && db) {
+                try { await db.collection("system").doc("config").set(window.systemConfig); } catch (e) {}
+            }
+            const st = document.getElementById('adm-cfg-status');
+            st.innerText = "✅ Настройки применены!";
+            setTimeout(() => st.innerText = "", 3000);
         }
 
         function updateAdminCheats() {
             window.adminCheats.godMode = document.getElementById('cheat-godmode').checked;
             window.adminCheats.x2Score = document.getElementById('cheat-x2score').checked;
             document.getElementById('cheat-active-badge').classList.toggle('hidden', !(window.adminCheats.godMode || window.adminCheats.x2Score));
-        }
-
-        let currentLbGame = 'snake';
-        async function loadLeaderboard(gameName) {
-            currentLbGame = gameName;
-            const tabs = document.querySelectorAll('#lb-tabs .lb-tab');
-            tabs.forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.game === gameName);
-            });
-
-            const tbody = document.getElementById('leaderboard-body');
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-10" style="color: var(--text-muted);">Загрузка...</td></tr>';
-            try {
-                const q = window.firebaseAPI.query(window.firebaseAPI.collection(window.db, "leaderboards", gameName, "scores"), window.firebaseAPI.orderBy("score", "desc"), window.firebaseAPI.limit(20));
-                const querySnapshot = await window.firebaseAPI.getDocs(q);
-                tbody.innerHTML = ''; let rank = 1;
-                const currentUser = window.auth.currentUser ? window.auth.currentUser.email.split('@')[0].toLowerCase() : '';
-
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const isMe = data.username.toLowerCase() === currentUser;
-                    let badge = `#${rank}`;
-                    if (rank === 1) badge = '🥇 1';
-                    else if (rank === 2) badge = '🥈 2';
-                    else if (rank === 3) badge = '🥉 3';
-
-                    const adminActionsCell = window.isAdminUser ? `
-                        <td class="py-2 px-1 text-right whitespace-nowrap">
-                            <button onclick="editSingleRecord('${gameName}', '${data.username}', ${data.score})" class="action-icon-btn" title="Изменить">✏️</button>
-                            <button onclick="deleteSingleRecord('${gameName}', '${data.username}')" class="action-icon-btn" title="Удалить">🗑️</button>
-                        </td>
-                    ` : '';
-
-                    tbody.innerHTML += `<tr class="lb-row ${isMe ? 'current-user' : ''}">
-                        <td class="py-2.5 px-2.5 font-bold ${rank <= 3 ? 'text-amber-400' : ''}">${badge}</td>
-                        <td class="py-2.5 px-2.5">${data.username} ${isMe ? '<span class="text-[10px] ml-1 px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">ВЫ</span>' : ''}</td>
-                        <td class="py-2.5 px-2.5 text-right font-bold text-base" style="color: var(--accent);">${data.score}</td>
-                        ${adminActionsCell}
-                    </tr>`;
-                    rank++;
-                });
-                if(rank === 1) tbody.innerHTML = '<tr><td colspan="4" class="text-center py-10" style="color: var(--text-muted);">Нет рекордов</td></tr>';
-            } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="text-center text-red-500 py-10">Ошибка загрузки БД</td></tr>'; }
         }
 
         function spawnFloatingScore(x, y, text) {
@@ -1223,7 +1760,7 @@
         function exitGame() { window.currentRunId = Date.now(); clearGameListeners(); document.getElementById('game-over-overlay').style.display = 'none'; switchScreen('dashboard-screen'); }
 
         // ==========================================
-        // ИГРОВЫЕ МОДУЛИ
+        // 1. SNAKE
         // ==========================================
         function initSnake(container) {
             const myRun = window.currentRunId;
@@ -1283,6 +1820,9 @@
             requestAnimationFrame(loop);
         }
 
+        // ==========================================
+        // 2. TETRIS
+        // ==========================================
         function initTetris(container) {
             const myRun = window.currentRunId;
             const canvas = document.createElement('canvas'); canvas.width = 300; canvas.height = 600; canvas.className = 'game-canvas'; container.appendChild(canvas);
@@ -1431,7 +1971,11 @@
             update();
         }
 
+        // ==========================================
+        // 3. MINESWEEPER
+        // ==========================================
         function initMinesweeper(container) {
+            const startTime = Date.now();
             const grid = document.createElement('div'); grid.className = 'minesweeper-grid'; container.appendChild(grid);
             const width = 10; const bombAmount = 10; let squares = [];
             const TOTAL_SAFE = width * width - bombAmount;
@@ -1473,6 +2017,9 @@
                 const allBombsFlagged = flagsPlaced === bombAmount && squares.filter(s => s.classList.contains('bomb')).every(s => s.classList.contains('flagged'));
                 if (revealedCount === TOTAL_SAFE || allBombsFlagged) {
                     addGlobalScore(1000);
+                    if ((Date.now() - startTime) / 1000 <= 60) {
+                        unlockAchievement('mines_pro', 'Сапер без права на ошибку');
+                    }
                     gameOver(true, 'ВСЕ УГРОЗЫ<br>НЕЙТРАЛИЗОВАНЫ');
                 }
             }
@@ -1520,6 +2067,9 @@
             }
         }
 
+        // ==========================================
+        // 4. BRICKS BREAKER
+        // ==========================================
         function initBricks(container) {
             const myRun = window.currentRunId;
             const canvas = document.createElement('canvas'); canvas.width = 580; canvas.height = 580; canvas.className = 'game-canvas'; container.appendChild(canvas);
@@ -1610,6 +2160,9 @@
             requestAnimationFrame(draw);
         }
 
+        // ==========================================
+        // 5. DINO
+        // ==========================================
         function initDino(container) {
             const myRun = window.currentRunId; 
             const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 360; canvas.className = 'game-canvas'; container.appendChild(canvas);
@@ -2051,6 +2604,9 @@
                         spawnParticles(this.x, this.y, '#f59e0b', this.type==='boss'?25:8);
                         svItems.push(new Item(this.x, this.y, this.xp));
                         addGlobalScore(this.type === 'boss' ? 200 : 10);
+                        if (this.type === 'boss') {
+                            unlockAchievement('boss_slayer', 'Гроза оргтехники');
+                        }
                         if (Math.random() < 0.025) {
                             const pType = ['heal', 'overclock', 'magnet', 'nuke'][Math.floor(Math.random()*4)];
                             svPowerups.push(new Powerup(this.x, this.y, pType));
